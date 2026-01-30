@@ -53,7 +53,7 @@ export function DevTools() {
         setStatusText('Pulling from Notion...');
 
         try {
-            const res = await fetch('/api/config/refresh', { method: 'POST' });
+            const res = await fetch('/api/config/refresh', { method: 'GET' });
             if (!res.ok) throw new Error('Failed to refresh');
 
             const reader = res.body?.getReader();

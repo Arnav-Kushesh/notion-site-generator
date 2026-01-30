@@ -2,9 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { pullConfigFromNotion } from '@/lib/notion-server';
 
+export const dynamic = 'force-static';
 
-
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
     if (process.env.NODE_ENV !== 'development') {
         return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }

@@ -4,6 +4,8 @@ import fs from 'fs';
 import { getHomeData } from '@/lib/data';
 import { updateNotionConfig } from '@/lib/notion-server';
 
+export const dynamic = 'force-static';
+
 // Force dynamic route since we are reading/writing files
 
 
