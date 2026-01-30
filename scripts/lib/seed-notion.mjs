@@ -27,9 +27,9 @@ export async function seedNotion(rootPageId, notion) {
     console.log("🚀 Starting seeding process...");
 
     await createHomePage(rootPageId, notion);
+    await createGallery(rootPageId, notion);
     await createProjects(rootPageId, notion);
     await createBlogs(rootPageId, notion);
-    await createGallery(rootPageId, notion);
     await createConfig(rootPageId, notion);
 
     console.log("✨ Seeding process completed successfully!");
