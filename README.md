@@ -93,16 +93,22 @@ The **ROOT_PAGE_ID** page will contain the following structure after running `np
     -   `site_description`: Text
     -   `favicon`: Media (Upload an image) or URL
     -   `keywords`: Text
+    -   `og_image`: Media (Upload an image) or URL
+    -   `sidebar_navigation`: Text ('true' or 'false')
+    -   `default_color_mode`: Text ('light' or 'dark')
 2.  **Home Page** (Page):
     -   **Hero Settings**: Profile bio and layout.
         -   Supported Socials: `twitter`, `github`, `linkedin`, `email`, `instagram`, `youtube`, `facebook`, `twitch`.
     -   **Section Settings**: Toggle visibility of Projects/Blogs/Gallery.
         -   **Ordering**: The vertical order of the *Projects*, *Blogs*, and *Gallery* sections on the website is determined by the order of their corresponding Inline Databases on this page. Drag and drop them to reorder.
     -   **Blogs Settings**: Configure View Type (List/Card) and toggle `show_images`.
-3.  **Projects** (Database): Kanban board for your portfolio items.
-    -   Properties: `Project Name`, `Status`, `Description`, `Tools` (formerly Tech), `Link`, `Thumbnail`.
-4.  **Blogs** (Database): Kanban board for your writings.
+3.  **Navbar Pages** (Page): Container for sub-pages like About and Contact.
+    -   Create standard Notion pages here to have them appear as sub-pages on your site (e.g. `/about`, `/contact`).
+4.  **Projects** (Database): Kanban board for your portfolio items.
+    -   Properties: `Project Name`, `Status`, `Description`, `Slug`, `Tools` (formerly Tech), `Link`, `Thumbnail`.
+4.  **Blogs** (Database): Kanban board for your writings with `Title`, `Status`, `Description`, `Slug`, `Published Date`, and `Cover`.
 5.  **Gallery** (Database): A collection of visual assets.
+    -   Properties: `Name`, `Slug`, `Image`, `Link`.
 
 ---
 

@@ -1,5 +1,6 @@
 import { css } from "@/styled-system/css";
 import Link from "next/link";
+import Image from "next/image";
 import { grid, flex } from "@/styled-system/patterns";
 import { Post } from "@/lib/data";
 
@@ -39,6 +40,7 @@ const cardStyle = css({
 
 const imageContainerStyle = css({
     overflow: "hidden",
+    position: "relative",
 });
 
 const imageStyle = css({ width: "100%", height: "100%", objectFit: "cover" });
@@ -97,9 +99,10 @@ export function ProjectList({
                                 className={imageContainerStyle}
                                 style={{ height: viewType === "List" ? "200px" : "180px" }}
                             >
-                                <img
+                                <Image
                                     src={project.thumbnail}
                                     alt={project.title}
+                                    fill
                                     className={imageStyle}
                                 />
                             </div>

@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 
-const contentDirectory = path.join(process.cwd(), 'content');
-const dataDirectory = path.join(process.cwd(), 'data');
+const contentDirectory = path.join(process.cwd(), 'notion_state/content');
+const dataDirectory = path.join(process.cwd(), 'notion_state/data');
 
 // Re-export specific interfaces if needed for cleaner imports
 export interface HeroConfig {
@@ -36,6 +36,7 @@ export interface InfoConfig {
     og_image: string;
     sidebar_navigation?: string;
     default_theme?: 'light' | 'dark' | 'system';
+    default_color_mode?: 'light' | 'dark';
 }
 
 export interface HomeData {
@@ -58,7 +59,7 @@ export interface Post {
     slug: string;
     title: string;
     date: string;
-    summary: string;
+    description: string;
     content: string;
     cover?: {
         image?: string;
@@ -66,7 +67,6 @@ export interface Post {
     };
     thumbnail?: string; // For projects
     link?: string; // For external project links
-    description?: string; // For projects
     tools?: string; // For projects
 }
 
@@ -75,6 +75,7 @@ export interface GalleryItem {
     name: string;
     image: string;
     link?: string;
+    content?: string;
 }
 
 export function getHomeData(): HomeData {
@@ -113,7 +114,14 @@ export function getGalleryItems(): GalleryItem[] {
                 name: data.name,
                 image: data.image,
                 link: data.link,
+                order: data.order || 0,
             };
+        })
+        .sort((a, b) => {
+            if (a.order !== b.order) {
+                return a.order - b.order;
+            }
+            return a.name.localeCompare(b.name);
         });
 }
 
@@ -135,8 +143,7 @@ export function getPosts(section: 'projects' | 'blogs'): Post[] {
                 content,
                 title: data.title,
                 date: data.date ? new Date(data.date).toISOString() : '',
-                summary: data.summary || '',
-                description: data.description || '',
+                description: data.description || data.summary || '',
                 tools: data.tools || '',
                 cover: data.cover,
                 thumbnail: data.thumbnail,
@@ -155,11 +162,14 @@ export function getPosts(section: 'projects' | 'blogs'): Post[] {
     });
 }
 
-export function getPost(slug: string, section: 'projects' | 'blogs'): Post | null {
+export function getPost(slug: string, section: 'projects' | 'blogs' | 'navbarPages'): Post | null {
     const dirPath = path.join(contentDirectory, section);
     const fullPath = path.join(dirPath, `${slug}.md`);
 
+    console.log(`[getPost] Checking path: ${fullPath}`);
+
     if (!fs.existsSync(fullPath)) {
+        console.log(`[getPost] File does not exist: ${fullPath}`);
         return null;
     }
 
@@ -171,8 +181,7 @@ export function getPost(slug: string, section: 'projects' | 'blogs'): Post | nul
         content,
         title: data.title,
         date: data.date ? new Date(data.date).toISOString() : '',
-        summary: data.summary || '',
-        description: data.description || '',
+        description: data.description || data.summary || '',
         tools: data.tools || '',
         cover: data.cover,
         thumbnail: data.thumbnail,
@@ -190,26 +199,28 @@ export function getGalleryItem(slug: string): GalleryItem | null {
     }
 
     const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data } = matter(fileContents);
+    const { data, content } = matter(fileContents);
 
     return {
         slug,
         name: data.name,
         image: data.image,
         link: data.link,
+        content, // Include content
     };
 }
 
-export function getPages(): { slug: string; title: string }[] {
-    // Pages are at root of content directory
-    if (!fs.existsSync(contentDirectory)) return [];
+export function getNavbarPages(): { slug: string; title: string }[] {
+    const pagesDir = path.join(contentDirectory, 'navbarPages');
+    // Pages are in the 'navbarPages' subdirectory
+    if (!fs.existsSync(pagesDir)) return [];
 
-    const fileNames = fs.readdirSync(contentDirectory);
+    const fileNames = fs.readdirSync(pagesDir);
     return fileNames
         .filter((fileName) => fileName.endsWith('.md'))
         .map((fileName) => {
             const slug = fileName.replace(/\.md$/, '');
-            const fullPath = path.join(contentDirectory, fileName);
+            const fullPath = path.join(pagesDir, fileName);
             const fileContents = fs.readFileSync(fullPath, 'utf8');
             const { data } = matter(fileContents);
 

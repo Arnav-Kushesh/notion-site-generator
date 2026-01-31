@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getPages, getPosts } from '@/lib/data';
+import { getNavbarPages, getPosts } from '@/lib/data';
 
 export const dynamic = 'force-static';
 
@@ -7,7 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
 
     // 1. Static Pages
-    const pages = getPages().map((page) => ({
+    const pages = getNavbarPages().map((page) => ({
         url: `${baseUrl}/${page.slug}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,

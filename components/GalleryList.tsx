@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { css } from '@/styled-system/css';
 import { grid } from '@/styled-system/patterns';
 import { GalleryItem } from '@/lib/data';
@@ -75,9 +76,10 @@ export function GalleryList({ items, title = 'Gallery' }: GalleryListProps) {
                         href={`/gallery/${item.slug}`}
                         className={itemStyle}
                     >
-                        <img
+                        <Image
                             src={item.image}
                             alt={item.name}
+                            fill
                             className={imageStyle}
                         />
                         <div className={`overlay ${overlayStyle}`}>

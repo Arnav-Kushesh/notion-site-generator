@@ -303,6 +303,7 @@ export async function updateNotionConfig(config: PartialConfig) {
             if (configDataSourceId) {
                 if (config.info.site_title) promises.push(updateConfigValueWithSourceId(configDataSourceId, 'site_title', config.info.site_title));
                 if (config.info.default_theme) promises.push(updateConfigValueWithSourceId(configDataSourceId, 'default_theme', config.info.default_theme));
+                if (config.info.default_color_mode) promises.push(updateConfigValueWithSourceId(configDataSourceId, 'default_color_mode', config.info.default_color_mode));
                 if (config.info.sidebar_navigation !== undefined) promises.push(updateConfigValueWithSourceId(configDataSourceId, 'sidebar_navigation', String(config.info.sidebar_navigation)));
             }
         }

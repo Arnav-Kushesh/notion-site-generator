@@ -4,19 +4,21 @@ import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { css } from '@/styled-system/css';
 
-export function ThemeToggle() {
-    const [theme, setTheme] = useState<'light' | 'dark'>('light');
+export function ThemeToggle({ defaultTheme = 'light' }: { defaultTheme?: 'light' | 'dark' }) {
+    const [theme, setTheme] = useState<'light' | 'dark'>(defaultTheme);
 
     useEffect(() => {
-        // Check local storage or DOM state set by blocking script
-        if (typeof window !== 'undefined') {
-            const stored = localStorage.getItem('theme');
-            if (stored) {
-                setTheme(stored as 'light' | 'dark');
+        // Init: check local storage, if not set use default (which is already set in state)
+        // If set, update state and DOM
+        const stored = localStorage.getItem('theme') as 'light' | 'dark' | null;
+        if (stored) {
+            setTheme(stored);
+            if (stored === 'dark') {
+                document.documentElement.classList.add('dark');
+                document.documentElement.setAttribute('data-theme', 'dark');
             } else {
-                // Determine from class set by blocking script
-                const isDark = document.documentElement.classList.contains('dark');
-                setTheme(isDark ? 'dark' : 'light');
+                document.documentElement.classList.remove('dark');
+                document.documentElement.setAttribute('data-theme', 'light');
             }
         }
     }, []);
@@ -24,6 +26,7 @@ export function ThemeToggle() {
     const toggleTheme = () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
+
         if (newTheme === 'dark') {
             document.documentElement.classList.add('dark');
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -31,7 +34,10 @@ export function ThemeToggle() {
             document.documentElement.classList.remove('dark');
             document.documentElement.setAttribute('data-theme', 'light');
         }
+
         localStorage.setItem('theme', newTheme);
+        // Clean up cookie if it exists to avoid confusion
+        document.cookie = 'theme=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     };
 
     return (

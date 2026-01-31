@@ -3,6 +3,7 @@ import { flex } from '@/styled-system/patterns';
 import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope, FaYoutube, FaFacebook, FaTwitch } from 'react-icons/fa';
 import { RiInstagramFill } from 'react-icons/ri';
 import { HomeData } from '@/lib/data';
+import Image from 'next/image';
 
 const getSectionStyle = (isLeftAligned: boolean) => flex({
     direction: 'column-reverse',
@@ -60,6 +61,7 @@ const imageContainerStyle = css({
     overflow: 'hidden',
     border: '4px solid token(colors.bg.secondary)',
     boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)',
+    position: 'relative',
 });
 
 const imageStyle = css({
@@ -128,9 +130,10 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
 
             {hero.profile_image && (
                 <div className={imageContainerStyle}>
-                    <img
+                    <Image
                         src={hero.profile_image}
                         alt="Profile"
+                        fill
                         className={imageStyle}
                     />
                 </div>

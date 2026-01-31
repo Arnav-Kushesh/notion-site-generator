@@ -1,5 +1,6 @@
 import { css } from '@/styled-system/css';
 import Link from 'next/link';
+import Image from 'next/image';
 import { flex } from '@/styled-system/patterns';
 import { Post } from '@/lib/data';
 import { format } from 'date-fns';
@@ -121,7 +122,7 @@ export function BlogList({ blogs, title = 'Latest Writings', viewType = 'List', 
                                 {blog.title}
                             </h3>
                             <p className={summaryStyle}>
-                                {blog.summary}
+                                {blog.description}
                             </p>
                             <p className={dateStyle}>
                                 {blog.date ? format(new Date(blog.date), 'MMM d, yyyy') : ''}
@@ -131,9 +132,10 @@ export function BlogList({ blogs, title = 'Latest Writings', viewType = 'List', 
                         {/* Image */}
                         {showImages && blog.cover?.image && (
                             <div className={getImageContainerStyle(viewType)}>
-                                <img
+                                <Image
                                     src={blog.cover.image}
                                     alt={blog.cover.alt || blog.title}
+                                    fill
                                     className={imageStyle}
                                 />
                             </div>

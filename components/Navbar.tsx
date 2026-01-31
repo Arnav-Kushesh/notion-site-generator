@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { css } from '@/styled-system/css';
 import { flex, container } from '@/styled-system/patterns';
 import { ThemeToggle } from './ThemeToggle';
-import { getHomeData, getPages } from '@/lib/data';
+import { getHomeData, getNavbarPages } from '@/lib/data';
 
 const navbarStyle = css({
     pos: 'fixed',
@@ -44,7 +44,7 @@ const linkStyle = css({
 
 export async function Navbar() {
     const homeData = getHomeData();
-    const pages = getPages();
+    const pages = getNavbarPages();
     const siteTitle = homeData.info?.site_title || 'Home';
 
     return (
@@ -71,7 +71,7 @@ export async function Navbar() {
                         </Link>
                     ))}
                     <div className={css({ ml: '10px' })}>
-                        <ThemeToggle />
+                        <ThemeToggle defaultTheme={homeData.info?.default_color_mode as 'light' | 'dark'} />
                     </div>
                 </div>
             </div>

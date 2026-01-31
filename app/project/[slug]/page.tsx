@@ -7,6 +7,7 @@ import remarkHtml from 'remark-html';
 import remarkGfm from 'remark-gfm';
 import { flex, container } from '@/styled-system/patterns';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, ExternalLink, Github } from 'lucide-react';
 
 import { Metadata } from 'next';
@@ -30,10 +31,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     return {
         title: project.title,
-        description: project.description || project.summary,
+        description: project.description,
         openGraph: {
             title: project.title,
-            description: project.description || project.summary,
+            description: project.description,
             images: project.thumbnail ? [{ url: project.thumbnail }] : [],
         },
     };
@@ -130,93 +131,108 @@ const secondaryButtonStyle = css({
 
 
 
-const processedContent = await unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkHtml)
-    .process(project.content);
-const contentHtml = processedContent.toString();
 
-return (
-    <main className={mainContainerStyle}>
-        <Link
-            href="/"
-            className={backLinkStyle}
-        >
-            <ArrowLeft size={20} />
-            Back to Home
-        </Link>
+export default async function ProjectPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    console.log(`[ProjectPage] Received slug: "${slug}"`);
+    const project = getPost(slug, 'projects');
+    console.log(`[ProjectPage] Project found: ${!!project}`);
 
-        <article>
-            {project.thumbnail && (
-                <div className={thumbnailContainerStyle}>
-                    <img
-                        src={project.thumbnail}
-                        alt={project.title}
-                        className={thumbnailStyle}
-                    />
+    if (!project) {
+        console.log(`[ProjectPage] Project not found for slug: "${slug}"`);
+        notFound();
+    }
+
+    const processedContent = await unified()
+        .use(remarkParse)
+        .use(remarkGfm)
+        .use(remarkHtml)
+        .process(project.content);
+    const contentHtml = processedContent.toString();
+
+    return (
+        <main className={mainContainerStyle}>
+            <Link
+                href="/"
+                className={backLinkStyle}
+            >
+                <ArrowLeft size={20} />
+                Back to Home
+            </Link>
+
+            <article>
+                {project.thumbnail && (
+                    <div className={thumbnailContainerStyle}>
+                        <Image
+                            src={project.thumbnail}
+                            alt={project.title}
+                            width={800}
+                            height={400} // Approximate aspect ratio, style handles responsiveness
+                            priority
+                            className={thumbnailStyle}
+                        />
+                    </div>
+                )}
+
+                <div className={headerContainerStyle}>
+                    <h1 className={titleStyle}>
+                        {project.title}
+                    </h1>
+                    <p className={descriptionStyle}>
+                        {project.description}
+                    </p>
+
                 </div>
-            )}
 
-            <div className={headerContainerStyle}>
-                <h1 className={titleStyle}>
-                    {project.title}
-                </h1>
-                <p className={descriptionStyle}>
-                    {project.description}
-                </p>
+                {project.tools && (
+                    <div className={toolsContainerStyle}>
+                        {project.tools.split(',').map((tool) => (
+                            <span
+                                key={tool}
+                                className={toolBadgeStyle}
+                            >
+                                {tool.trim()}
+                            </span>
+                        ))}
+                    </div>
+                )}
+                <br />
+                <div className={linksContainerStyle}>
 
-            </div>
 
-            {project.tools && (
-                <div className={toolsContainerStyle}>
-                    {project.tools.split(',').map((tool) => (
-                        <span
-                            key={tool}
-                            className={toolBadgeStyle}
+                    {project.link && (
+
+                        <a
+                            href={project.link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={buttonStyle}
                         >
-                            {tool.trim()}
-                        </span>
-                    ))}
+                            <ExternalLink size={18} />
+                            Visit Project
+                        </a>
+                    )}
+                    {/* Assuming we might have a repo link in the future or reusing link if it's github */}
+                    {project.link?.includes('github.com') && (
+                        <a
+                            href={project.link} // Duplicate for demo, but typically would be separate field
+                            target="_blank"
+                            rel="noreferrer"
+                            className={secondaryButtonStyle}
+                        >
+                            <Github size={18} />
+                            View Code
+                        </a>
+                    )}
                 </div>
-            )}
-            <br />
-            <div className={linksContainerStyle}>
 
-
-                {project.link && (
-
-                    <a
-                        href={project.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        className={buttonStyle}
-                    >
-                        <ExternalLink size={18} />
-                        Visit Project
-                    </a>
-                )}
-                {/* Assuming we might have a repo link in the future or reusing link if it's github */}
-                {project.link?.includes('github.com') && (
-                    <a
-                        href={project.link} // Duplicate for demo, but typically would be separate field
-                        target="_blank"
-                        rel="noreferrer"
-                        className={secondaryButtonStyle}
-                    >
-                        <Github size={18} />
-                        View Code
-                    </a>
-                )}
-            </div>
-
-            <div
-                className={contentStyle}
-                dangerouslySetInnerHTML={{ __html: contentHtml }}
-            />
-        </article>
-    </main>
-);
+                <div
+                    className={contentStyle}
+                    dangerouslySetInnerHTML={{ __html: contentHtml }}
+                />
+            </article>
+        </main>
+    );
 }
 
 const contentStyle = css({

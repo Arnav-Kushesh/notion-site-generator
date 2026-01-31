@@ -1,6 +1,26 @@
 import { dummyHero, dummyProjectConfig, dummyBlogConfig, dummyGalleryConfig, dummyProjects, dummyBlogs, dummyGalleryItems, dummySiteInfo } from './dummy-data.mjs';
 
 /**
+ * Checks if a block is effectively empty (empty paragraph or heading).
+ */
+function isEmptyBlock(block) {
+    const type = block.type;
+    // Only consider text blocks as potentially "empty" safe to ignore
+    if (!['paragraph', 'heading_1', 'heading_2', 'heading_3', 'quote', 'callout'].includes(type)) {
+        return false;
+    }
+
+    const content = block[type];
+    const richText = content.rich_text;
+
+    // If no rich text, it's empty
+    if (!richText || richText.length === 0) return true;
+
+    // Check if all text elements are just whitespace
+    return richText.every(text => !text.plain_text || text.plain_text.trim() === '');
+}
+
+/**
  * Checks if the root page is empty and supports seeding.
  */
 export async function ensureSiteStructure(rootPageId, notion) {
@@ -13,13 +33,21 @@ export async function ensureSiteStructure(rootPageId, notion) {
 
     // Check if root page is empty
     const blocks = await notion.blocks.children.list({ block_id: rootPageId });
-    if (blocks.results.length > 0) {
+
+    // Filter out empty blocks
+    const nonEmptyBlocks = blocks.results.filter(block => !isEmptyBlock(block));
+
+    if (nonEmptyBlocks.length > 0) {
         console.log("Root page is NOT empty. Skipping seeding to prevent data loss.");
-        console.log(`ℹ️ Found ${blocks.results.length} blocks on the root page.`);
+        console.log(`ℹ️ Found ${nonEmptyBlocks.length} non-empty blocks on the root page (out of ${blocks.results.length} total).`);
         process.exit(0);
     }
 
-    console.log("✅ Root page is empty. Proceeding with seeding...");
+    if (blocks.results.length > 0) {
+        console.log(`ℹ️ Found ${blocks.results.length} blocks, but all are empty. Proceeding...`);
+    }
+
+    console.log("✅ Root page is ready. Proceeding with seeding...");
     await seedNotion(rootPageId, notion);
 }
 
@@ -27,6 +55,7 @@ export async function seedNotion(rootPageId, notion) {
     console.log("🚀 Starting seeding process...");
 
     await createHomePage(rootPageId, notion);
+    await createNavbarPagesContainer(rootPageId, notion);
     await createGallery(rootPageId, notion);
     await createProjects(rootPageId, notion);
     await createBlogs(rootPageId, notion);
@@ -53,11 +82,66 @@ const textBlock = (content) => ({
     paragraph: { rich_text: [{ type: 'text', text: { content } }] }
 });
 
-const linkToPage = (pageId) => ({
+
+
+const bulletedListItem = (content) => ({
     object: 'block',
-    type: 'link_to_page',
-    link_to_page: { page_id: pageId }
+    type: 'bulleted_list_item',
+    bulleted_list_item: { rich_text: [{ type: 'text', text: { content } }] }
 });
+
+const quoteBlock = (content) => ({
+    object: 'block',
+    type: 'quote',
+    quote: { rich_text: [{ type: 'text', text: { content } }] }
+});
+
+const heading3 = (content) => ({
+    object: 'block',
+    type: 'heading_3',
+    heading_3: { rich_text: [{ type: 'text', text: { content } }] }
+});
+
+const codeBlock = (content, language = "plain text") => ({
+    object: 'block',
+    type: 'code',
+    code: {
+        rich_text: [{ type: 'text', text: { content } }],
+        language: language
+    }
+});
+
+const imageBlock = (url, caption = "") => ({
+    object: 'block',
+    type: 'image',
+    image: {
+        type: "external",
+        external: { url },
+        caption: caption ? [{ type: 'text', text: { content: caption } }] : []
+    }
+});
+
+function buildBlocks(contentArray) {
+    if (!contentArray || !Array.isArray(contentArray)) {
+        // Fallback for simple string content (backwards compatibility)
+        if (typeof contentArray === 'string') return [textBlock(contentArray)];
+        return [];
+    }
+
+    return contentArray.map(item => {
+        switch (item.type) {
+            case 'heading_1': return heading1(item.content);
+            case 'heading_2': return heading2(item.content);
+            case 'heading_3': return heading3(item.content);
+            case 'paragraph': return textBlock(item.content);
+            case 'bullet_list_item': return bulletedListItem(item.content);
+            case 'quote': return quoteBlock(item.content);
+            case 'code': return codeBlock(item.content, item.language);
+            case 'image': return imageBlock(item.url, item.caption);
+            default: return textBlock(item.content || '');
+        }
+    });
+}
 
 async function appendBlock(notion, parentId, block) {
     const res = await notion.blocks.children.append({
@@ -179,31 +263,6 @@ async function createHomePage(rootPageId, notion) {
     // Spacer
     await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
 
-    // Sub Pages Section
-    await appendBlock(notion, page.id, heading2("Sub Pages"));
-
-    console.log("   > Creating Sub Pages (About, Contact)...");
-
-    // Create pages as children of Home Page. 
-    // Since we are creating them now, they will be appended to the page content,
-    // which puts them right after the "Sub Pages" heading.
-    await notion.pages.create({
-        parent: { page_id: page.id },
-        properties: { title: { title: [{ text: { content: 'About' } }] } },
-        icon: { type: "emoji", emoji: "👋" },
-        children: [heading1("About Me"), textBlock("I am a developer who loves building things.")]
-    });
-
-    await notion.pages.create({
-        parent: { page_id: page.id },
-        properties: { title: { title: [{ text: { content: 'Contact' } }] } },
-        icon: { type: "emoji", emoji: "📬" },
-        children: [heading1("Get in Touch"), textBlock("Email me at hello@example.com")]
-    });
-
-    // Spacer
-    await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
-
     // Gallery Section (Added below Hero as requested)
     const galleryDBId = await createInlineConfigDB(notion, page.id, "Gallery Settings");
     console.log("   > Seeding Gallery Config data...");
@@ -224,6 +283,34 @@ async function createHomePage(rootPageId, notion) {
     const blogDBId = await createInlineConfigDB(notion, page.id, "Blogs Settings");
     console.log("   > Seeding Blogs Config data...");
     await seedConfigDB(notion, blogDBId, dummyBlogConfig);
+}
+
+async function createNavbarPagesContainer(rootPageId, notion) {
+    console.log("\n📦 Creating Page: Navbar Pages (Navbar Pages Container)...");
+
+    // Create Page
+    const page = await notion.pages.create({
+        parent: { page_id: rootPageId },
+        properties: { title: { title: [{ text: { content: 'Navbar Pages' } }] } },
+        icon: { type: "emoji", emoji: "📑" },
+    });
+    console.log(`   ✅ Navbar Pages Container created (ID: ${page.id})`);
+
+    console.log("   > Creating Navbar Pages (About, Contact)...");
+
+    await notion.pages.create({
+        parent: { page_id: page.id },
+        properties: { title: { title: [{ text: { content: 'About' } }] } },
+        icon: { type: "emoji", emoji: "👋" },
+        children: [heading1("About Me"), textBlock("I am a developer who loves building things.")]
+    });
+
+    await notion.pages.create({
+        parent: { page_id: page.id },
+        properties: { title: { title: [{ text: { content: 'Contact' } }] } },
+        icon: { type: "emoji", emoji: "📬" },
+        children: [heading1("Get in Touch"), textBlock("Email me at hello@example.com")]
+    });
 }
 
 async function createProjects(rootPageId, notion) {
@@ -247,6 +334,7 @@ async function createProjects(rootPageId, notion) {
                     },
                 },
                 Description: { rich_text: {} },
+                Slug: { rich_text: {} },
                 Tools: { rich_text: {} },
                 Link: { url: {} },
                 Thumbnail: { files: {} }
@@ -264,7 +352,7 @@ async function createProjects(rootPageId, notion) {
 
     console.log(`   ✅ Projects Database created (ID: ${db.id})`);
 
-    const statuses = ['Draft', 'Reviewing', 'Published', 'Archived'];
+
     console.log("   > Seeding sample projects...");
 
     // Seed dummy projects (using the loop properly)
@@ -284,6 +372,7 @@ async function createProjects(rootPageId, notion) {
                 'Project Name': { title: [{ text: { content: p.title } }] },
                 Status: { select: { name: p.status } },
                 Description: { rich_text: [{ text: { content: p.description } }] },
+                Slug: { rich_text: [{ text: { content: p.slug || p.title.toLowerCase().replace(/ /g, '-') } }] },
                 Tools: { rich_text: [{ text: { content: p.tools } }] },
                 Link: { url: p.link },
                 Thumbnail: {
@@ -293,7 +382,8 @@ async function createProjects(rootPageId, notion) {
                         external: { url: p.image }
                     }] : []
                 }
-            }
+            },
+            children: buildBlocks(p.content)
         });
         console.log(`     - Created '${p.status}' project: ${p.title}`);
     }
@@ -319,7 +409,8 @@ async function createBlogs(rootPageId, notion) {
                         ]
                     }
                 },
-                Summary: { rich_text: {} },
+                Description: { rich_text: {} },
+                Slug: { rich_text: {} },
                 'Published Date': { date: {} },
                 Cover: { files: {} }
             }
@@ -349,7 +440,8 @@ async function createBlogs(rootPageId, notion) {
             properties: {
                 Title: { title: [{ text: { content: p.title } }] },
                 Status: { select: { name: p.status } },
-                Summary: { rich_text: [{ text: { content: p.summary } }] },
+                Description: { rich_text: [{ text: { content: p.description } }] },
+                Slug: { rich_text: [{ text: { content: p.slug || p.title.toLowerCase().replace(/ /g, '-') } }] },
                 'Published Date': { date: { start: p.date } },
                 Cover: {
                     files: p.coverImage ? [{
@@ -361,7 +453,7 @@ async function createBlogs(rootPageId, notion) {
             },
             children: [
                 heading1(p.title),
-                textBlock(p.content)
+                ...buildBlocks(p.content)
             ]
         });
         console.log(`     - Created '${p.status}' blog: ${p.title}`);
@@ -378,6 +470,8 @@ async function createGallery(rootPageId, notion) {
         initial_data_source: {
             properties: {
                 Name: { title: {} },
+                Order: { number: { format: 'number' } },
+                Slug: { rich_text: {} },
                 Image: { files: {} },
                 Link: { url: {} }
             }
@@ -401,6 +495,8 @@ async function createGallery(rootPageId, notion) {
             icon: { type: "emoji", emoji: "🎨" },
             properties: {
                 Name: { title: [{ text: { content: item.name } }] },
+                Order: { number: item.order || 0 },
+                Slug: { rich_text: [{ text: { content: item.slug || item.name.toLowerCase().replace(/ /g, '-') } }] },
                 Link: { url: item.link || null },
                 Image: {
                     files: item.image ? [{
@@ -409,7 +505,8 @@ async function createGallery(rootPageId, notion) {
                         external: { url: item.image }
                     }] : []
                 }
-            }
+            },
+            children: buildBlocks(item.content)
         });
         console.log(`     - Created gallery item: ${item.name}`);
     }

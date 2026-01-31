@@ -1,11 +1,9 @@
+
 import { Client } from '@notionhq/client';
 import { NotionToMarkdown } from 'notion-to-md';
 import fs from 'fs/promises';
-import { existsSync, createWriteStream } from 'fs';
-import { pipeline } from 'stream/promises';
 import path from 'path';
 import dotenv from 'dotenv';
-import https from 'https';
 
 // Load .env
 dotenv.config({ path: '.env' });
@@ -35,6 +33,14 @@ async function ensureDir(dir) {
 async function downloadImage(url, filename) {
     if (!url) return '';
     try {
+        // Let's download every time for now to ensure freshness.
+
+        // Define path for images (kept public for serving)
+        // NOTE: If we want images inside notion_state too, we'd need to copy them or serve from there.
+        // For Next.js public folder is best for static serving. Let's keep images in public/images for now
+        // as that is standard for Next.js SSG. 
+        // IF the user wanted EVERYTHING in notion_state, we'd need a way to serve it. 
+        // Assuming user means CONTENT and DATA json/md files.
         await ensureDir('public/images');
         const filepath = path.join('public/images', filename);
 
@@ -46,18 +52,44 @@ async function downloadImage(url, filename) {
         // NOTE: In a real app, you might check if the file exists and is recent, or hash the URL.
 
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+        if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText} `);
 
         const buffer = Buffer.from(await response.arrayBuffer());
         await fs.writeFile(filepath, buffer);
 
-        console.log(`     -> Downloaded: ${filename}`);
+        console.log(`     -> Downloaded: ${filename} `);
         return `/images/${filename}`;
     } catch (error) {
-        console.error(`     ! Failed to download ${filename}:`, error.message);
+        console.error(`     ! Failed to download ${filename}: `, error.message);
         return url; // Fallback to original URL
     }
 }
+
+// Custom Transformer for Content Images
+n2m.setCustomTransformer('image', async (block) => {
+    const { image } = block;
+    const url = image.file?.url || image.external?.url;
+    const caption = image.caption ? image.caption.map(c => c.plain_text).join("") : "";
+
+    if (!url) {
+        return "";
+    }
+
+    try {
+        // Extract extension or default to .jpg
+        // Notion URLs often end with path/to/file.png?query
+        const urlBase = url.split('?')[0];
+        const ext = path.extname(urlBase) || '.jpg';
+        const filename = `content-${block.id}${ext}`;
+
+        const localUrl = await downloadImage(url, filename);
+
+        return `![${caption}](${localUrl})`;
+    } catch (e) {
+        console.warn(`    ! Failed to transform/download content image ${block.id}: ${e.message}`);
+        return `![${caption}](${url})`; // Fallback to remote URL
+    }
+});
 
 // Data Extractors
 // Pagination Helpers
@@ -75,7 +107,7 @@ async function fetchAllChildren(blockId) {
     return results;
 }
 
-async function fetchAllDatabasePages(databaseId, filter) {
+async function fetchAllDatabasePages(databaseId, filter, sorts) {
     if (!databaseId) {
         console.warn("   ! fetchAllDatabasePages called with missing ID");
         return [];
@@ -93,6 +125,7 @@ async function fetchAllDatabasePages(databaseId, filter) {
             start_cursor: cursor,
         };
         if (filter) body.filter = filter;
+        if (sorts) body.sorts = sorts;
 
         const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}/query`, {
             method: 'POST',
@@ -190,8 +223,8 @@ async function syncConfig() {
         info: siteInfo
     };
 
-    await ensureDir('data');
-    await fs.writeFile('data/site.json', JSON.stringify(configData, null, 2));
+    await ensureDir('notion_state/data');
+    await fs.writeFile('notion_state/data/site.json', JSON.stringify(configData, null, 2));
 }
 
 async function syncHomePage() {
@@ -257,39 +290,8 @@ async function syncHomePage() {
     // Save order
     sections.section_order = sectionOrder;
 
-    await ensureDir('data');
-    await fs.writeFile('data/home.json', JSON.stringify(sections, null, 2));
-
-    // Sync Sub Pages (Children of Home Page that are pages)
-    console.log("   > Syncing Sub Pages...");
-    const homeChildren = await fetchAllChildren(homePageId);
-    for (const block of homeChildren) {
-        if (block.type === 'child_page') {
-            const pageId = block.id;
-            const title = block.child_page.title;
-            const slug = slugify(title);
-
-            console.log(`     - Fetching page: ${title}`);
-            const mdBlocks = await n2m.pageToMarkdown(pageId);
-            const mdString = n2m.toMarkdownString(mdBlocks);
-
-            // Simple frontmatter
-            const frontmatter = {
-                title,
-                date: new Date().toISOString(),
-                menu: "main"
-            };
-
-            const fileContent = `---
-${JSON.stringify(frontmatter, null, 2)}
----
-
-${mdString.parent}
-`;
-            await ensureDir('content');
-            await fs.writeFile(`content/${slug}.md`, fileContent);
-        }
-    }
+    await ensureDir('notion_state/data');
+    await fs.writeFile('notion_state/data/home.json', JSON.stringify(sections, null, 2));
 }
 
 async function findFullPageDb(name) {
@@ -313,12 +315,12 @@ async function syncProjects() {
         }
     });
 
-    await ensureDir('content/projects');
+    await ensureDir('notion_state/content/projects');
 
     for (const page of pages) {
         const props = page.properties;
         const title = props['Project Name']?.title?.[0]?.plain_text || 'Untitled';
-        const slug = slugify(title);
+        const slug = props.Slug?.rich_text?.[0]?.plain_text || slugify(title);
 
         const rawThumb = props.Thumbnail?.files?.[0]?.file?.url || props.Thumbnail?.files?.[0]?.external?.url;
         let thumbnail = '';
@@ -328,6 +330,7 @@ async function syncProjects() {
         }
 
         const frontmatter = {
+            slug,
             title,
             date: page.created_time,
             description: props.Description?.rich_text?.[0]?.plain_text || '',
@@ -336,14 +339,17 @@ async function syncProjects() {
             thumbnail,
         };
 
+        const mdBlocks = await n2m.pageToMarkdown(page.id);
+        const mdString = n2m.toMarkdownString(mdBlocks);
+
         const mdContent = `---
 ${JSON.stringify(frontmatter, null, 2)}
 ---
-`;
-        // Projects in this model imply just cards, but if they have content we can fetch it.
-        // Skipping block content for now as per "card" design, but can be added via n2m.toMarkdown
 
-        await fs.writeFile(`content/projects/${slug}.md`, mdContent);
+${mdString.parent}
+`;
+
+        await fs.writeFile(`notion_state/content/projects/${slug}.md`, mdContent);
     }
 }
 
@@ -362,12 +368,12 @@ async function syncBlogs() {
         }
     });
 
-    await ensureDir('content/blogs');
+    await ensureDir('notion_state/content/blogs');
 
     for (const page of pages) {
         const props = page.properties;
         const title = props.Title?.title?.[0]?.plain_text || 'Untitled';
-        const slug = slugify(title);
+        const slug = props.Slug?.rich_text?.[0]?.plain_text || slugify(title);
 
         const rawCover = props.Cover?.files?.[0]?.file?.url || props.Cover?.files?.[0]?.external?.url;
         let coverUrl = '';
@@ -377,9 +383,10 @@ async function syncBlogs() {
         }
 
         const frontmatter = {
+            slug,
             title,
             date: props['Published Date']?.date?.start || page.created_time,
-            summary: props.Summary?.rich_text?.[0]?.plain_text || '',
+            description: props.Description?.rich_text?.[0]?.plain_text || '',
             cover: {
                 image: coverUrl,
                 alt: title
@@ -395,7 +402,7 @@ ${JSON.stringify(frontmatter, null, 2)}
 
 ${mdString.parent}
 `;
-        await fs.writeFile(`content/blogs/${slug}.md`, fileContent);
+        await fs.writeFile(`notion_state/content/blogs/${slug}.md`, fileContent);
     }
 }
 
@@ -407,14 +414,19 @@ async function syncGallery() {
         return;
     }
 
-    const pages = await fetchAllDatabasePages(dbId);
+    const pages = await fetchAllDatabasePages(dbId, undefined, [
+        {
+            property: 'Order',
+            direction: 'ascending'
+        }
+    ]);
 
-    await ensureDir('content/gallery');
+    await ensureDir('notion_state/content/gallery');
 
     for (const page of pages) {
         const props = page.properties;
         const name = props.Name?.title?.[0]?.plain_text || 'Untitled';
-        const slug = slugify(name);
+        const slug = props.Slug?.rich_text?.[0]?.plain_text || slugify(name);
 
         const rawImage = props.Image?.files?.[0]?.file?.url || props.Image?.files?.[0]?.external?.url;
         let imageUrl = '';
@@ -425,18 +437,65 @@ async function syncGallery() {
 
         const link = props.Link?.url || '';
 
+        const order = props.Order?.number || 0;
+
         const frontmatter = {
+            slug,
             name,
             image: imageUrl,
-            link
+            link,
+            order
         };
 
-        // Galleries are usually just visual, but we'll save as MD for consistency
+        const mdBlocks = await n2m.pageToMarkdown(page.id);
+        const mdString = n2m.toMarkdownString(mdBlocks);
+
         const fileContent = `---
 ${JSON.stringify(frontmatter, null, 2)}
 ---
+
+${mdString.parent}
 `;
-        await fs.writeFile(`content/gallery/${slug}.md`, fileContent);
+        await fs.writeFile(`notion_state/content/gallery/${slug}.md`, fileContent);
+    }
+}
+
+async function syncNavbarPagesContainer() {
+    console.log("Syncing Navbar Pages Container...");
+    const pagesContainerId = await getPageByName(ROOT_PAGE_ID, "Navbar Pages");
+    if (!pagesContainerId) {
+        console.warn("Navbar Pages Container not found!");
+        return;
+    }
+
+    console.log("   > Syncing Navbar Pages...");
+    const children = await fetchAllChildren(pagesContainerId);
+    for (const block of children) {
+        if (block.type === 'child_page') {
+            const pageId = block.id;
+            const title = block.child_page.title;
+            const slug = slugify(title);
+
+            console.log(`     - Fetching page: ${title}`);
+            const mdBlocks = await n2m.pageToMarkdown(pageId);
+            const mdString = n2m.toMarkdownString(mdBlocks);
+
+            // Simple frontmatter
+            const frontmatter = {
+                title,
+                date: new Date().toISOString(),
+                menu: "main"
+            };
+
+            const fileContent = `---
+${JSON.stringify(frontmatter, null, 2)}
+---
+
+${mdString.parent}
+`;
+            await ensureDir('notion_state/content/navbarPages');
+            await fs.writeFile(`notion_state/content/navbarPages/${slug}.md`, fileContent);
+        }
     }
 }
 
@@ -444,6 +503,7 @@ async function main() {
     try {
         await syncConfig();
         await syncHomePage();
+        await syncNavbarPagesContainer();
         await syncProjects();
         await syncBlogs();
         await syncGallery();

@@ -5,6 +5,7 @@ import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkHtml from 'remark-html';
 import remarkGfm from 'remark-gfm';
+import Image from 'next/image';
 import { format } from 'date-fns';
 
 export async function generateStaticParams() {
@@ -63,14 +64,15 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
                         height: { base: '200px', md: '400px' },
                         borderRadius: '12px',
                         overflow: 'hidden',
+                        position: 'relative', // generic Image with fill needs parent relative
                     })}
                 >
-                    <img
+                    <Image
                         src={post.cover.image}
                         alt={post.cover.alt || post.title}
+                        fill
+                        priority
                         className={css({
-                            width: '100%',
-                            height: '100%',
                             objectFit: 'cover',
                         })}
                     />

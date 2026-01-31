@@ -1,8 +1,9 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { css } from '@/styled-system/css';
 import { flex, stack } from '@/styled-system/patterns';
 import { ThemeToggle } from './ThemeToggle';
-import { getHomeData, getPages } from '@/lib/data';
+import { getHomeData, getNavbarPages } from '@/lib/data';
 import { FaGithub, FaLinkedin, FaTwitter, FaYoutube, FaFacebook, FaTwitch, FaEnvelope } from 'react-icons/fa';
 import { RiInstagramFill } from 'react-icons/ri';
 
@@ -32,6 +33,7 @@ const profileImageContainerStyle = css({
     borderRadius: 'full',
     overflow: 'hidden',
     border: '2px solid token(colors.border.primary)',
+    position: 'relative',
 });
 
 const profileImageStyle = css({
@@ -96,7 +98,7 @@ const footerStyle = flex({
 
 export async function Sidebar() {
     const homeData = getHomeData();
-    const pages = getPages();
+    const pages = getNavbarPages();
     const siteTitle = homeData.info?.site_title || 'Home';
     const hero = homeData.hero;
 
@@ -107,9 +109,10 @@ export async function Sidebar() {
                 <div className={profileSectionStyle}>
                     {hero.profile_image && (
                         <div className={profileImageContainerStyle}>
-                            <img
+                            <Image
                                 src={hero.profile_image}
                                 alt="Profile"
+                                fill
                                 className={profileImageStyle}
                             />
                         </div>
@@ -194,7 +197,7 @@ export async function Sidebar() {
             </div>
 
             <div className={footerStyle}>
-                <ThemeToggle />
+                <ThemeToggle defaultTheme={homeData.info?.default_color_mode as 'light' | 'dark'} />
             </div>
         </aside>
     );

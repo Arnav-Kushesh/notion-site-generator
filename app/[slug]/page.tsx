@@ -1,18 +1,15 @@
-import { getPages } from '@/lib/data';
+import { getNavbarPages, getPost } from '@/lib/data';
 import { css } from '@/styled-system/css';
 import { notFound } from 'next/navigation';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkHtml from 'remark-html';
 import { container } from '@/styled-system/patterns';
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
 
 import { Metadata } from 'next';
 
 export async function generateStaticParams() {
-    const pages = getPages();
+    const pages = getNavbarPages();
     return pages.map((page) => ({
         slug: page.slug,
     }));
@@ -20,7 +17,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
-    const page = await getPageContent(slug);
+    const page = getPost(slug, 'navbarPages');
 
     if (!page) {
         return {
@@ -30,31 +27,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     return {
         title: page.title,
-        description: page.data.description || `${page.title} - Notion Portfolio`,
-    };
-}
-
-async function getPageContent(slug: string) {
-    const contentDirectory = path.join(process.cwd(), 'content');
-    const fullPath = path.join(contentDirectory, `${slug}.md`);
-
-    if (!fs.existsSync(fullPath)) {
-        return null;
-    }
-
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
-
-    return {
-        title: data.title,
-        content,
-        data
+        description: page.description || `${page.title} - Notion Portfolio`,
     };
 }
 
 export default async function GenericPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const page = await getPageContent(slug);
+    const page = getPost(slug, 'navbarPages');
 
     if (!page) {
         notFound();
