@@ -12,7 +12,7 @@ interface BlogListProps {
 
 export function BlogList({ blogs, title = 'Latest Writings', viewType = 'List', showImages = true }: BlogListProps & { showImages?: boolean }) {
     return (
-        <section className={css({ py: '40px' })}>
+        <section>
             <h2
                 className={css({
                     fontSize: '1.5rem',

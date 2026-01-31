@@ -53,6 +53,7 @@ npm install
 # Create a .env.local file with:
 # NOTION_API_KEY=secret_...
 # ROOT_PAGE_ID=...
+# NEXT_PUBLIC_BASE_URL=https://your-domain.com (Optional: for sitemap generation)
 
 # 3. Seed Notion (One-time setup)
 # This creates the necessary databases in your Notion page.
@@ -82,10 +83,16 @@ This ensures that your Notion content is synced before the build process runs.
 
 The **ROOT_PAGE_ID** page will contain the following structure after running `npm run prepare`:
 
-1.  **Config** (Database): Global site settings (title, description, keywords).
+1.  **Config** (Database): Global site settings. Values can be Text or Media (Files).
+    -   `site_title`: Text
+    -   `site_description`: Text
+    -   `favicon`: Media (Upload an image) or URL
+    -   `keywords`: Text
 2.  **Home Page** (Page):
     -   **Hero Settings**: Profile bio and layout.
+        -   Supported Socials: `twitter`, `github`, `linkedin`, `email`, `instagram`, `youtube`, `facebook`, `twitch`.
     -   **Section Settings**: Toggle visibility of Projects/Blogs/Gallery.
+    -   **Blogs Settings**: Configure View Type (List/Card) and toggle `show_images`.
 3.  **Projects** (Database): Kanban board for your portfolio items.
     -   Properties: `Project Name`, `Status`, `Description`, `Tools` (formerly Tech), `Link`, `Thumbnail`.
 4.  **Blogs** (Database): Kanban board for your writings.

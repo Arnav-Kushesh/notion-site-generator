@@ -1,0 +1,31 @@
+{
+  "hero": {
+    "long_bio": "This is a longer bio paragraph about yourself.",
+    "linkedin": "https://linkedin.com",
+    "tagline": "Welcome to my portfolio based on Notion.",
+    "profile_image": "/images/hero-profile-image.jpg",
+    "location": "San Francisco, CA",
+    "instagram": "https://instagram.com",
+    "facebook": "https://facebook.com",
+    "email": "hello@example.com",
+    "twitter": "https://twitter.com",
+    "youtube": "https://youtube.com",
+    "github": "https://github.com",
+    "twitch": "https://twitch.tv"
+  },
+  "projects": {
+    "title": "My Projects",
+    "show_section": "true",
+    "view_type": "Grid"
+  },
+  "blogs": {
+    "title": "Latest Writings",
+    "view_type": "List",
+    "show_images": "true",
+    "show_section": "true"
+  },
+  "gallery": {
+    "show_section": "true",
+    "title": "Gallery"
+  }
+}

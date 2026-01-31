@@ -11,7 +11,7 @@ interface ProjectListProps {
 
 export function ProjectList({ projects, title = 'Projects', viewType = 'Grid' }: ProjectListProps) {
     return (
-        <section className={css({ py: '40px' })}>
+        <section>
             <h2
                 className={css({
                     fontSize: '1.5rem',

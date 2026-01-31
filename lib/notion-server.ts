@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { Client } from '@notionhq/client';
+import https from 'https';
 
 export const notion = new Client({
     auth: process.env.NOTION_API_KEY,
@@ -41,12 +42,50 @@ async function fetchConfigKV(dbId: string) {
 
         const val = props.Value?.rich_text?.[0]?.plain_text || '';
 
-        // Naivety: We don't handle file downloads here for "Refresh" to keep it fast.
-        // If "Value" is empty and there's a file, we could potentially keep the existing local value 
-        // or just fetch the raw URL. For now, let's treat text as source of truth.
-        data[key] = val;
+        // Handle Media Files (e.g. Favicon)
+        let mediaUrl = '';
+        if (props.Media?.files?.length > 0) {
+            const fileObj = props.Media.files[0];
+            mediaUrl = fileObj.file?.url || fileObj.external?.url || '';
+        }
+
+        // If we have a media URL, we should try to download it if it's not external/static?
+        // For DevMode/SSR, downloading on every fetch might be slow.
+        // But for "Refresh", we want it.
+        // Let's implement a basic download if it's a file.
+
+        if (mediaUrl) {
+            // Check if it looks like a file we should download
+            const slug = key.toLowerCase().replace(/[^a-z0-9]/g, '-');
+            const ext = path.extname(mediaUrl.split('?')[0]) || '.jpg';
+            const filename = `config-${slug}${ext}`;
+            const localPath = await downloadImage(mediaUrl, filename);
+            data[key] = localPath; // Store local path as value
+        } else {
+            data[key] = val;
+        }
     }
     return data;
+}
+
+async function downloadImage(url: string, filename: string): Promise<string> {
+    const publicDir = path.join(process.cwd(), 'public', 'images');
+    if (!fs.existsSync(publicDir)) {
+        fs.mkdirSync(publicDir, { recursive: true });
+    }
+    const filepath = path.join(publicDir, filename);
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText}`);
+        const buffer = Buffer.from(await response.arrayBuffer());
+        fs.writeFileSync(filepath, buffer);
+        console.log(`Downloaded ${filename}`);
+        return `/images/${filename}`;
+    } catch (error: any) {
+        console.error(`Failed to download ${filename}:`, error.message);
+        return url; // Fallback to remote URL
+    }
 }
 
 // Main function to pull config and update local files

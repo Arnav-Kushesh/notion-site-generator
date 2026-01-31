@@ -174,13 +174,7 @@ async function createHomePage(rootPageId, notion) {
     console.log("   > Seeding Hero data...");
     await seedConfigDB(notion, heroDBId, dummyHero);
 
-    // Spacer
-    await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
 
-    // Gallery Section (Added below Hero as requested)
-    const galleryDBId = await createInlineConfigDB(notion, page.id, "Gallery Settings");
-    console.log("   > Seeding Gallery Config data...");
-    await seedConfigDB(notion, galleryDBId, dummyGalleryConfig);
 
     // Spacer
     await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
@@ -206,6 +200,14 @@ async function createHomePage(rootPageId, notion) {
         icon: { type: "emoji", emoji: "📬" },
         children: [heading1("Get in Touch"), textBlock("Email me at hello@example.com")]
     });
+
+    // Spacer
+    await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
+
+    // Gallery Section (Added below Hero as requested)
+    const galleryDBId = await createInlineConfigDB(notion, page.id, "Gallery Settings");
+    console.log("   > Seeding Gallery Config data...");
+    await seedConfigDB(notion, galleryDBId, dummyGalleryConfig);
 
     // Spacer
     await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });

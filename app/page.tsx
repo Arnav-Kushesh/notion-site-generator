@@ -36,12 +36,14 @@ export default function Home() {
             )}
 
             {homeData.blogs.show_section !== 'false' && (
-                <BlogList
-                    blogs={blogs}
-                    title={homeData.blogs.title}
-                    viewType={homeData.blogs.view_type}
-                    showImages={homeData.blogs.show_images === 'true'}
-                />
+                <div id="blogs" className={container({ py: '40px' })}>
+                    <BlogList
+                        blogs={blogs}
+                        title={homeData.blogs.title}
+                        viewType={homeData.blogs.view_type}
+                        showImages={homeData.blogs.show_images === 'true'}
+                    />
+                </div>
             )}
         </main>
     );

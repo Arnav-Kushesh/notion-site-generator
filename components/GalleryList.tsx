@@ -12,7 +12,7 @@ export function GalleryList({ items, title = 'Gallery' }: GalleryListProps) {
     if (items.length === 0) return null;
 
     return (
-        <section className={css({ py: '40px' })}>
+        <section>
             <h2
                 className={css({
                     fontSize: '1.5rem',

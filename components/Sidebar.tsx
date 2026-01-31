@@ -4,6 +4,7 @@ import { flex, stack } from '@/styled-system/patterns';
 import { ThemeToggle } from './ThemeToggle';
 import { getHomeData, getPages } from '@/lib/data';
 import { FaGithub, FaLinkedin, FaTwitter, FaInstagram, FaYoutube, FaFacebook, FaTwitch, FaEnvelope } from 'react-icons/fa';
+import { RiInstagramFill } from 'react-icons/ri';
 
 export async function Sidebar() {
     const homeData = getHomeData();
@@ -66,7 +67,7 @@ export async function Sidebar() {
                     </div>
 
                     {/* Social Icons (Compact) */}
-                    <div className={flex({ gap: '12px', justify: 'center' })}>
+                    <div className={flex({ gap: '12px', justify: 'center', wrap: 'wrap' })}>
                         {hero.twitter && (
                             <a href={hero.twitter} target="_blank" rel="noreferrer" className={iconStyle}>
                                 <FaTwitter size={18} />
@@ -89,7 +90,7 @@ export async function Sidebar() {
                         )}
                         {hero.instagram && (
                             <a href={hero.instagram} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <FaInstagram size={18} />
+                                <RiInstagramFill size={18} />
                             </a>
                         )}
                         {hero.youtube && (

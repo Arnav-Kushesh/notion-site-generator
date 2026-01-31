@@ -25,6 +25,9 @@ export default async function RootLayout({
 
     return (
         <html lang="en" suppressHydrationWarning>
+            <head>
+                {homeData.info?.favicon && <link rel="icon" href={homeData.info.favicon} sizes="any" />}
+            </head>
             <body className={`${inter.className} ${css({ bg: 'bg.primary', color: 'text.primary' })}`}>
                 <script
                     dangerouslySetInnerHTML={{

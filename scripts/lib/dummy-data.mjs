@@ -1,7 +1,7 @@
 export const dummySiteInfo = [
   { field: 'site_title', value: 'My Notion Portfolio' },
   { field: 'site_description', value: 'A portfolio site built with Next.js and Notion.' },
-  { field: 'favicon', value: 'https://example.com/favicon.ico' },
+  { field: 'favicon', value: '', media: 'https://cdn-icons-png.flaticon.com/512/3233/3233483.png' }, // Placeholder favicon
   { field: 'keywords', value: 'portfolio, notion, nextjs' },
   { field: 'og_image', value: 'https://example.com/og-image.png' },
   { field: 'sidebar_navigation', value: 'false' },
@@ -17,6 +17,10 @@ export const dummyHero = [
   { field: 'twitter', value: 'https://twitter.com' },
   { field: 'github', value: 'https://github.com' },
   { field: 'linkedin', value: 'https://linkedin.com' },
+  { field: 'instagram', value: 'https://instagram.com' },
+  { field: 'youtube', value: 'https://youtube.com' },
+  { field: 'facebook', value: 'https://facebook.com' },
+  { field: 'twitch', value: 'https://twitch.tv' },
 ];
 
 export const dummyProjectConfig = [
@@ -29,6 +33,7 @@ export const dummyBlogConfig = [
   { field: 'title', value: 'Latest Writings' },
   { field: 'show_section', value: 'true' },
   { field: 'view_type', value: 'List' },
+  { field: 'show_images', value: 'true' },
 ];
 
 export const dummyGalleryConfig = [

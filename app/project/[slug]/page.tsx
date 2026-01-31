@@ -69,6 +69,28 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             </Link>
 
             <article>
+                {project.thumbnail && (
+                    <div
+                        className={css({
+                            mb: '30px',
+                            borderRadius: '12px',
+                            overflow: 'hidden',
+                            boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
+                            border: '1px solid token(colors.border.default)',
+                        })}
+                    >
+                        <img
+                            src={project.thumbnail}
+                            alt={project.title}
+                            className={css({
+                                width: '100%',
+                                height: 'auto',
+                                display: 'block',
+                            })}
+                        />
+                    </div>
+                )}
+
                 <div className={css({ mb: '40px' })}>
                     <h1
                         className={css({
@@ -94,30 +116,33 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
                 </div>
 
-                {project.thumbnail && (
-                    <div
-                        className={css({
-                            mb: '50px',
-                            borderRadius: '12px',
-                            overflow: 'hidden',
-                            boxShadow: '0 8px 30px rgba(0,0,0,0.1)',
-                            border: '1px solid token(colors.border.default)',
-                        })}
-                    >
-                        <img
-                            src={project.thumbnail}
-                            alt={project.title}
-                            className={css({
-                                width: '100%',
-                                height: 'auto',
-                                display: 'block',
-                            })}
-                        />
+                {project.tools && (
+                    <div className={flex({ gap: '10px', wrap: 'wrap', mb: '30px' })}>
+                        {project.tools.split(',').map((tool) => (
+                            <span
+                                key={tool}
+                                className={css({
+                                    fontSize: '0.9rem',
+                                    fontWeight: '500',
+                                    color: 'text.primary',
+                                    bg: 'bg.secondary',
+                                    px: '12px',
+                                    py: '6px',
+                                    borderRadius: 'full',
+                                    border: '1px solid token(colors.border.secondary)',
+                                })}
+                            >
+                                {tool.trim()}
+                            </span>
+                        ))}
                     </div>
                 )}
-
+                <br />
                 <div className={flex({ gap: '16px', wrap: 'wrap', mb: '40px' })}>
+
+
                     {project.link && (
+
                         <a
                             href={project.link}
                             target="_blank"

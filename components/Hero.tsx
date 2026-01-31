@@ -1,7 +1,8 @@
 import { css } from '@/styled-system/css';
 import { flex } from '@/styled-system/patterns';
-import { Github, Linkedin, Mail, Twitter, Instagram, Youtube, Facebook, Twitch } from 'lucide-react';
+import { FaGithub, FaLinkedin, FaTwitter, FaInstagramSquare, FaYoutube, FaFacebook, FaTwitch, FaEnvelope } from 'react-icons/fa';
 import { HomeData } from '@/lib/data';
+import { RiInstagramFill } from 'react-icons/ri';
 
 export function Hero({ hero }: { hero: HomeData['hero'] }) {
     const alignment = hero.alignment || 'center';
@@ -57,9 +58,9 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
                             href={hero.twitter}
                             target="_blank"
                             rel="noreferrer"
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Twitter size={24} />
+                            <FaTwitter size={24} />
                         </a>
                     )}
                     {hero.github && (
@@ -67,9 +68,9 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
                             href={hero.github}
                             target="_blank"
                             rel="noreferrer"
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Github size={24} />
+                            <FaGithub size={24} />
                         </a>
                     )}
                     {hero.linkedin && (
@@ -77,17 +78,17 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
                             href={hero.linkedin}
                             target="_blank"
                             rel="noreferrer"
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Linkedin size={24} />
+                            <FaLinkedin size={24} />
                         </a>
                     )}
                     {hero.email && (
                         <a
                             href={`mailto:${hero.email}`}
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Mail size={24} />
+                            <FaEnvelope size={24} />
                         </a>
                     )}
                     {hero.instagram && (
@@ -95,9 +96,9 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
                             href={hero.instagram}
                             target="_blank"
                             rel="noreferrer"
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Instagram size={24} />
+                            <RiInstagramFill size={24} />
                         </a>
                     )}
                     {hero.youtube && (
@@ -105,9 +106,9 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
                             href={hero.youtube}
                             target="_blank"
                             rel="noreferrer"
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Youtube size={24} />
+                            <FaYoutube size={24} />
                         </a>
                     )}
                     {hero.facebook && (
@@ -115,9 +116,9 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
                             href={hero.facebook}
                             target="_blank"
                             rel="noreferrer"
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Facebook size={24} />
+                            <FaFacebook size={24} />
                         </a>
                     )}
                     {hero.twitch && (
@@ -125,9 +126,9 @@ export function Hero({ hero }: { hero: HomeData['hero'] }) {
                             href={hero.twitch}
                             target="_blank"
                             rel="noreferrer"
-                            className={css({ color: 'text.secondary', _hover: { color: 'text.primary' } })}
+                            className={iconStyle}
                         >
-                            <Twitch size={24} />
+                            <FaTwitch size={24} />
                         </a>
                     )}
                 </div>
