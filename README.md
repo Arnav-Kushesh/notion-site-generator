@@ -17,14 +17,16 @@ Swan is a powerful static portfolio website generator that uses Notion as your h
 
 ## Features
 
-- **Dynamic Content Management**: Manage your entire site—projects, blog posts, configurations—directly in Notion.
-- **Static Site Generation (SSG)**: Fast, secure, and SEO-friendly. Content is fetched at build time.
-- **Kanban Workflows**:
-    -   **Projects**: Move items from "Draft" -> "Reviewing" -> "Published".
-    -   **Blog**: Write draft posts and publish them simply by dragging a card.
-- **Real-time Theming**: Customize colors, fonts, and layout options directly from Notion or via the built-in DevTools.
-- **Zero-Config Image Optimization**: Images from Notion are automatically optimized and served efficiently.
-- **Resilient**: Builds with fallback data if Notion is unreachable or keys are missing.
+-   **Dynamic Content Management**: Manage your entire site—projects, blog posts, configurations—directly in Notion.
+-   **Static Site Generation (SSG)**: Fast, secure, and SEO-friendly. Content is fetched at build time.
+-   **Automatic SEO**: Built-in `sitemap.xml` generation and meta tag optimization.
+-   **Rich Portfolio Features**:
+    -   **Projects**: Kanban workflow (Draft -> Published) with support for tech stack tags ("Tools") and detailed views.
+    -   **Blog**: Write posts in Notion with separate "Show Images" toggle for list views.
+    -   **Gallery**: A dedicated section for visual assets.
+-   **Social Media Ready**: First-class support for Twitter, GitHub, LinkedIn, Instagram, YouTube, Facebook, Twitch, and Email.
+-   **Zero-Config Image Optimization**: Images from Notion are automatically optimized and served efficiently.
+-   **One-Click Deployment**: Pre-configured for seamless deployment to Vercel and Netlify.
 
 ---
 
@@ -104,7 +106,7 @@ The **ROOT_PAGE_ID** page will contain the following structure after running `np
 
 ## Design Decisions
 
-### Why use static sites rather than SSR?
+### Why use SSG rather than SSR?
 Static sites offer superior performance and stability. By generating pages and optimizing images at build time, we ensure instant load times and eliminate the risk of hitting Notion's API rate limits during traffic spikes. Your site stays fast and online, regardless of Notion's status.
 
 ### Why use Next.js rather than Astro or Hugo?
