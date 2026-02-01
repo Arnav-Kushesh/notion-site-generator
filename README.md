@@ -11,7 +11,7 @@
 
 # Swan
 
-> **S**tatic **W**ebsite **A**uthored in **N**otion
+> **S**tatic **W**ebsite **A**uthored in **N**otion (Codebase Audit & Refactored: Feb 2026)
 
 Swan is a powerful static portfolio website generator that uses Notion as your headless CMS. It combines the ease of editing in Notion with the performance and SEO benefits of a static site built with Next.js.
 
@@ -21,9 +21,10 @@ Swan is a powerful static portfolio website generator that uses Notion as your h
 -   **Static Site Generation (SSG)**: Fast, secure, and SEO-friendly. Content is fetched at build time.
 -   **Automatic SEO**: Built-in `sitemap.xml` generation and meta tag optimization.
 -   **Rich Portfolio Features**:
-    -   **Projects**: Kanban workflow (Draft -> Published) with support for tech stack tags ("Tools") and detailed views.
+    -   **Projects**: Kanban workflow (Draft -> Published) with support for tech stack tags ("Tools").
     -   **Blog**: Write posts in Notion with separate "Show Images" toggle for list views.
     -   **Gallery**: A dedicated section for visual assets.
+    -   **View Switcher**: Users can toggle between List, Minimal List (Text-only), Grid, and Gallery views for any section.
 -   **Social Media Ready**: First-class support for Twitter, GitHub, LinkedIn, Instagram, YouTube, Facebook, Twitch, and Email.
 -   **Dynamic Layout**: Reorder the "Projects", "Blog", and "Gallery" sections on your site simply by ensuring the order of their inline databases in Notion matches your desired layout.
 -   **Zero-Config Image Optimization**: Images from Notion are automatically optimized and served efficiently.
@@ -89,19 +90,21 @@ This ensures that your Notion content is synced before the build process runs.
 The **ROOT_PAGE_ID** page will contain the following structure after running `npm run prepare`:
 
 1.  **Config** (Database): Global site settings. Values can be Text or Media (Files).
-    -   `site_title`: Text
-    -   `site_description`: Text
+    -   `title`: Text
+    -   `description`: Text
     -   `favicon`: Media (Upload an image) or URL
     -   `keywords`: Text
     -   `og_image`: Media (Upload an image) or URL
     -   `sidebar_navigation`: Text ('true' or 'false')
     -   `default_color_mode`: Text ('light' or 'dark')
+    -   `logo`: Media (Upload an image) or URL
+    -   `tagline`: Text (e.g., "Software Engineer")
+    -   `social_*`: Text keys for social links (e.g., `social_github`, `social_twitter`)
 2.  **Home Page** (Page):
-    -   **Hero Settings**: Profile bio and layout.
-        -   Supported Socials: `twitter`, `github`, `linkedin`, `email`, `instagram`, `youtube`, `facebook`, `twitch`.
-    -   **Section Settings**: Toggle visibility of Projects/Blogs/Gallery.
-        -   **Ordering**: The vertical order of the *Projects*, *Blogs*, and *Gallery* sections on the website is determined by the order of their corresponding Inline Databases on this page. Drag and drop them to reorder.
-    -   **Blogs Settings**: Configure View Type (List/Card) and toggle `show_images`.
+    -   **Dynamic Architecture**: The Home Page is built from child databases (Sections).
+    -   **Info Sections** (Inline Database): Create databases with properties `Title`, `Description`, `Image`, `Link`, `View Type` to add content blocks (e.g., Hero, About).
+    -   **Dynamic Sections** (Inline Database): Create databases with properties `collection_name` (e.g., "Projects") and `view_type` (List, Minimal List, Card, Gallery) to embed your content collections.
+    -   **Ordering**: Reimagine your layout by simply dragging and dropping the databases on the Notion page.
 3.  **Navbar Pages** (Page): Container for sub-pages like About and Contact.
     -   Create standard Notion pages here to have them appear as sub-pages on your site (e.g. `/about`, `/contact`).
 4.  **Projects** (Database): Kanban board for your portfolio items.

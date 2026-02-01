@@ -1,8 +1,10 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { css } from '@/styled-system/css';
 import { flex, container } from '@/styled-system/patterns';
-import { ThemeToggle } from './ThemeToggle';
+import { SettingsMenu } from './SettingsMenu';
 import { getHomeData, getNavbarPages } from '@/lib/data';
+import { SocialIcons } from './SocialIcons';
 
 const navbarStyle = css({
     pos: 'fixed',
@@ -10,8 +12,8 @@ const navbarStyle = css({
     left: 0,
     w: '100%',
     zIndex: 100,
-    bg: 'rgba(255, 255, 255, 0.8)',
-    _dark: { bg: 'rgba(18, 18, 18, 0.8)' },
+    bg: 'bg.surface',
+    // _dark: { bg: 'rgba(18, 18, 18, 0.8)' }, // Remove transparency
     backdropFilter: 'blur(10px)',
     borderBottom: '1px solid token(colors.border.default)',
 });
@@ -45,17 +47,40 @@ const linkStyle = css({
 export async function Navbar() {
     const homeData = getHomeData();
     const pages = getNavbarPages();
-    const siteTitle = homeData.info?.site_title || 'Home';
+    const title = homeData.info?.title || 'Home';
+    const logo = homeData.info?.logo;
+    const showLogo = homeData.info?.disable_logo_in_topbar !== 'true';
 
     return (
         <nav className={navbarStyle}>
             <div className={navbarContainerStyle}>
-                <Link
-                    href="/"
-                    className={logoStyle}
-                >
-                    {siteTitle}
-                </Link>
+                {showLogo ? (
+                    <Link
+                        href="/"
+                        className={css({ display: 'flex', alignItems: 'center', gap: '2', textDecoration: 'none' })}
+                    >
+                        {logo ? (
+                            <div className={css({
+                                width: '32px',
+                                height: '32px',
+                                position: 'relative',
+                                borderRadius: 'full',
+                                overflow: 'hidden',
+                                border: '1px solid token(colors.border.subtle)'
+                            })}>
+                                <Image
+                                    src={logo}
+                                    alt={title}
+                                    fill
+                                    className={css({ objectFit: 'cover' })}
+                                />
+                            </div>
+                        ) : null}
+                        <span className={logoStyle}>{title}</span>
+                    </Link>
+                ) : (
+                    <div></div> /* Spacer */
+                )}
 
                 <div className={navLinksContainerStyle}>
                     <Link href="/" className={linkStyle}>
@@ -70,8 +95,13 @@ export async function Navbar() {
                             {page.title}
                         </Link>
                     ))}
-                    <div className={css({ ml: '10px' })}>
-                        <ThemeToggle defaultTheme={homeData.info?.default_color_mode as 'light' | 'dark'} />
+
+                    <div className={css({ display: { base: 'none', md: 'block' } })}>
+                        <SocialIcons config={homeData.info} />
+                    </div>
+
+                    <div className={css({ display: 'block' })}>
+                        <SettingsMenu variant="vertical" />
                     </div>
                 </div>
             </div>

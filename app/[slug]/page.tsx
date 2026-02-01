@@ -1,113 +1,52 @@
-import { getNavbarPages, getPost } from '@/lib/data';
-import { css } from '@/styled-system/css';
-import { notFound } from 'next/navigation';
-import { unified } from 'unified';
-import remarkParse from 'remark-parse';
-import remarkHtml from 'remark-html';
-import { container } from '@/styled-system/patterns';
 
+import { getNavbarPages, getNavbarPage } from '@/lib/data';
+import { processMarkdown } from '@/lib/markdown';
+import { postContentStyle } from '@/components/shared/post-styles';
+import { notFound } from 'next/navigation';
+import { css } from '@/styled-system/css';
 import { Metadata } from 'next';
 
+export const dynamicParams = false;
+
+// Generate params for Navbar Pages
 export async function generateStaticParams() {
     const pages = getNavbarPages();
-    return pages.map((page) => ({
-        slug: page.slug,
-    }));
+    return pages.map((page) => ({ slug: page.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
-    const page = getPost(slug, 'navbarPages');
-
-    if (!page) {
-        return {
-            title: 'Page Not Found',
-        };
-    }
-
+    // We treat this as a generic page from navbarPages
+    const post = getNavbarPage(slug);
+    if (!post) return {};
     return {
-        title: page.title,
-        description: page.description || `${page.title} - Notion Portfolio`,
+        title: post.title,
+        description: post.description,
     };
 }
 
-export default async function GenericPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
-    const page = getPost(slug, 'navbarPages');
+    const post = getNavbarPage(slug);
 
-    if (!page) {
+    if (!post) {
         notFound();
     }
 
-    const processedContent = await unified()
-        .use(remarkParse)
-        .use(remarkHtml)
-        .process(page.content);
-    const contentHtml = processedContent.toString();
+    const content = await processMarkdown(post.content);
 
     return (
-        <main className={container({ maxWidth: '4xl', py: '60px' })}>
-            <article>
-                <div className={css({ mb: '40px' })}>
-                    <h1
-                        className={css({
-                            fontSize: { base: '2.5rem', md: '3.5rem' },
-                            fontWeight: '800',
-                            lineHeight: '1.2',
-                            mb: '16px',
-                            color: 'text.primary',
-                        })}
-                    >
-                        {page.title}
-                    </h1>
-                </div>
+        <article className={css({ maxWidth: '800px', margin: '0 auto', padding: '40px 20px', minHeight: '60vh' })}>
+            <header className={css({ marginBottom: '40px', textAlign: 'center' })}>
+                <h1 className={css({ fontSize: '4xl', fontWeight: 'bold', marginBottom: '4' })}>
+                    {post.title}
+                </h1>
+            </header>
 
-                <div
-                    className={css({
-                        '& > *': { mb: '20px' },
-                        '& h2': {
-                            fontSize: '1.8rem',
-                            fontWeight: 'bold',
-                            mt: '40px',
-                            mb: '20px',
-                            color: 'text.primary',
-                        },
-                        '& h3': {
-                            fontSize: '1.4rem',
-                            fontWeight: 'bold',
-                            mt: '30px',
-                            mb: '16px',
-                            color: 'text.primary',
-                        },
-                        '& p': {
-                            fontSize: '1.1rem',
-                            lineHeight: '1.8',
-                            color: 'text.primary',
-                        },
-                        '& ul, & ol': {
-                            pl: '20px',
-                            ml: '20px',
-                            mb: '20px',
-                            listStyleType: 'disc',
-                            color: 'text.primary',
-                        },
-                        '& li': {
-                            mb: '8px',
-                        },
-                        '& a': {
-                            color: 'primary',
-                            textDecoration: 'underline',
-                            _hover: { opacity: 0.8 },
-                        },
-                        '& img': {
-                            borderRadius: '8px',
-                            maxWidth: '100%',
-                            height: 'auto',
-                        }
-                    })}
-                    dangerouslySetInnerHTML={{ __html: contentHtml }}
-                />
-            </article>
-        </main>
+            <div
+                className={postContentStyle}
+                dangerouslySetInnerHTML={{ __html: content }}
+            />
+        </article>
     );
 }

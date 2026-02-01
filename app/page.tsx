@@ -1,8 +1,6 @@
 import { getHomeData, getPosts, getGalleryItems } from '@/lib/data';
-import { Hero } from '@/components/Hero';
-import { ProjectList } from '@/components/ProjectList';
-import { BlogList } from '@/components/BlogList';
-import { GalleryList } from '@/components/GalleryList';
+import { InfoSection } from '@/components/InfoSection';
+import { DynamicSection } from '@/components/DynamicSection';
 import { css } from '@/styled-system/css';
 import { container } from '@/styled-system/patterns';
 
@@ -11,50 +9,35 @@ const sectionContainerStyle = container({ py: '60px' });
 
 export default function Home() {
     const homeData = getHomeData();
-    const projects = getPosts('projects');
-    const blogs = getPosts('blogs');
-    const galleryItems = getGalleryItems();
-    const showSidebar = homeData.info.sidebar_navigation === 'true';
+    const sections = homeData.sections || [];
+    const showSidebar = homeData.info?.sidebar_navigation === 'true';
 
     return (
         <main className={mainStyle}>
             {/* Contextual Hero: Only show if Sidebar is DISABLED */}
-            {!showSidebar && <Hero hero={homeData.hero} />}
+            {/* But wait, Hero is now an Info Section? 
+                If the user wants a Hero, they created an Info Section for it.
+                However, existing logic used `homeData.hero`. 
+                The new logic puts EVERYTHING in sections.
+                If sidebar is disabled, we usually want a Navbar + content.
+                The content is just the sections.
+                So we don't need explicit Hero check here unless we want to support legacy hero data?
+                The legacy hero data might still be in `homeData.hero` if we merged `site.json`?
+                But `Hero Config` database is gone/migrated to Config?
+                Actually `dummy-data.mjs` converted Hero to Info Section.
+                So we just render sections.
+            */}
 
-            {/* Dynamic Section Ordering */}
-            {(homeData.section_order || ['gallery', 'projects', 'blogs']).map((section) => {
-                switch (section) {
-                    case 'gallery':
-                        return homeData.gallery?.show_section === 'true' ? (
-                            <div key="gallery" id="gallery" className={sectionContainerStyle}>
-                                <GalleryList items={galleryItems} title={homeData.gallery?.title || "Gallery"} />
-                            </div>
-                        ) : null;
-                    case 'projects':
-                        return homeData.projects.show_section === 'true' ? (
-                            <div key="projects" id="projects" className={sectionContainerStyle}>
-                                <ProjectList
-                                    projects={projects}
-                                    title={homeData.projects.title || "Projects"}
-                                    viewType={homeData.projects.view_type as 'Grid' | 'List'}
-                                />
-                            </div>
-                        ) : null;
-                    case 'blogs':
-                        return homeData.blogs.show_section !== 'false' ? (
-                            <div key="blogs" id="blogs" className={sectionContainerStyle}>
-                                <BlogList
-                                    blogs={blogs}
-                                    title={homeData.blogs.title}
-                                    viewType={homeData.blogs.view_type}
-                                    showImages={homeData.blogs.show_images === 'true'}
-                                />
-                            </div>
-                        ) : null;
-                    default:
-                        return null;
-                }
-            })}
+            <div className={css({ display: 'flex', flexDirection: 'column', gap: '0' })}>
+                {sections.map((section) => {
+                    if (section.type === 'info_section') {
+                        return <InfoSection key={section.id} data={section} />;
+                    } else if (section.type === 'dynamic_section') {
+                        return <DynamicSection key={section.id} data={section} />;
+                    }
+                    return null;
+                })}
+            </div>
         </main>
     );
 }

@@ -169,13 +169,6 @@ async function getPageByName(parentId, name) {
 }
 
 // Find Inline DB directly on Page
-async function findInlineDbOnPage(parentId, dbTitle) {
-    const children = await fetchAllChildren(parentId);
-    const db = children.find(b =>
-        b.type === 'child_database' && b.child_database.title === dbTitle
-    );
-    return db ? db.id : null;
-}
 
 async function fetchConfigKV(dbId, prefix = 'config') {
     if (!dbId) return {};
@@ -227,6 +220,76 @@ async function syncConfig() {
     await fs.writeFile('notion_state/data/site.json', JSON.stringify(configData, null, 2));
 }
 
+async function findFullPageDb(name) {
+    const children = await fetchAllChildren(ROOT_PAGE_ID);
+    const db = children.find(b => b.type === 'child_database' && b.child_database.title === name);
+    return db ? db.id : null;
+}
+
+// New Helper to fetch Info Section Data
+async function fetchInfoSectionData(dbId) {
+    const pages = await fetchAllDatabasePages(dbId);
+    if (pages.length === 0) return null;
+
+    const page = pages[0];
+    const props = page.properties;
+
+    const data = {
+        title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
+        description: props.description?.rich_text?.[0]?.plain_text || props.Description?.rich_text?.[0]?.plain_text || '',
+        link: props.link?.url || props.Link?.url || '',
+        view_type: props.view_type?.select?.name || props['View Type']?.select?.name || 'col_centered_view',
+    };
+
+    const imageProp = props.image?.files || props.Image?.files;
+    if (imageProp?.length > 0) {
+        const rawUrl = imageProp[0].file?.url || imageProp[0].external?.url;
+        if (rawUrl) {
+            const ext = path.extname(rawUrl.split('?')[0]) || '.jpg';
+            const filename = `info-${dbId}-${slugify(data.title).slice(0, 20)}${ext}`;
+            data.image = await downloadImage(rawUrl, filename);
+        }
+    }
+
+    return data;
+}
+
+// New Helper to fetch Dynamic Section Data (Config only)
+async function fetchDynamicSectionData(dbId) {
+    const pages = await fetchAllDatabasePages(dbId);
+    if (pages.length === 0) return null;
+
+    const page = pages[0];
+    const props = page.properties;
+
+    return {
+        collection_name: props.collection_name?.title?.[0]?.plain_text || '',
+        section_title: props.section_title?.rich_text?.[0]?.plain_text || '',
+        view_type: props.view_type?.select?.name || 'list_view',
+    };
+}
+
+// Helper to retrieve DB details with explicit version (to ensure properties)
+async function fetchDatabaseDetails(databaseId) {
+    if (typeof fetch === 'undefined') {
+        throw new Error("Global fetch not found. Please use Node.js 18+");
+    }
+    const response = await fetch(`https://api.notion.com/v1/databases/${databaseId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${process.env.NOTION_API_KEY}`,
+            'Notion-Version': '2022-06-28',
+            'Content-Type': 'application/json'
+        }
+    });
+    if (!response.ok) {
+        const err = await response.text();
+        throw new Error(`Notion API Retrieve DB Failed: ${response.status} ${err}`);
+    }
+    return await response.json();
+}
+
+// Updated syncHomePage
 async function syncHomePage() {
     console.log("Syncing Home Page...");
     const homePageId = await getPageByName(ROOT_PAGE_ID, "Home Page");
@@ -235,228 +298,156 @@ async function syncHomePage() {
         return;
     }
 
-    const sections = {};
+    const sections = [];
 
-    // Fetch all children ONCE to determine order and IDs
+    // Fetch all children
     const homeChildrenBlocks = await fetchAllChildren(homePageId);
+    const databases = homeChildrenBlocks.filter(b => b.type === 'child_database');
 
-    const findDbInBlocks = (title) => homeChildrenBlocks.find(b =>
-        b.type === 'child_database' && b.child_database.title === title
-    );
+    console.log(`   > Found ${databases.length} databases on Home Page.`);
 
-    const heroDb = findDbInBlocks("Hero Settings");
-    const projDb = findDbInBlocks("Projects Settings");
-    const blogsDb = findDbInBlocks("Blogs Settings");
-    const galleryDb = findDbInBlocks("Gallery Settings");
+    for (const dbBlock of databases) {
+        const dbId = dbBlock.id;
+        const dbTitle = dbBlock.child_database.title;
 
-    // Determine Order based on block position
-    const sectionOrder = [];
-    const validSections = [
-        { key: 'projects', id: projDb?.id },
-        { key: 'blogs', id: blogsDb?.id },
-        { key: 'gallery', id: galleryDb?.id }
-    ];
+        console.log(`   > Processing: ${dbTitle}`);
 
-    // Create a map of ID -> Section Key
-    const idToSection = {};
-    validSections.forEach(s => { if (s.id) idToSection[s.id] = s.key; });
+        // introspect DB properties to determine type
+        // Use manual fetch to ensure we get properties regardless of library version
+        const dbDetails = await fetchDatabaseDetails(dbId);
 
-    // Iterate blocks to preserve order
-    for (const block of homeChildrenBlocks) {
-        if (block.id && idToSection[block.id]) {
-            sectionOrder.push(idToSection[block.id]);
-        }
-    }
+        const props = dbDetails.properties || {};
 
-    // Fallback: If for some reason scanning failed but we found DBs (shouldn't happen), push them
-    validSections.forEach(s => {
-        if (s.id && !sectionOrder.includes(s.key)) {
-            sectionOrder.push(s.key);
-        }
-    });
+        // Check for explicit section_type first
+        const sectionType = props['section_type']?.select?.name || props['Section Type']?.select?.name;
 
-    console.log("   > Detected Section Order:", sectionOrder);
-
-    sections.hero = await fetchConfigKV(heroDb?.id, 'hero');
-    sections.projects = await fetchConfigKV(projDb?.id, 'proj-config');
-    sections.blogs = await fetchConfigKV(blogsDb?.id, 'blog-config');
-
-    if (galleryDb) {
-        sections.gallery = await fetchConfigKV(galleryDb.id, 'gallery-config');
-    } else {
-        sections.gallery = { show_section: 'NO', title: 'Gallery' };
-    }
-
-    // Save order
-    sections.section_order = sectionOrder;
-
-    await ensureDir('notion_state/data');
-    await fs.writeFile('notion_state/data/home.json', JSON.stringify(sections, null, 2));
-}
-
-async function findFullPageDb(name) {
-    const children = await fetchAllChildren(ROOT_PAGE_ID);
-    const db = children.find(b => b.type === 'child_database' && b.child_database.title === name);
-    return db ? db.id : null;
-}
-
-async function syncProjects() {
-    console.log("Syncing Projects...");
-    const dbId = await findFullPageDb("Projects");
-    if (!dbId) {
-        console.warn("Projects database not found!");
-        return;
-    }
-
-    const pages = await fetchAllDatabasePages(dbId, {
-        property: 'Status',
-        select: {
-            equals: 'Published' // Only sync published
-        }
-    });
-
-    await ensureDir('notion_state/content/projects');
-
-    for (const page of pages) {
-        const props = page.properties;
-        const title = props['Project Name']?.title?.[0]?.plain_text || 'Untitled';
-        const slug = props.Slug?.rich_text?.[0]?.plain_text || slugify(title);
-
-        const rawThumb = props.Thumbnail?.files?.[0]?.file?.url || props.Thumbnail?.files?.[0]?.external?.url;
-        let thumbnail = '';
-        if (rawThumb) {
-            const ext = path.extname(rawThumb.split('?')[0]) || '.jpg';
-            thumbnail = await downloadImage(rawThumb, `project-${slug}-thumb${ext}`);
-        }
-
-        const frontmatter = {
-            slug,
-            title,
-            date: page.created_time,
-            description: props.Description?.rich_text?.[0]?.plain_text || '',
-            tools: props.Tools?.rich_text?.[0]?.plain_text || props.Tech?.rich_text?.[0]?.plain_text || '',
-            link: props.Link?.url || '',
-            thumbnail,
-        };
-
-        const mdBlocks = await n2m.pageToMarkdown(page.id);
-        const mdString = n2m.toMarkdownString(mdBlocks);
-
-        const mdContent = `---
-${JSON.stringify(frontmatter, null, 2)}
----
-
-${mdString.parent}
-`;
-
-        await fs.writeFile(`notion_state/content/projects/${slug}.md`, mdContent);
-    }
-}
-
-async function syncBlogs() {
-    console.log("Syncing Blogs...");
-    const dbId = await findFullPageDb("Blogs");
-    if (!dbId) {
-        console.warn("Blogs database not found!");
-        return;
-    }
-
-    const pages = await fetchAllDatabasePages(dbId, {
-        property: 'Status',
-        select: {
-            equals: 'Published'
-        }
-    });
-
-    await ensureDir('notion_state/content/blogs');
-
-    for (const page of pages) {
-        const props = page.properties;
-        const title = props.Title?.title?.[0]?.plain_text || 'Untitled';
-        const slug = props.Slug?.rich_text?.[0]?.plain_text || slugify(title);
-
-        const rawCover = props.Cover?.files?.[0]?.file?.url || props.Cover?.files?.[0]?.external?.url;
-        let coverUrl = '';
-        if (rawCover) {
-            const ext = path.extname(rawCover.split('?')[0]) || '.jpg';
-            coverUrl = await downloadImage(rawCover, `blog-${slug}-cover${ext}`);
-        }
-
-        const frontmatter = {
-            slug,
-            title,
-            date: props['Published Date']?.date?.start || page.created_time,
-            description: props.Description?.rich_text?.[0]?.plain_text || '',
-            cover: {
-                image: coverUrl,
-                alt: title
+        if (sectionType === 'dynamic_section') {
+            const data = await fetchDynamicSectionData(dbId);
+            if (data) {
+                sections.push({
+                    type: 'dynamic_section',
+                    id: dbId,
+                    title: data.section_title || dbTitle,
+                    ...data
+                });
             }
-        };
-
-        const mdBlocks = await n2m.pageToMarkdown(page.id);
-        const mdString = n2m.toMarkdownString(mdBlocks);
-
-        const fileContent = `---
-${JSON.stringify(frontmatter, null, 2)}
----
-
-${mdString.parent}
-`;
-        await fs.writeFile(`notion_state/content/blogs/${slug}.md`, fileContent);
+        } else if (sectionType === 'info_section') {
+            const data = await fetchInfoSectionData(dbId);
+            if (data) {
+                sections.push({
+                    type: 'info_section',
+                    id: dbId,
+                    title: dbTitle,
+                    ...data
+                });
+            }
+        } else {
+            // Fallback to property check (legacy/inference)
+            if (props['collection_name']) {
+                // Dynamic Section
+                const data = await fetchDynamicSectionData(dbId);
+                if (data) {
+                    sections.push({
+                        type: 'dynamic_section',
+                        id: dbId,
+                        title: data.section_title || dbTitle,
+                        ...data
+                    });
+                }
+            } else if ((props['description'] && props['title']) || (props['Description'] && props['Title'])) {
+                // Info Section
+                const data = await fetchInfoSectionData(dbId);
+                if (data) {
+                    sections.push({
+                        type: 'info_section',
+                        id: dbId,
+                        title: dbTitle,
+                        ...data
+                    });
+                }
+            } else {
+                console.log(`     ! Unknown database type: ${dbTitle}`);
+            }
+        }
     }
+
+    const homeData = { sections };
+    await ensureDir('notion_state/data');
+    await fs.writeFile('notion_state/data/home.json', JSON.stringify(homeData, null, 2));
 }
 
-async function syncGallery() {
-    console.log("Syncing Gallery...");
-    const dbId = await findFullPageDb("Gallery");
-    if (!dbId) {
-        console.warn("Gallery database not found!");
+
+// Generic Collection Syncer
+async function syncAllCollections() {
+    console.log("Syncing All Collections...");
+    const collectionsPageId = await getPageByName(ROOT_PAGE_ID, "Collections");
+    if (!collectionsPageId) {
+        console.warn("   ! Collections Page not found in Root");
         return;
     }
 
-    const pages = await fetchAllDatabasePages(dbId, undefined, [
-        {
-            property: 'Order',
-            direction: 'ascending'
+    const children = await fetchAllChildren(collectionsPageId);
+    const databases = children.filter(b => b.type === 'child_database');
+
+    console.log(`   > Found ${databases.length} collections.`);
+
+    for (const dbBlock of databases) {
+        const dbTitle = dbBlock.child_database.title;
+        const dbId = dbBlock.id;
+        const slug = slugify(dbTitle); // e.g. "Projects" -> "projects"
+
+        console.log(`   > Syncing Collection: ${dbTitle} (${slug})...`);
+
+        // Introspect DB to check structure? 
+        // We assume shared schema for simplicity as per plan: Title, Description, Image, Tags, Link, Order
+        // If schema differs, we do best effort mapping.
+
+        const pages = await fetchAllDatabasePages(dbId, undefined, [
+            { property: 'Order', direction: 'ascending' }
+        ]);
+
+        await ensureDir(`notion_state/content/${slug}`);
+
+        for (const page of pages) {
+            const mdBlocks = await n2m.pageToMarkdown(page.id);
+            const mdString = n2m.toMarkdownString(mdBlocks);
+
+            // Map properties generically
+            const props = page.properties;
+            const itemTitle = props.Title?.title?.[0]?.plain_text || 'Untitled';
+            const itemSlug = props.Slug?.rich_text?.[0]?.plain_text || slugify(itemTitle); // Prefer explicit slug if available
+
+            // Image/Cover
+            const rawImage = props.Image?.files?.[0]?.file?.url || props.Image?.files?.[0]?.external?.url;
+            let image = '';
+            if (rawImage) {
+                const ext = path.extname(rawImage.split('?')[0]) || '.jpg';
+                image = await downloadImage(rawImage, `${slug}-${itemSlug}${ext}`);
+            }
+
+            const tags = props.Tags?.multi_select?.map(o => o.name) || [];
+            const link = props.Link?.url || '';
+            const description = props.Description?.rich_text?.[0]?.plain_text || '';
+            const order = props.Order?.number || 0;
+
+            const frontmatter = {
+                slug: itemSlug,
+                title: itemTitle,
+                collection: slug, // Add collection name to frontmatter
+                date: page.created_time,
+                description,
+                image, // Generic name
+                cover: { image: image, alt: itemTitle }, // Compat
+                thumbnail: image, // Compat
+                tags,
+                link,
+                tools: tags.join(', '), // Compat for projects
+                order
+            };
+
+            const fileContent = `---\n${JSON.stringify(frontmatter, null, 2)}\n---\n\n${mdString.parent}`;
+            await fs.writeFile(`notion_state/content/${slug}/${itemSlug}.md`, fileContent);
         }
-    ]);
-
-    await ensureDir('notion_state/content/gallery');
-
-    for (const page of pages) {
-        const props = page.properties;
-        const name = props.Name?.title?.[0]?.plain_text || 'Untitled';
-        const slug = props.Slug?.rich_text?.[0]?.plain_text || slugify(name);
-
-        const rawImage = props.Image?.files?.[0]?.file?.url || props.Image?.files?.[0]?.external?.url;
-        let imageUrl = '';
-        if (rawImage) {
-            const ext = path.extname(rawImage.split('?')[0]) || '.jpg';
-            imageUrl = await downloadImage(rawImage, `gallery-${slug}${ext}`);
-        }
-
-        const link = props.Link?.url || '';
-
-        const order = props.Order?.number || 0;
-
-        const frontmatter = {
-            slug,
-            name,
-            image: imageUrl,
-            link,
-            order
-        };
-
-        const mdBlocks = await n2m.pageToMarkdown(page.id);
-        const mdString = n2m.toMarkdownString(mdBlocks);
-
-        const fileContent = `---
-${JSON.stringify(frontmatter, null, 2)}
----
-
-${mdString.parent}
-`;
-        await fs.writeFile(`notion_state/content/gallery/${slug}.md`, fileContent);
     }
 }
 
@@ -468,7 +459,7 @@ async function syncNavbarPagesContainer() {
         return;
     }
 
-    console.log("   > Syncing Navbar Pages...");
+    // ... (rest same, just wrapping up)
     const children = await fetchAllChildren(pagesContainerId);
     for (const block of children) {
         if (block.type === 'child_page') {
@@ -480,33 +471,26 @@ async function syncNavbarPagesContainer() {
             const mdBlocks = await n2m.pageToMarkdown(pageId);
             const mdString = n2m.toMarkdownString(mdBlocks);
 
-            // Simple frontmatter
             const frontmatter = {
                 title,
                 date: new Date().toISOString(),
                 menu: "main"
             };
 
-            const fileContent = `---
-${JSON.stringify(frontmatter, null, 2)}
----
-
-${mdString.parent}
-`;
+            const fileContent = `---\n${JSON.stringify(frontmatter, null, 2)}\n---\n\n${mdString.parent}`;
             await ensureDir('notion_state/content/navbarPages');
             await fs.writeFile(`notion_state/content/navbarPages/${slug}.md`, fileContent);
         }
     }
 }
 
+
 async function main() {
     try {
         await syncConfig();
         await syncHomePage();
         await syncNavbarPagesContainer();
-        await syncProjects();
-        await syncBlogs();
-        await syncGallery();
+        await syncAllCollections();
         console.log("Completed sync.");
     } catch (e) {
         console.error(e);

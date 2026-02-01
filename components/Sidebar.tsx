@@ -1,11 +1,16 @@
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { css } from '@/styled-system/css';
 import { flex, stack } from '@/styled-system/patterns';
-import { ThemeToggle } from './ThemeToggle';
+import { SettingsMenu } from './SettingsMenu';
 import { getHomeData, getNavbarPages } from '@/lib/data';
-import { FaGithub, FaLinkedin, FaTwitter, FaYoutube, FaFacebook, FaTwitch, FaEnvelope } from 'react-icons/fa';
-import { RiInstagramFill } from 'react-icons/ri';
+import { SocialIcons } from './SocialIcons';
+
+// ... styles remain mostly same, but remove iconStyle/containerStyle if unused (socialContainerStyle is used in SocialIcons now)
+// But wait, Sidebar defines local socialContainerStyle. I should use the one from SocialIcons or just wrap it?
+// SocialIcons has its own container style `flex({ gap: '12px', ... })`.
+// I can just render SocialIcons.
 
 const sidebarStyle = stack({
     pos: 'fixed',
@@ -13,11 +18,9 @@ const sidebarStyle = stack({
     left: '20px',
     h: 'calc(100vh - 40px)',
     w: '260px',
-    bg: { base: 'white', _dark: '#121212' },
-    p: '24px',
-    borderRadius: '12px',
-    border: '1px solid',
-    borderColor: { base: 'rgba(0,0,0,0.12)', _dark: 'rgba(255,255,255,0.12)' },
+    bg: 'bg.surface',
+    // ...
+    borderRight: '1px solid token(colors.border.subtle)',
     justify: 'space-between',
     overflowY: 'auto',
     zIndex: 50,
@@ -47,17 +50,6 @@ const textStackStyle = stack({ gap: '4px', align: 'center', textAlign: 'center' 
 const titleStyle = css({ fontSize: '1.1rem', fontWeight: 'bold', color: 'text.primary', mb: '4px' });
 
 const taglineStyle = css({ fontSize: '0.85rem', color: 'text.secondary', lineHeight: '1.4' });
-
-const socialContainerStyle = flex({ gap: '12px', justify: 'center', wrap: 'wrap', mt: '20px' });
-
-const iconStyle = css({
-    color: 'text.secondary',
-    transition: 'color 0.2s',
-    cursor: 'pointer',
-    _hover: {
-        color: 'primary',
-    },
-});
 
 const dividerStyle = css({ h: '1px', bg: 'border.primary', w: '100%' });
 
@@ -93,24 +85,28 @@ const footerStyle = flex({
     pt: '20px',
     borderTop: '1px solid',
     borderColor: { base: 'rgba(0,0,0,0.06)', _dark: 'rgba(255,255,255,0.12)' },
-    flexShrink: 0
+    flexShrink: 0,
+    justifyContent: 'center'
 });
 
 export async function Sidebar() {
     const homeData = getHomeData();
     const pages = getNavbarPages();
-    const siteTitle = homeData.info?.site_title || 'Home';
-    const hero = homeData.hero;
+    const title = homeData.info?.title || 'Home';
+    const logo = homeData.info?.logo;
+    const tagline = homeData.info?.tagline;
+
+    const showLogo = homeData.info?.disable_logo_in_sidebar !== 'true';
 
     return (
         <aside className={sidebarStyle}>
             <div className={contentStackStyle}>
                 {/* Hero / Profile Section */}
                 <div className={profileSectionStyle}>
-                    {hero.profile_image && (
+                    {showLogo && logo && (
                         <div className={profileImageContainerStyle}>
                             <Image
-                                src={hero.profile_image}
+                                src={logo}
                                 alt="Profile"
                                 fill
                                 className={profileImageStyle}
@@ -120,58 +116,19 @@ export async function Sidebar() {
 
                     <div className={textStackStyle}>
                         <h2 className={titleStyle}>
-                            {siteTitle}
+                            {title}
                         </h2>
-                        {hero.tagline && (
+                        {tagline && (
                             <p className={taglineStyle}>
-                                {hero.tagline}
+                                {tagline}
                             </p>
                         )}
                     </div>
 
 
                     {/* Social Icons (Compact) */}
-                    <div className={socialContainerStyle}>
-                        {hero.twitter && (
-                            <a href={hero.twitter} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <FaTwitter size={18} />
-                            </a>
-                        )}
-                        {hero.github && (
-                            <a href={hero.github} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <FaGithub size={18} />
-                            </a>
-                        )}
-                        {hero.linkedin && (
-                            <a href={hero.linkedin} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <FaLinkedin size={18} />
-                            </a>
-                        )}
-                        {hero.email && (
-                            <a href={`mailto:${hero.email}`} className={iconStyle}>
-                                <FaEnvelope size={18} />
-                            </a>
-                        )}
-                        {hero.instagram && (
-                            <a href={hero.instagram} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <RiInstagramFill size={18} />
-                            </a>
-                        )}
-                        {hero.youtube && (
-                            <a href={hero.youtube} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <FaYoutube size={18} />
-                            </a>
-                        )}
-                        {hero.facebook && (
-                            <a href={hero.facebook} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <FaFacebook size={18} />
-                            </a>
-                        )}
-                        {hero.twitch && (
-                            <a href={hero.twitch} target="_blank" rel="noreferrer" className={iconStyle}>
-                                <FaTwitch size={18} />
-                            </a>
-                        )}
+                    <div className={css({ mt: '20px' })}>
+                        <SocialIcons config={homeData.info} />
                     </div>
                 </div>
 
@@ -197,7 +154,7 @@ export async function Sidebar() {
             </div>
 
             <div className={footerStyle}>
-                <ThemeToggle defaultTheme={homeData.info?.default_color_mode as 'light' | 'dark'} />
+                <SettingsMenu variant="horizontal" />
             </div>
         </aside>
     );

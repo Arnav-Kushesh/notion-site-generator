@@ -16,19 +16,19 @@ export default defineConfig({
       semanticTokens: {
         colors: {
           bg: {
-            primary: { value: { base: "#FAFAFA", _dark: "#0a0a0a" } },
-            secondary: { value: { base: "#f5f5f7", _dark: "#161616" } },
-            tertiary: { value: { base: "#e5e5e7", _dark: "#1f1f1f" } },
+            primary: { value: "var(--colors-bg-primary)" },
+            secondary: { value: "var(--colors-bg-secondary)" },
+            tertiary: { value: "var(--colors-bg-tertiary)" },
           },
           text: {
-            primary: { value: { base: "#1d1d1f", _dark: "#ededed" } },
-            secondary: { value: { base: "#86868b", _dark: "#a1a1a1" } },
-            tertiary: { value: { base: "#cecece", _dark: "#6b6b6b" } },
+            primary: { value: "var(--colors-text-primary)" },
+            secondary: { value: "var(--colors-text-secondary)" },
+            tertiary: { value: "var(--colors-text-tertiary)" },
           },
           border: {
-            default: { value: { base: "#d1d1d6", _dark: "#333333" } },
+            default: { value: "var(--colors-border-default)" },
           },
-          primary: { value: { base: "#1d1d1f", _dark: "#ededed" } }, // Neutral (same as text.primary)
+          primary: { value: "var(--colors-primary)" },
         },
       },
       tokens: {

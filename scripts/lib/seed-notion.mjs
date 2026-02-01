@@ -1,4 +1,10 @@
-import { dummyHero, dummyProjectConfig, dummyBlogConfig, dummyGalleryConfig, dummyProjects, dummyBlogs, dummyGalleryItems, dummySiteInfo } from './dummy-data.mjs';
+
+import {
+    dummyConfig,
+    dummyHomePageSections,
+    dummyCollections,
+    dummyNavbarPages,
+} from './dummy-data.mjs';
 
 /**
  * Checks if a block is effectively empty (empty paragraph or heading).
@@ -54,59 +60,68 @@ export async function ensureSiteStructure(rootPageId, notion) {
 export async function seedNotion(rootPageId, notion) {
     console.log("🚀 Starting seeding process...");
 
+
     await createHomePage(rootPageId, notion);
-    await createNavbarPagesContainer(rootPageId, notion);
-    await createGallery(rootPageId, notion);
-    await createProjects(rootPageId, notion);
-    await createBlogs(rootPageId, notion);
-    await createConfig(rootPageId, notion);
+    await createNavbarPages(rootPageId, notion);
+
+
+    const collectionsPageId = await createCollectionsPage(rootPageId, notion);
+    await createCollections(collectionsPageId, notion);
+
+
+    await createConfigDB(rootPageId, notion);
+
+
+
 
     console.log("✨ Seeding process completed successfully!");
 }
 
+// --- Helpers ---
+
+const plainText = (content) => [{ type: 'text', text: { content: content || '' } }];
+
 const heading1 = (content) => ({
     object: 'block',
     type: 'heading_1',
-    heading_1: { rich_text: [{ type: 'text', text: { content } }] }
+    heading_1: { rich_text: plainText(content) }
 });
 
 const heading2 = (content) => ({
     object: 'block',
     type: 'heading_2',
-    heading_2: { rich_text: [{ type: 'text', text: { content } }] }
-});
-
-const textBlock = (content) => ({
-    object: 'block',
-    type: 'paragraph',
-    paragraph: { rich_text: [{ type: 'text', text: { content } }] }
-});
-
-
-
-const bulletedListItem = (content) => ({
-    object: 'block',
-    type: 'bulleted_list_item',
-    bulleted_list_item: { rich_text: [{ type: 'text', text: { content } }] }
-});
-
-const quoteBlock = (content) => ({
-    object: 'block',
-    type: 'quote',
-    quote: { rich_text: [{ type: 'text', text: { content } }] }
+    heading_2: { rich_text: plainText(content) }
 });
 
 const heading3 = (content) => ({
     object: 'block',
     type: 'heading_3',
-    heading_3: { rich_text: [{ type: 'text', text: { content } }] }
+    heading_3: { rich_text: plainText(content) }
+});
+
+const textBlock = (content) => ({
+    object: 'block',
+    type: 'paragraph',
+    paragraph: { rich_text: plainText(content) }
+});
+
+const bulletedListItem = (content) => ({
+    object: 'block',
+    type: 'bulleted_list_item',
+    bulleted_list_item: { rich_text: plainText(content) }
+});
+
+const quoteBlock = (content) => ({
+    object: 'block',
+    type: 'quote',
+    quote: { rich_text: plainText(content) }
 });
 
 const codeBlock = (content, language = "plain text") => ({
     object: 'block',
     type: 'code',
     code: {
-        rich_text: [{ type: 'text', text: { content } }],
+        rich_text: plainText(content),
         language: language
     }
 });
@@ -117,13 +132,12 @@ const imageBlock = (url, caption = "") => ({
     image: {
         type: "external",
         external: { url },
-        caption: caption ? [{ type: 'text', text: { content: caption } }] : []
+        caption: caption ? plainText(caption) : []
     }
 });
 
 function buildBlocks(contentArray) {
     if (!contentArray || !Array.isArray(contentArray)) {
-        // Fallback for simple string content (backwards compatibility)
         if (typeof contentArray === 'string') return [textBlock(contentArray)];
         return [];
     }
@@ -143,371 +157,266 @@ function buildBlocks(contentArray) {
     });
 }
 
-async function appendBlock(notion, parentId, block) {
-    const res = await notion.blocks.children.append({
-        block_id: parentId,
-        children: [block]
-    });
-    return res.results[0].id;
-}
+// --- 1. Global Config ---
 
-// Helper to create an inline database for configuration
-// usedIn: Config (Theming), HomePage (Hero, Projects, Blogs)
-async function createInlineConfigDB(notion, parentId, title, includeMedia = false) {
-    console.log(`   > Creating Inline DB: "${title}"...`);
-
-    const properties = {
-        Name: { title: {} },
-        Value: { rich_text: {} },
-    };
-
-    if (includeMedia) {
-        properties.Media = { files: {} };
-    }
+async function createConfigDB(rootPageId, notion) {
+    console.log("\n📦 Creating Database: Config...");
 
     const db = await notion.databases.create({
-        parent: { type: 'page_id', page_id: parentId },
-        title: [{ type: 'text', text: { content: title } }],
-        is_inline: true,
+        parent: { type: 'page_id', page_id: rootPageId },
+        title: plainText('Config'),
         initial_data_source: {
-            properties
+            properties: {
+                Name: { title: {} }, // Field Name (e.g. social_twitter)
+                Value: { rich_text: {} }, // Value
+                Media: { files: {} } // For logo
+            }
         }
     });
-    return db.id;
-}
 
-async function seedConfigDB(notion, dbId, data) {
-    // Reverse data so that the first item in the array is created LAST.
-    // This allows it to appear at the TOP of the database if sorted by "Newest First" (Notion default).
-    const reversedData = [...data].reverse();
+    await notion.databases.update({
+        database_id: db.id,
+        icon: { type: "emoji", emoji: "⚙️" },
+    });
 
+    console.log(`   ✅ Config Database created (ID: ${db.id})`);
+    console.log("   > Seeding Config data...");
+
+    // Seed Config Data
+    const reversedData = [...dummyConfig].reverse();
     for (const item of reversedData) {
         const props = {
-            Name: { title: [{ text: { content: item.field } }] },
-            Value: { rich_text: [{ text: { content: item.value || '' } }] }
+            Name: { title: plainText(item.field) },
+            Value: { rich_text: plainText(item.value) }
         };
 
         if (item.media) {
             props.Media = {
-                files: [
-                    {
-                        type: "external",
-                        name: "Image",
-                        external: { url: item.media }
-                    }
-                ]
+                files: [{ type: "external", name: "Media", external: { url: item.media } }]
             };
         }
 
         await notion.pages.create({
-            parent: { database_id: dbId },
+            parent: { database_id: db.id },
             properties: props
         });
     }
 }
 
+// --- 2. Collections ---
 
-// --- Creators ---
+async function createCollectionsPage(rootPageId, notion) {
+    console.log("\n📦 Creating Page: Collections...");
+    const page = await notion.pages.create({
+        parent: { page_id: rootPageId },
+        properties: { title: { title: plainText('Collections') } },
+        icon: { type: "emoji", emoji: "📚" },
+    });
+    console.log(`   ✅ Collections Page created (ID: ${page.id})`);
+    return page.id;
+}
 
-// Don't forget to update imports at the top of the file!
-// But for this block:
+async function createCollections(parentId, notion) {
+    const sharedSchema = {
+        Title: { title: {} },
+        Description: { rich_text: {} },
+        Image: { files: {} },
+        Tags: { multi_select: {} },
+        Link: { url: {} },
+        Order: { number: { format: 'number' } },
+        // Rich Content is just the page content
+    };
 
-async function createConfig(rootPageId, notion) {
-    console.log("\n📦 Creating Database: Config...");
+    for (const [name, items] of Object.entries(dummyCollections)) {
+        console.log(`\n   > Creating Collection Database: ${name}...`);
+        const db = await notion.databases.create({
+            parent: { type: 'page_id', page_id: parentId },
+            title: plainText(name),
+            is_inline: false, // Full page databases for collections
+            initial_data_source: { properties: sharedSchema }
+        });
 
-    // Create Database directly (Full Page)
-    const db = await notion.databases.create({
-        parent: { type: 'page_id', page_id: rootPageId },
-        title: [{ type: 'text', text: { content: 'Config' } }],
-        initial_data_source: {
-            properties: {
-                Name: { title: {} },
-                Value: { rich_text: {} },
-                Media: { files: {} }
+        await notion.databases.update({
+            database_id: db.id,
+            icon: { type: "emoji", emoji: "🗃️" },
+        });
+
+        console.log(`     Seeding ${items.length} items into ${name}...`);
+
+        for (const item of items) {
+            const props = {
+                Title: { title: plainText(item.title) },
+                Description: { rich_text: plainText(item.description) },
+                Tags: { multi_select: (item.tags || []).map(t => ({ name: t })) },
+                Link: { url: item.link || null },
+                Order: { number: item.order || 0 }
+            };
+
+            if (item.image) {
+                props.Image = {
+                    files: [{ type: "external", name: "Image", external: { url: item.image } }]
+                };
             }
+
+            await notion.pages.create({
+                parent: { database_id: db.id },
+                properties: props,
+                children: buildBlocks(item.rich_content)
+            });
         }
-    });
-
-    await notion.databases.update({
-        database_id: db.id,
-        icon: {
-            type: "emoji",
-            emoji: "⚙️",
-        },
-    });
-
-    console.log(`   ✅ Config Database created (ID: ${db.id})`);
-
-    console.log("   > Seeding Config data...");
-    await seedConfigDB(notion, db.id, dummySiteInfo);
+    }
 }
 
-async function createHomePage(rootPageId, notion) {
-    console.log("\n📦 Creating Page: Home Page...");
+// --- 3. Navbar Pages ---
 
-    // Create Page
+export async function createNavbarPages(rootPageId, notion) {
+    console.log("\n📦 Creating Page: Navbar Pages...");
     const page = await notion.pages.create({
         parent: { page_id: rootPageId },
-        properties: { title: { title: [{ text: { content: 'Home Page' } }] } },
-        icon: { type: "emoji", emoji: "🏠" },
-    });
-    console.log(`   ✅ Home Page created (ID: ${page.id})`);
-
-    // Hero Section
-    const heroDBId = await createInlineConfigDB(notion, page.id, "Hero Settings", true);
-    console.log("   > Seeding Hero data...");
-    await seedConfigDB(notion, heroDBId, dummyHero);
-
-
-
-    // Spacer
-    await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
-
-    // Gallery Section (Added below Hero as requested)
-    const galleryDBId = await createInlineConfigDB(notion, page.id, "Gallery Settings");
-    console.log("   > Seeding Gallery Config data...");
-    await seedConfigDB(notion, galleryDBId, dummyGalleryConfig);
-
-    // Spacer
-    await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
-
-    // Projects Section
-    const projDBId = await createInlineConfigDB(notion, page.id, "Projects Settings");
-    console.log("   > Seeding Projects Config data...");
-    await seedConfigDB(notion, projDBId, dummyProjectConfig);
-
-    // Spacer
-    await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
-
-    // Blogs Section
-    const blogDBId = await createInlineConfigDB(notion, page.id, "Blogs Settings");
-    console.log("   > Seeding Blogs Config data...");
-    await seedConfigDB(notion, blogDBId, dummyBlogConfig);
-}
-
-async function createNavbarPagesContainer(rootPageId, notion) {
-    console.log("\n📦 Creating Page: Navbar Pages (Navbar Pages Container)...");
-
-    // Create Page
-    const page = await notion.pages.create({
-        parent: { page_id: rootPageId },
-        properties: { title: { title: [{ text: { content: 'Navbar Pages' } }] } },
+        properties: { title: { title: plainText('Navbar Pages') } },
         icon: { type: "emoji", emoji: "📑" },
     });
     console.log(`   ✅ Navbar Pages Container created (ID: ${page.id})`);
 
-    console.log("   > Creating Navbar Pages (About, Contact)...");
-
-    await notion.pages.create({
-        parent: { page_id: page.id },
-        properties: { title: { title: [{ text: { content: 'About' } }] } },
-        icon: { type: "emoji", emoji: "👋" },
-        children: [heading1("About Me"), textBlock("I am a developer who loves building things.")]
-    });
-
-    await notion.pages.create({
-        parent: { page_id: page.id },
-        properties: { title: { title: [{ text: { content: 'Contact' } }] } },
-        icon: { type: "emoji", emoji: "📬" },
-        children: [heading1("Get in Touch"), textBlock("Email me at hello@example.com")]
-    });
-}
-
-async function createProjects(rootPageId, notion) {
-    console.log("\n📦 Creating Database: Projects...");
-
-    // Create a Database
-    const db = await notion.databases.create({
-        parent: { type: "page_id", page_id: rootPageId },
-        title: [{ type: "text", text: { content: "Projects" } }],
-        initial_data_source: {
-            properties: {
-                "Project Name": { title: {} },
-                Status: {
-                    select: {
-                        options: [
-                            { name: "Draft", color: "gray" },
-                            { name: "Reviewing", color: "yellow" },
-                            { name: "Published", color: "green" },
-                            { name: "Archived", color: "red" },
-                        ],
-                    },
-                },
-                Description: { rich_text: {} },
-                Slug: { rich_text: {} },
-                Tools: { rich_text: {} },
-                Link: { url: {} },
-                Thumbnail: { files: {} }
-            }
-        }
-    });
-
-    await notion.databases.update({
-        database_id: db.id,
-        icon: {
-            type: "emoji",
-            emoji: "🗃️",
-        },
-    });
-
-    console.log(`   ✅ Projects Database created (ID: ${db.id})`);
-
-
-    console.log("   > Seeding sample projects...");
-
-    // Seed dummy projects (using the loop properly)
-    // We'll just seed a 'Published' one and a 'Work in Progress' (which we map to Draft/Reviewing for demo)
-
-    // Flatten dummyProjects for seeding
-    const allProjects = [
-        ...dummyProjects['Live'].map(p => ({ ...p, status: 'Published' })),
-        ...dummyProjects['Work in Progress'].map(p => ({ ...p, status: 'Draft' }))
-    ];
-
-    for (const p of allProjects) {
+    console.log("   > Seeding Navbar Pages...");
+    for (const item of dummyNavbarPages) {
+        console.log(`     - Creating Page: ${item.title}`);
         await notion.pages.create({
-            parent: { database_id: db.id },
-            icon: { type: "emoji", emoji: "🚀" },
-            properties: {
-                'Project Name': { title: [{ text: { content: p.title } }] },
-                Status: { select: { name: p.status } },
-                Description: { rich_text: [{ text: { content: p.description } }] },
-                Slug: { rich_text: [{ text: { content: p.slug || p.title.toLowerCase().replace(/ /g, '-') } }] },
-                Tools: { rich_text: [{ text: { content: p.tools } }] },
-                Link: { url: p.link },
-                Thumbnail: {
-                    files: p.image ? [{
-                        type: "external",
-                        name: "Thumbnail",
-                        external: { url: p.image }
-                    }] : []
-                }
-            },
-            children: buildBlocks(p.content)
-        });
-        console.log(`     - Created '${p.status}' project: ${p.title}`);
-    }
-}
-
-async function createBlogs(rootPageId, notion) {
-    console.log("\n📦 Creating Database: Blogs...");
-
-    // Create a Database
-    const db = await notion.databases.create({
-        parent: { type: 'page_id', page_id: rootPageId },
-        title: [{ type: 'text', text: { content: 'Blogs' } }],
-        initial_data_source: {
-            properties: {
-                Title: { title: {} },
-                Status: {
-                    select: {
-                        options: [
-                            { name: "Draft", color: "gray" },
-                            { name: "Reviewing", color: "yellow" },
-                            { name: "Published", color: "green" },
-                            { name: "Archived", color: "red" },
-                        ]
-                    }
-                },
-                Description: { rich_text: {} },
-                Slug: { rich_text: {} },
-                'Published Date': { date: {} },
-                Cover: { files: {} }
-            }
-        }
-    });
-
-    await notion.databases.update({
-        database_id: db.id,
-        icon: {
-            type: "emoji",
-            emoji: "📃",
-        },
-    });
-
-    console.log(`   ✅ Blogs Database created (ID: ${db.id})`);
-
-    console.log("   > Seeding sample blogs...");
-
-    const allBlogs = [
-        ...dummyBlogs['Live'].map(p => ({ ...p, status: 'Published' }))
-    ];
-
-    for (const p of allBlogs) {
-        await notion.pages.create({
-            parent: { database_id: db.id },
-            icon: { type: "emoji", emoji: "📝" },
-            properties: {
-                Title: { title: [{ text: { content: p.title } }] },
-                Status: { select: { name: p.status } },
-                Description: { rich_text: [{ text: { content: p.description } }] },
-                Slug: { rich_text: [{ text: { content: p.slug || p.title.toLowerCase().replace(/ /g, '-') } }] },
-                'Published Date': { date: { start: p.date } },
-                Cover: {
-                    files: p.coverImage ? [{
-                        type: "external",
-                        name: "Cover",
-                        external: { url: p.coverImage }
-                    }] : []
-                }
-            },
-            children: [
-                heading1(p.title),
-                ...buildBlocks(p.content)
-            ]
-        });
-        console.log(`     - Created '${p.status}' blog: ${p.title}`);
-    }
-}
-
-async function createGallery(rootPageId, notion) {
-    console.log("\n📦 Creating Database: Gallery...");
-
-    // Create a Database
-    const db = await notion.databases.create({
-        parent: { type: 'page_id', page_id: rootPageId },
-        title: [{ type: 'text', text: { content: 'Gallery' } }],
-        initial_data_source: {
-            properties: {
-                Name: { title: {} },
-                Order: { number: { format: 'number' } },
-                Slug: { rich_text: {} },
-                Image: { files: {} },
-                Link: { url: {} }
-            }
-        }
-    });
-
-    await notion.databases.update({
-        database_id: db.id,
-        icon: {
-            type: "emoji",
-            emoji: "🖼️",
-        },
-    });
-
-    console.log(`   ✅ Gallery Database created (ID: ${db.id})`);
-    console.log("   > Seeding sample gallery items...");
-
-    for (const item of dummyGalleryItems) {
-        await notion.pages.create({
-            parent: { database_id: db.id },
-            icon: { type: "emoji", emoji: "🎨" },
-            properties: {
-                Name: { title: [{ text: { content: item.name } }] },
-                Order: { number: item.order || 0 },
-                Slug: { rich_text: [{ text: { content: item.slug || item.name.toLowerCase().replace(/ /g, '-') } }] },
-                Link: { url: item.link || null },
-                Image: {
-                    files: item.image ? [{
-                        type: "external",
-                        name: "Image",
-                        external: { url: item.image }
-                    }] : []
-                }
-            },
+            parent: { page_id: page.id },
+            properties: { title: { title: plainText(item.title) } },
             children: buildBlocks(item.content)
         });
-        console.log(`     - Created gallery item: ${item.name}`);
+    }
+}
+
+// --- 4. Home Page & Sections ---
+
+async function createHomePage(rootPageId, notion) {
+    console.log("\n📦 Creating Page: Home Page...");
+    const page = await notion.pages.create({
+        parent: { page_id: rootPageId },
+        properties: { title: { title: plainText('Home Page') } },
+        icon: { type: "emoji", emoji: "🏠" },
+    });
+    console.log(`   ✅ Home Page created (ID: ${page.id})`);
+
+    console.log("   > Creating Info & Dynamic Sections...");
+
+    for (const section of dummyHomePageSections) {
+        if (section.type === 'info_section') {
+            await createInfoSection(notion, page.id, section);
+        } else if (section.type === 'dynamic_section') {
+            await createDynamicSection(notion, page.id, section);
+        }
+        // Add a spacer
+        await notion.blocks.children.append({ block_id: page.id, children: [textBlock("")] });
+    }
+}
+
+async function createInfoSection(notion, parentId, sectionData) {
+    console.log(`     - Creating Info Section: ${sectionData.title}`);
+    const properties = {
+        title: { title: {} },
+        description: { rich_text: {} },
+        link: { url: {} },
+        image: { files: {} },
+        view_type: {
+            select: {
+                options: [
+                    { name: 'col_centered_view', color: 'blue' },
+                    { name: 'col_left_view', color: 'green' },
+                    { name: 'row_reverse_view', color: 'yellow' },
+                    { name: 'row_view', color: 'purple' },
+                ]
+            }
+        },
+        section_type: {
+            select: {
+                options: [
+                    { name: 'info_section', color: 'gray' },
+                    { name: 'dynamic_section', color: 'orange' }
+                ]
+            }
+        }
+    };
+
+    const db = await notion.databases.create({
+        parent: { type: 'page_id', page_id: parentId },
+        title: plainText(sectionData.title),
+        is_inline: true,
+        initial_data_source: { properties }
+    });
+
+    // Seed Data
+    if (sectionData.data && sectionData.data.length > 0) {
+        const item = sectionData.data[0]; // Info sections usually have 1 item acting as the content
+        const props = {
+            title: { title: plainText(item.title) },
+            description: { rich_text: plainText(item.description) },
+            link: { url: item.link || null },
+            view_type: { select: { name: item.view_type } },
+            section_type: { select: { name: 'info_section' } }
+        };
+
+        if (item.image) {
+            props.image = {
+                files: [{ type: "external", name: "Image", external: { url: item.image } }]
+            };
+        }
+
+        await notion.pages.create({
+            parent: { database_id: db.id },
+            properties: props
+        });
+    }
+}
+
+async function createDynamicSection(notion, parentId, sectionData) {
+    console.log(`     - Creating Dynamic Section: ${sectionData.title}`);
+    // "collection_name" is the Title field
+    const properties = {
+        collection_name: { title: {} },
+        section_title: { rich_text: {} },
+        view_type: {
+            select: {
+                options: [
+                    { name: 'list_view', color: 'blue' },
+                    { name: 'card_view', color: 'green' },
+                    { name: 'grid_view', color: 'yellow' },
+                    { name: 'minimal_list_view', color: 'gray' },
+                ]
+            }
+        },
+        section_type: {
+            select: {
+                options: [
+                    { name: 'info_section', color: 'gray' },
+                    { name: 'dynamic_section', color: 'orange' }
+                ]
+            }
+        }
+    };
+
+    const db = await notion.databases.create({
+        parent: { type: 'page_id', page_id: parentId },
+        title: plainText(sectionData.title),
+        is_inline: true,
+        initial_data_source: { properties }
+    });
+
+    // Seed Data
+    if (sectionData.data && sectionData.data.length > 0) {
+        const item = sectionData.data[0];
+        const props = {
+            collection_name: { title: plainText(item.collection_name) },
+            section_title: { rich_text: plainText(item.section_title || sectionData.title) },
+            view_type: { select: { name: item.view_type } },
+            section_type: { select: { name: 'dynamic_section' } }
+        };
+
+        await notion.pages.create({
+            parent: { database_id: db.id },
+            properties: props
+        });
     }
 }

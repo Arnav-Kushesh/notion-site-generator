@@ -29,30 +29,51 @@ export interface BlogsConfig {
 }
 
 export interface InfoConfig {
-    site_title: string;
-    site_description: string;
+    title: string;
+    description: string;
+    logo?: string;
     favicon: string;
     keywords: string;
     og_image: string;
     sidebar_navigation?: string;
+    tagline?: string;
     default_theme?: 'light' | 'dark' | 'system';
-    default_color_mode?: 'light' | 'dark';
+    default_color_mode?: string; // allow any string for theming
+    disable_logo_in_sidebar?: string;
+    disable_logo_in_topbar?: string;
+    social_github?: string;
+    social_twitter?: string;
+    social_linkedin?: string;
+    social_email?: string;
+    social_instagram?: string;
+    social_youtube?: string;
+    social_facebook?: string;
+    social_twitch?: string;
 }
 
+export interface InfoSectionData {
+    type: 'info_section';
+    id: string;
+    title: string;
+    description: string;
+    link?: string;
+    image?: string;
+    view_type?: 'col_centered_view' | 'col_left_view' | 'row_reverse_view' | 'row_view';
+}
+
+export interface DynamicSectionData {
+    type: 'dynamic_section';
+    id: string;
+    title: string;
+    collection_name: string;
+    view_type?: 'list_view' | 'card_view' | 'grid_view' | 'minimal_list_view';
+}
+
+export type SectionData = InfoSectionData | DynamicSectionData;
+
 export interface HomeData {
-    hero: HeroConfig;
-    projects: {
-        title: string;
-        show_section: string;
-        view_type: string;
-    };
-    blogs: BlogsConfig;
-    gallery: {
-        title: string;
-        show_section: string;
-    };
-    info: InfoConfig;
-    section_order?: string[];
+    info?: InfoConfig;
+    sections: SectionData[];
 }
 
 export interface Post {
@@ -66,8 +87,12 @@ export interface Post {
         alt?: string;
     };
     thumbnail?: string; // For projects
+    image?: string; // Generic image field
     link?: string; // For external project links
     tools?: string; // For projects
+    collection?: string; // Collection name
+    order?: number; // Sort order
+    tags?: string[] | any[]; // Tags
 }
 
 export interface GalleryItem {
@@ -125,7 +150,8 @@ export function getGalleryItems(): GalleryItem[] {
         });
 }
 
-export function getPosts(section: 'projects' | 'blogs'): Post[] {
+// Generic getPosts (can be used for any collection)
+export function getPosts(section: string): Post[] {
     const dirPath = path.join(contentDirectory, section);
     if (!fs.existsSync(dirPath)) return [];
 
@@ -147,13 +173,19 @@ export function getPosts(section: 'projects' | 'blogs'): Post[] {
                 tools: data.tools || '',
                 cover: data.cover,
                 thumbnail: data.thumbnail,
+                image: data.image,
                 link: data.link,
+                collection: section,
                 ...data,
             } as Post;
         });
 
     // Sort posts by date
     return allPosts.sort((a, b) => {
+        // Sort by order if available
+        if (a.order !== undefined && b.order !== undefined) {
+            return a.order - b.order;
+        }
         if (a.date < b.date) {
             return 1;
         } else {
@@ -162,7 +194,7 @@ export function getPosts(section: 'projects' | 'blogs'): Post[] {
     });
 }
 
-export function getPost(slug: string, section: 'projects' | 'blogs' | 'navbarPages'): Post | null {
+export function getPost(slug: string, section: string): Post | null {
     const dirPath = path.join(contentDirectory, section);
     const fullPath = path.join(dirPath, `${slug}.md`);
 
@@ -229,4 +261,25 @@ export function getNavbarPages(): { slug: string; title: string }[] {
                 title: data.title,
             };
         });
+}
+
+export function getNavbarPage(slug: string): Post | null {
+    const dirPath = path.join(contentDirectory, 'navbarPages');
+    const fullPath = path.join(dirPath, `${slug}.md`);
+
+    if (!fs.existsSync(fullPath)) {
+        return null;
+    }
+
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
+
+    return {
+        slug,
+        content,
+        title: data.title,
+        date: data.date ? new Date(data.date).toISOString() : '',
+        description: data.description || '',
+        ...data,
+    } as Post;
 }

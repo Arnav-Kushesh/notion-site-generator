@@ -110,7 +110,7 @@ export function ProjectList({
                         <div className={cardContentStyle}>
                             <h3 className={cardTitleStyle}>{project.title}</h3>
                             <p className={cardDescStyle}>{project.description}</p>
-                            {/* <div className={toolsContainerStyle}>
+                            <div className={toolsContainerStyle}>
                                 {project.tools
                                     ? project.tools.split(",").map((tool) => (
                                         <span key={tool} className={toolPillStyle}>
@@ -118,7 +118,7 @@ export function ProjectList({
                                         </span>
                                     ))
                                     : null}
-                            </div> */}
+                            </div>
                         </div>
                     </Link>
                 ))}

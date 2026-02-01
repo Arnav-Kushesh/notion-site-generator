@@ -1,214 +1,269 @@
-export const dummySiteInfo = [
-  { field: 'site_title', value: 'My Notion Portfolio' },
-  { field: 'site_description', value: 'A portfolio site built with Next.js and Notion.' },
-  { field: 'favicon', value: '', media: 'https://cdn-icons-png.flaticon.com/512/3233/3233483.png' }, // Placeholder favicon
+
+// Global Config Page Data
+export const dummyConfig = [
+  // Top Level
+  { field: 'title', value: 'My Notion Portfolio' },
+  { field: 'tagline', value: 'Software Engineer & Designer' },
+  { field: 'logo', value: '', media: 'https://placehold.co/100' },
+  { field: 'description', value: 'A portfolio site built with Next.js and Notion.' },
+
+  // Socials
+  { field: 'social_github', value: 'https://github.com' },
+  { field: 'social_twitter', value: 'https://twitter.com' },
+  { field: 'social_linkedin', value: 'https://linkedin.com' },
+  { field: 'social_instagram', value: 'https://instagram.com' },
+  { field: 'social_youtube', value: 'https://youtube.com' },
+  { field: 'social_facebook', value: 'https://facebook.com' },
+  { field: 'social_twitch', value: 'https://twitch.tv' },
+
+  // Visibility Flags
+  { field: 'disable_logo_in_topbar', value: 'false' },
+  { field: 'disable_logo_in_sidebar', value: 'false' },
+  // Sidebar
+  { field: 'sidebar_navigation', value: 'false' },
+  // Site Info
+  { field: 'favicon', value: '', media: 'https://cdn-icons-png.flaticon.com/512/3233/3233483.png' },
   { field: 'keywords', value: 'portfolio, notion, nextjs' },
   { field: 'og_image', value: '', media: 'https://placehold.co/1200x630/png' },
-  { field: 'sidebar_navigation', value: 'false' },
-  { field: 'default_color_mode', value: 'light' },
 ];
 
+/**
+ * HOME PAGE SECTIONS
+ * The Home Page will contain a list of Inline Databases.
+ * We'll represent them here as objects that the script will create as DBs.
+ */
 
-export const dummyHero = [
-  { field: 'tagline', value: 'Welcome to my portfolio based on Notion.' },
-  { field: 'long_bio', value: 'This is a longer bio paragraph about yourself.' },
-  { field: 'profile_image', value: '', media: 'https://placedog.net/500' },
-  { field: 'location', value: 'San Francisco, CA' },
-  { field: 'email', value: 'hello@example.com' },
-  { field: 'twitter', value: 'https://twitter.com' },
-  { field: 'github', value: 'https://github.com' },
-  { field: 'linkedin', value: 'https://linkedin.com' },
-  { field: 'instagram', value: 'https://instagram.com' },
-  { field: 'youtube', value: 'https://youtube.com' },
-  { field: 'facebook', value: 'https://facebook.com' },
-  { field: 'twitch', value: 'https://twitch.tv' },
+// 1. Hero Section (Info Section)
+export const dummyHeroSection = {
+  type: 'info_section',
+  title: 'Hero Section',
+  data: [
+    {
+      title: 'Welcome to my portfolio',
+      description: 'This is a longer bio paragraph about yourself. I build things with code.',
+      link: 'https://example.com/about',
+      image: 'https://placedog.net/500',
+      view_type: 'col_centered_view',
+    }
+  ]
+};
+
+// 2. Dynamic Sections
+export const dummyDynamicGallery = {
+  type: 'dynamic_section',
+  title: 'My Gallery',
+  data: [
+    {
+      collection_name: 'Gallery',
+      section_title: 'My Gallery',
+      view_type: 'grid_view',
+    }
+  ]
+};
+
+export const dummyDynamicProjects = {
+  type: 'dynamic_section',
+  title: 'Selected Projects',
+  data: [
+    {
+      collection_name: 'Projects',
+      section_title: 'Selected Projects',
+      view_type: 'card_view',
+    }
+  ]
+};
+
+export const dummyDynamicBlog = {
+  type: 'dynamic_section',
+  title: 'Recent Writing',
+  data: [
+    {
+      collection_name: 'Blogs',
+      section_title: 'Recent Writing',
+      view_type: 'minimal_list_view', // Text only
+    }
+  ]
+};
+
+// The order here determines the order of creation on the Home Page, and thus the default order on the site.
+export const dummyHomePageSections = [
+  dummyHeroSection,
+  dummyDynamicGallery,
+  dummyDynamicProjects,
+  dummyDynamicBlog
 ];
 
-export const dummyProjectConfig = [
-  { field: 'title', value: 'My Projects' },
-  { field: 'show_section', value: 'true' },
-  { field: 'view_type', value: 'Grid' },
-];
+/**
+ * COLLECTIONS
+ * Stored in Root > Collections > [Page] > [Database]
+ */
 
-export const dummyBlogConfig = [
-  { field: 'title', value: 'Latest Writings' },
-  { field: 'show_section', value: 'true' },
-  { field: 'view_type', value: 'List' },
-  { field: 'show_images', value: 'true' },
-];
-
-export const dummyGalleryConfig = [
-  { field: 'title', value: 'Gallery' },
-  { field: 'show_section', value: 'true' },
-];
-
-export const dummyProjects = {
-  'Work in Progress': [
+export const dummyCollections = {
+  Gallery: [
+    {
+      title: 'Mountain View',
+      description: 'I took this photo while hiking in the mountains.',
+      image: 'https://images.unsplash.com/photo-1519681393798-38e36fefce15?w=600&h=600&fit=crop',
+      tags: ['Nature', 'Photography'],
+      link: 'https://unsplash.com',
+      order: 1,
+    },
+    {
+      title: 'City Lights',
+      description: 'The city comes alive at night. A long exposure shot.',
+      image: 'https://images.unsplash.com/photo-1542397284385-6010376c5337?w=600&h=601&fit=crop',
+      tags: ['Urban', 'Night'],
+      link: '',
+      order: 2,
+    },
+    {
+      title: 'Ocean Breeze',
+      description: 'Calm waves hitting the shore during sunset.',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&h=602&fit=crop',
+      tags: ['Nature', 'Water'],
+      link: '',
+      order: 3,
+    },
+    {
+      title: 'Forest Mist',
+      description: 'Early morning mist rolling through the pine trees.',
+      image: 'https://images.unsplash.com/photo-1448375240586-dfd8f3793371?w=600&h=603&fit=crop',
+      tags: ['Nature', 'Forest'],
+      link: '',
+      order: 4,
+    },
+    {
+      title: 'Desert Dunes',
+      description: 'Layered sand dunes under the bright sun.',
+      image: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?w=600&h=604&fit=crop',
+      tags: ['Nature', 'Desert'],
+      link: '',
+      order: 5,
+    },
+    {
+      title: 'Urban Architecture',
+      description: 'Modern lines and glass facades.',
+      image: 'https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&h=605&fit=crop',
+      tags: ['Architecture', 'Urban'],
+      link: '',
+      order: 6,
+    }
+  ],
+  Projects: [
     {
       title: 'Notion Portfolio',
-      slug: 'notion-portfolio',
-      description: 'A static site generated from Notion.',
-      tools: 'Next.js, Notion API',
+      description: 'A static site generated from Notion content, built with Next.js.',
+      image: 'https://images.unsplash.com/photo-1507238691140-d94cf9536852?w=800&h=600&fit=crop',
+      tags: ['Next.js', 'Notion API'],
       link: 'https://github.com',
-      image: 'https://placedog.net/800/600',
+      order: 1,
     },
     {
       title: 'AI Chatbot',
-      slug: 'ai-chatbot',
-      description: 'A conversational AI interface.',
-      tools: 'Python, OpenAI, React',
+      description: 'A conversational AI interface using OpenAI API.',
+      image: 'https://images.unsplash.com/photo-1531746790731-6c087fecd65a?w=800&h=601&fit=crop',
+      tags: ['Python', 'OpenAI', 'React'],
       link: 'https://github.com',
-      image: 'https://placedog.net/801/600',
-    }
-  ],
-  'Live': [
-    {
-      title: 'Cool App',
-      slug: 'cool-app',
-      description: 'A live application.',
-      tools: 'React, Node.js',
-      link: 'https://example.com',
-      image: 'https://placedog.net/800/600',
-      content: [
-        { type: 'paragraph', content: 'This is a description of the Cool App project. It was built using modern technologies.' },
-        { type: 'heading_2', content: 'Key Features' },
-        { type: 'bullet_list_item', content: 'Real-time updates' },
-        { type: 'bullet_list_item', content: 'Responsive design' },
-        { type: 'bullet_list_item', content: 'Dark mode support' },
-        { type: 'heading_2', content: 'Code Snippet' },
-        { type: 'paragraph', content: 'Here is how we initialized the app:' },
-        { type: 'code', content: "const app = new App();\napp.start();", language: "javascript" },
-        { type: 'image', url: 'https://placedog.net/800/400', caption: 'App Architecture' }
-      ]
+      order: 2,
     },
     {
-      title: 'E-commerce Platform',
-      slug: 'ecommerce-platform',
-      description: 'A full-stack shopping platform.',
-      tools: 'Next.js, Stripe, PostgreSQL',
-      link: 'https://example.com/shop',
-      image: 'https://placedog.net/802/600',
-      content: [
-        { type: 'paragraph', content: 'A robust e-commerce solution built for scale.' },
-        { type: 'heading_2', content: 'Tech Stack' },
-        { type: 'paragraph', content: 'We used Next.js for the frontend and Node.js for the backend.' }
-      ]
+      title: 'E-commerce Store',
+      description: 'Full-featured online store with Stripe integration.',
+      image: 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?w=800&h=602&fit=crop',
+      tags: ['React', 'Stripe', 'Node.js'],
+      link: 'https://github.com',
+      order: 3,
+    },
+    {
+      title: 'Task Manager',
+      description: 'Productivity app to organize daily tasks and goals.',
+      image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&h=603&fit=crop',
+      tags: ['Vue.js', 'Firebase'],
+      link: 'https://github.com',
+      order: 4,
+    },
+    {
+      title: 'Weather App',
+      description: 'Real-time weather forecasts using geolocation.',
+      image: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?w=800&h=604&fit=crop',
+      tags: ['JavaScript', 'API'],
+      link: 'https://github.com',
+      order: 5,
+    },
+    {
+      title: 'Finance Tracker',
+      description: 'Track income and expenses with visual charts.',
+      image: 'https://images.unsplash.com/photo-1554224155-984063581895?w=800&h=605&fit=crop',
+      tags: ['React', 'D3.js'],
+      link: 'https://github.com',
+      order: 6,
     }
   ],
-  'Abandoned': [],
-};
-
-const date = new Date().toISOString().split('T')[0];
-const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-
-export const dummyBlogs = {
-  'Live': [
+  Blogs: [
     {
       title: 'Hello World',
-      slug: 'hello-world',
-      description: 'This is a sample blog post.',
-      date: date,
-      coverImage: 'https://placedog.net/1000/600',
-      content: [
-        { type: 'paragraph', content: 'Welcome to my first blog post! In this post, I will share my journey.' },
-        { type: 'heading_2', content: 'Getting Started' },
-        { type: 'paragraph', content: 'The first step was setting up the environment. It was straightforward.' },
-        { type: 'image', url: 'https://placedog.net/1000/500', caption: 'My workspace setup' },
-        { type: 'heading_3', content: 'Challenges Faced' },
-        { type: 'bullet_list_item', content: 'Understanding the API' },
-        { type: 'bullet_list_item', content: 'Fixing bugs' },
-        { type: 'quote', content: '“The limit does not exist.” - Cady Heron' },
-        { type: 'heading_2', content: 'Conclusion' },
-        { type: 'paragraph', content: 'Thanks for reading! Stay tuned for more.' }
-      ],
+      description: 'Welcome to my first blog post! In this post, I will share my journey.',
+      image: 'https://images.unsplash.com/photo-1499750310159-a52f3377a986?w=1000&h=600&fit=crop',
+      tags: ['Personal', 'Update'],
+      link: '',
+      order: 1,
     },
     {
       title: 'The Future of Web Dev',
-      slug: 'web-dev-future',
-      description: 'Thoughts on where the industry is heading.',
-      date: yesterday,
-      coverImage: 'https://placedog.net/1001/600',
-      content: [
-        { type: 'paragraph', content: 'Web development is changing rapidly.' },
-        { type: 'heading_2', content: 'AI and Coding' },
-        { type: 'paragraph', content: 'AI tools are becoming essential counterparts.' }
-      ]
+      description: 'Thoughts on where the industry is heading with AI and new frameworks.',
+      image: 'https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=1001&h=600&fit=crop',
+      tags: ['Tech', 'Opinion'],
+      link: '',
+      order: 2,
+    },
+    {
+      title: 'Mastering CSS Grid',
+      description: 'A comprehensive guide to building complex layouts with CSS Grid.',
+      image: 'https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=1002&h=600&fit=crop',
+      tags: ['CSS', 'Tutorial'],
+      link: '',
+      order: 3,
+    },
+    {
+      title: 'Why I Use Next.js',
+      description: 'The benefits of server-side rendering and static site generation.',
+      image: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=1003&h=600&fit=crop',
+      tags: ['Next.js', 'React'],
+      link: '',
+      order: 4,
+    },
+    {
+      title: 'Remote Work Tips',
+      description: 'How to stay productive and maintain a healthy work-life balance.',
+      image: 'https://images.unsplash.com/photo-1593642532744-93771563d659?w=1004&h=600&fit=crop',
+      tags: ['Productivity', 'Lifestyle'],
+      link: '',
+      order: 5,
+    },
+    {
+      title: 'Learning Rust',
+      description: 'My experience diving into systems programming with Rust.',
+      image: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=1005&h=600&fit=crop',
+      tags: ['Rust', 'Programming'],
+      link: '',
+      order: 6,
     }
-  ],
-  'Drafts': [],
-  'In Review': [],
-  'Archive': [],
+  ]
 };
 
-export const dummyGalleryItems = [
+export const dummyNavbarPages = [
   {
-    name: 'Mountain View',
-    slug: 'mountain-view',
-    image: 'https://placedog.net/600/600',
-    link: 'https://unsplash.com',
-    order: 1,
+    title: 'About',
     content: [
-      { type: 'heading_2', content: 'About this Shot' },
-      { type: 'paragraph', content: 'I took this photo while hiking in the mountains. The air was crisp and fresh.' },
-      { type: 'bullet_list_item', content: 'Camera: Sony A7III' },
-      { type: 'bullet_list_item', content: 'Lens: 24-70mm GM' },
-      { type: 'bullet_list_item', content: 'ISO: 100' },
-      { type: 'quote', content: 'Nature is not a place to visit. It is home.' }
+      { type: 'heading_1', content: 'About Me' },
+      { type: 'paragraph', content: 'I am a passionate developer building open source projects.' },
     ]
   },
   {
-    name: 'City Lights',
-    slug: 'city-lights',
-    image: 'https://placedog.net/601/601',
-    link: '',
-    order: 2,
+    title: 'Contact',
     content: [
-      { type: 'heading_2', content: 'Urban Exploration' },
-      { type: 'paragraph', content: 'The city comes alive at night.' }
-    ]
-  },
-  {
-    name: 'Ocean Waves',
-    slug: 'ocean-waves',
-    image: 'https://placedog.net/602/602',
-    link: '',
-    order: 3,
-    content: [
-      { type: 'heading_2', content: 'Serenity' },
-      { type: 'paragraph', content: 'The sound of the waves is meditative.' }
-    ]
-  },
-  {
-    name: 'Forest Path',
-    slug: 'forest-path',
-    image: 'https://placedog.net/603/603',
-    link: '',
-    order: 4,
-    content: [
-      { type: 'heading_2', content: 'Into the Woods' },
-      { type: 'paragraph', content: 'A quiet walk in the forest.' }
-    ]
-  },
-  {
-    name: 'Desert Dunes',
-    slug: 'desert-dunes',
-    image: 'https://placedog.net/604/604',
-    link: '',
-    order: 5,
-    content: [
-      { type: 'heading_2', content: 'Golden Sands' },
-      { type: 'paragraph', content: 'The desert is vast and beautiful.' }
-    ]
-  },
-  {
-    name: 'Starry Night',
-    slug: 'starry-night',
-    image: 'https://placedog.net/605/605',
-    link: '',
-    order: 6,
-    content: [
-      { type: 'heading_2', content: 'Stargazing' },
-      { type: 'paragraph', content: 'Looking up at the infinite universe.' }
+      { type: 'heading_1', content: 'Contact' },
+      { type: 'paragraph', content: 'Reach out to me on social media.' },
     ]
   }
 ];
