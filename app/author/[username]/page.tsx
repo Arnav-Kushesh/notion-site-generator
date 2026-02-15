@@ -1,4 +1,4 @@
-import { getAuthors, getAuthor, getAllPosts, Post } from '@/lib/data';
+import { getAuthors, getAuthor, getAllPosts } from '@/lib/data';
 import { css } from '@/styled-system/css';
 import { container } from '@/styled-system/patterns';
 import Link from 'next/link';
@@ -30,7 +30,6 @@ export default async function AuthorPage({ params }: { params: Promise<{ usernam
         notFound();
     }
 
-    // Get all posts by this author
     const allPosts = getAllPosts();
     const authorPosts = allPosts.filter(p => p.author_username === username);
 
@@ -42,55 +41,57 @@ export default async function AuthorPage({ params }: { params: Promise<{ usernam
                 flexDirection: 'column',
                 alignItems: 'center',
                 textAlign: 'center',
-                marginBottom: '60px',
+                mb: '48px',
             })}>
                 {author.picture && (
                     <img
                         src={author.picture}
                         alt={author.name}
                         className={css({
-                            width: '120px',
-                            height: '120px',
+                            width: '100px',
+                            height: '100px',
                             borderRadius: 'full',
                             objectFit: 'cover',
-                            marginBottom: '4',
-                            border: '3px solid token(colors.border)',
+                            mb: '16px',
+                            border: '2px solid token(colors.border.default)',
                         })}
                     />
                 )}
-                <h1 className={css({ fontSize: '3xl', fontWeight: 'bold', marginBottom: '1' })}>
+                <h1 className={css({ fontSize: '1.8rem', fontWeight: '800', mb: '4px', letterSpacing: '-0.02em' })}>
                     {author.name}
                 </h1>
-                <p className={css({ color: 'text.muted', fontSize: 'sm', marginBottom: '4' })}>
+                <p className={css({ color: 'text.tertiary', fontSize: '0.85rem', mb: '12px' })}>
                     @{author.username}
                 </p>
-                <p className={css({ color: 'text.muted', fontSize: 'md', maxWidth: '500px', lineHeight: '1.6', marginBottom: '6' })}>
-                    {author.description}
-                </p>
+                {author.description && (
+                    <p className={css({ color: 'text.secondary', fontSize: '0.95rem', maxWidth: '480px', lineHeight: '1.6', mb: '20px' })}>
+                        {author.description}
+                    </p>
+                )}
 
                 {/* Social Links */}
-                <div className={css({ display: 'flex', gap: '4', flexWrap: 'wrap', justifyContent: 'center' })}>
+                <div className={css({ display: 'flex', gap: '16px', flexWrap: 'wrap', justifyContent: 'center' })}>
                     {author.github_handle && (
                         <a href={`https://github.com/${author.github_handle}`} target="_blank" rel="noopener noreferrer"
-                            className={css({ color: 'text.muted', fontSize: 'sm', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
+                            className={css({ color: 'text.tertiary', fontSize: '0.85rem', fontWeight: '500', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
                             GitHub
                         </a>
                     )}
                     {author.x_handle && (
                         <a href={`https://x.com/${author.x_handle}`} target="_blank" rel="noopener noreferrer"
-                            className={css({ color: 'text.muted', fontSize: 'sm', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
-                            X / Twitter
+                            className={css({ color: 'text.tertiary', fontSize: '0.85rem', fontWeight: '500', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
+                            X
                         </a>
                     )}
                     {author.instagram_handle && (
                         <a href={`https://instagram.com/${author.instagram_handle}`} target="_blank" rel="noopener noreferrer"
-                            className={css({ color: 'text.muted', fontSize: 'sm', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
+                            className={css({ color: 'text.tertiary', fontSize: '0.85rem', fontWeight: '500', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
                             Instagram
                         </a>
                     )}
                     {author.email && (
                         <a href={`mailto:${author.email}`}
-                            className={css({ color: 'text.muted', fontSize: 'sm', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
+                            className={css({ color: 'text.tertiary', fontSize: '0.85rem', fontWeight: '500', _hover: { color: 'text.primary' }, transition: 'color 0.2s' })}>
                             Email
                         </a>
                     )}
@@ -100,10 +101,10 @@ export default async function AuthorPage({ params }: { params: Promise<{ usernam
             {/* Author's Posts */}
             {authorPosts.length > 0 && (
                 <section>
-                    <h2 className={css({ fontSize: '2xl', fontWeight: 'bold', marginBottom: '6' })}>
+                    <h2 className={css({ fontSize: '1.3rem', fontWeight: '700', mb: '20px', letterSpacing: '-0.02em' })}>
                         Published Work
                     </h2>
-                    <div className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
+                    <div className={css({ display: 'flex', flexDirection: 'column', gap: '8px' })}>
                         {authorPosts.map((post) => (
                             <Link
                                 key={`${post.collection}-${post.slug}`}
@@ -111,47 +112,53 @@ export default async function AuthorPage({ params }: { params: Promise<{ usernam
                                 className={css({
                                     display: 'flex',
                                     flexDirection: { base: 'column', sm: 'row' },
-                                    gap: '4',
-                                    padding: '4',
-                                    borderRadius: 'lg',
-                                    border: '1px solid token(colors.border.subtle)',
-                                    bg: 'bg.subtle',
-                                    transition: 'all 0.2s',
+                                    gap: '16px',
+                                    p: '16px',
+                                    borderRadius: '12px',
+                                    border: '1px solid token(colors.border.default)',
+                                    transition: 'all 0.2s ease',
                                     textDecoration: 'none',
-                                    _hover: { bg: 'bg.muted', borderColor: 'border.default', transform: 'translateY(-2px)', shadow: 'md' },
+                                    _hover: { bg: 'bg.secondary', borderColor: 'text.tertiary', transform: 'translateY(-1px)' },
                                 })}
                             >
-                                {post.thumbnail && (
+                                {(post.thumbnail || post.image) && (
                                     <div className={css({
                                         width: { base: '100%', sm: '120px' },
-                                        height: { base: '200px', sm: '80px' },
+                                        height: { base: '160px', sm: '80px' },
                                         flexShrink: 0,
-                                        borderRadius: 'md',
+                                        borderRadius: '8px',
                                         overflow: 'hidden',
                                     })}>
                                         <img
-                                            src={post.thumbnail}
+                                            src={post.thumbnail || post.image}
                                             alt={post.title}
                                             className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
                                         />
                                     </div>
                                 )}
                                 <div className={css({ flex: 1, minWidth: 0 })}>
-                                    <div className={css({ display: 'flex', alignItems: 'center', gap: '2', marginBottom: '1' })}>
+                                    <div className={css({ display: 'flex', alignItems: 'center', gap: '8px', mb: '4px' })}>
                                         <span className={css({
-                                            fontSize: 'xs',
-                                            bg: 'bg.canvas',
-                                            px: '2',
-                                            py: '0.5',
-                                            borderRadius: 'md',
-                                            border: '1px solid token(colors.border)',
+                                            fontSize: '0.7rem',
+                                            bg: 'bg.tertiary',
+                                            color: 'text.secondary',
+                                            px: '6px',
+                                            py: '2px',
+                                            borderRadius: 'full',
                                             textTransform: 'capitalize',
+                                            flexShrink: 0,
                                         })}>
                                             {post.collection}
                                         </span>
-                                        <h3 className={css({ fontWeight: 'bold', fontSize: 'lg', truncate: true })}>{post.title}</h3>
+                                        <h3 className={css({ fontWeight: '600', fontSize: '1rem', truncate: true, color: 'text.primary' })}>
+                                            {post.title}
+                                        </h3>
                                     </div>
-                                    <p className={css({ color: 'text.muted', fontSize: 'sm', lineClamp: 2 })}>{post.description}</p>
+                                    {post.description && (
+                                        <p className={css({ color: 'text.secondary', fontSize: '0.85rem', lineClamp: 2, lineHeight: '1.5' })}>
+                                            {post.description}
+                                        </p>
+                                    )}
                                 </div>
                             </Link>
                         ))}
@@ -160,7 +167,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ usernam
             )}
 
             {authorPosts.length === 0 && (
-                <p className={css({ textAlign: 'center', color: 'text.muted', fontSize: 'md' })}>
+                <p className={css({ textAlign: 'center', color: 'text.tertiary', fontSize: '0.95rem' })}>
                     No published work yet.
                 </p>
             )}

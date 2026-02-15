@@ -18,14 +18,14 @@ export function SearchButton() {
                 className={css({
                     cursor: 'pointer',
                     p: '6px',
-                    borderRadius: 'md',
+                    borderRadius: '8px',
                     bg: 'transparent',
                     border: 'none',
-                    color: 'text.secondary',
-                    transition: 'all 0.2s',
+                    color: 'text.tertiary',
+                    transition: 'all 0.15s ease',
                     display: 'flex',
                     alignItems: 'center',
-                    _hover: { color: 'text.primary', bg: 'bg.tertiary' },
+                    _hover: { color: 'text.primary', bg: 'bg.secondary' },
                 })}
             >
                 <Search size={18} />

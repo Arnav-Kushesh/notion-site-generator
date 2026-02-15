@@ -1,35 +1,48 @@
-
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { css } from '../styled-system/css';
 import { GenericList } from './GenericList';
-import { MoreHorizontal, List, Grid, Image as ImageIcon } from 'lucide-react';
-// Wait, I am using PandaCSS, not Chakra UI.
-// I should build a simple custom dropdown or use a lightweight accessible menu.
-// Or just a simple state toggle if 3 options.
-// Let's build a simple custom dropdown using standard HTML/CSS for now to avoid large deps if not present.
-// Actually, I don't see Chakra in package.json. I shouldn't introduce it.
+import { MoreHorizontal, List, Grid, Image as ImageIcon, LayoutList } from 'lucide-react';
 
 function ViewTypeMenu({ currentType, onSelect }: { currentType: string, onSelect: (t: string) => void }) {
     const [isOpen, setIsOpen] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
-    // Simple outside click close logic omitted for brevity in this snippet, 
-    // but in a real app use a hook like useOnClickOutside.
-    // For now, toggle is fine.
+    useEffect(() => {
+        function handleClickOutside(event: MouseEvent) {
+            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+            }
+        }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const options = [
+        { key: 'list_view', label: 'List', icon: <List size={15} /> },
+        { key: 'minimal_list_view', label: 'Minimal', icon: <LayoutList size={15} /> },
+        { key: 'card_view', label: 'Cards', icon: <Grid size={15} /> },
+        { key: 'grid_view', label: 'Grid', icon: <ImageIcon size={15} /> },
+    ];
 
     return (
-        <div className={css({ position: 'relative' })}>
+        <div ref={containerRef} className={css({ position: 'relative' })}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
                 className={css({
-                    p: '2',
-                    borderRadius: 'md',
+                    p: '6px',
+                    borderRadius: '8px',
                     cursor: 'pointer',
-                    _hover: { bg: 'bg.subtle' }
+                    color: 'text.tertiary',
+                    bg: 'transparent',
+                    border: 'none',
+                    transition: 'all 0.15s ease',
+                    _hover: { color: 'text.primary', bg: 'bg.secondary' },
                 })}
+                aria-label="Change view type"
             >
-                <MoreHorizontal size={20} />
+                <MoreHorizontal size={18} />
             </button>
 
             {isOpen && (
@@ -37,63 +50,43 @@ function ViewTypeMenu({ currentType, onSelect }: { currentType: string, onSelect
                     position: 'absolute',
                     top: '100%',
                     right: 0,
-                    mt: '2',
+                    mt: '6px',
                     bg: 'bg.primary',
-                    border: '1px solid token(colors.border)',
-                    borderRadius: 'md',
+                    border: '1px solid token(colors.border.default)',
+                    borderRadius: '10px',
                     boxShadow: 'lg',
                     zIndex: 100,
-                    minWidth: '150px',
-                    overflow: 'hidden'
+                    minWidth: '160px',
+                    overflow: 'hidden',
+                    py: '4px',
+                    animation: 'slideDown 0.15s ease-out',
                 })}>
-                    <div
-                        onClick={() => { onSelect('list_view'); setIsOpen(false); }}
-                        className={css({
-                            px: '4', py: '2', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2',
-                            bg: currentType === 'list_view' ? 'bg.subtle' : 'transparent',
-                            _hover: { bg: 'bg.subtle' }
-                        })}
-                    >
-                        <List size={16} /> List View
-                    </div>
-                    <div
-                        onClick={() => { onSelect('minimal_list_view'); setIsOpen(false); }}
-                        className={css({
-                            px: '4', py: '2', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2',
-                            bg: currentType === 'minimal_list_view' ? 'bg.subtle' : 'transparent',
-                            _hover: { bg: 'bg.subtle' }
-                        })}
-                    >
-                        <List size={16} /> Minimal List
-                    </div>
-                    <div
-                        onClick={() => { onSelect('card_view'); setIsOpen(false); }}
-                        className={css({
-                            px: '4', py: '2', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2',
-                            bg: currentType === 'card_view' ? 'bg.subtle' : 'transparent',
-                            _hover: { bg: 'bg.subtle' }
-                        })}
-                    >
-                        <Grid size={16} /> Card View
-                    </div>
-                    <div
-                        onClick={() => { onSelect('grid_view'); setIsOpen(false); }}
-                        className={css({
-                            px: '4', py: '2', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '2',
-                            bg: currentType === 'grid_view' ? 'bg.subtle' : 'transparent',
-                            _hover: { bg: 'bg.subtle' }
-                        })}
-                    >
-                        <ImageIcon size={16} /> Grid View
-                    </div>
+                    {options.map(({ key, label, icon }) => (
+                        <button
+                            key={key}
+                            onClick={() => { onSelect(key); setIsOpen(false); }}
+                            className={css({
+                                w: '100%',
+                                px: '12px',
+                                py: '8px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                fontSize: '0.85rem',
+                                fontWeight: currentType === key ? '600' : '400',
+                                color: currentType === key ? 'text.primary' : 'text.secondary',
+                                bg: currentType === key ? 'bg.secondary' : 'transparent',
+                                border: 'none',
+                                transition: 'all 0.1s ease',
+                                _hover: { bg: 'bg.secondary', color: 'text.primary' },
+                            })}
+                        >
+                            {icon}
+                            {label}
+                        </button>
+                    ))}
                 </div>
-            )}
-            {/* Backdrop to close */}
-            {isOpen && (
-                <div
-                    onClick={() => setIsOpen(false)}
-                    className={css({ position: 'fixed', inset: 0, zIndex: 9 })}
-                />
             )}
         </div>
     );
@@ -110,12 +103,14 @@ export function InteractiveSection({ title, description, items, initialViewType 
     const [viewType, setViewType] = useState(initialViewType);
 
     return (
-        <section className={css({ marginBottom: '16' })}>
-            <div className={css({ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6' })}>
+        <section className={css({ mb: '40px' })}>
+            <div className={css({ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: '24px' })}>
                 <div>
-                    <h2 className={css({ fontSize: '2xl', fontWeight: 'bold' })}>{title}</h2>
+                    <h2 className={css({ fontSize: '1.5rem', fontWeight: '700', color: 'text.primary', letterSpacing: '-0.02em' })}>
+                        {title}
+                    </h2>
                     {description && (
-                        <p className={css({ color: 'text.muted', fontSize: 'sm', marginTop: '1' })}>{description}</p>
+                        <p className={css({ color: 'text.secondary', fontSize: '0.875rem', mt: '4px' })}>{description}</p>
                     )}
                 </div>
                 <ViewTypeMenu currentType={viewType} onSelect={setViewType} />

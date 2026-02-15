@@ -1,12 +1,8 @@
-import { getHomeData, getPosts, getGalleryItems } from '@/lib/data';
+import { getHomeData } from '@/lib/data';
 import { InfoSection } from '@/components/InfoSection';
 import { DynamicSection } from '@/components/DynamicSection';
 import { Newsletter } from '@/components/Newsletter';
 import { css } from '@/styled-system/css';
-import { container } from '@/styled-system/patterns';
-
-const mainStyle = css({ pb: '100px' });
-const sectionContainerStyle = container({ py: '60px' });
 
 export default function Home() {
     const homeData = getHomeData();
@@ -16,7 +12,7 @@ export default function Home() {
         homeData.info?.enable_newsletter === 'true';
 
     return (
-        <main className={mainStyle}>
+        <main className={css({ pb: '60px' })}>
             <div className={css({ display: 'flex', flexDirection: 'column', gap: '0' })}>
                 {sections.map((section) => {
                     if (section.type === 'info_section') {

@@ -7,7 +7,7 @@ import { css } from '@/styled-system/css';
 import { Navbar } from '@/components/Navbar';
 import { Sidebar } from '@/components/Sidebar';
 import { AppLayout } from '@/components/AppLayout';
-import { getHomeData, getCodeInjection, getAllPosts } from '@/lib/data';
+import { getHomeData, getCodeInjection, getCssInjection, getAllPosts } from '@/lib/data';
 import { GlobalConfigProvider } from '@/components/providers/GlobalConfigProvider';
 
 
@@ -40,6 +40,7 @@ export default async function RootLayout({
 
     // Code injection: get all code blocks to inject into <head>
     const codeInjectionBlocks = getCodeInjection();
+    const cssInjectionBlocks = getCssInjection();
 
     // Build search index from all posts
     const allPosts = getAllPosts();
@@ -59,6 +60,12 @@ export default async function RootLayout({
                     <script
                         key={`code-injection-${index}`}
                         dangerouslySetInnerHTML={{ __html: code }}
+                    />
+                ))}
+                {cssInjectionBlocks.map((cssCode, index) => (
+                    <style
+                        key={`css-injection-${index}`}
+                        dangerouslySetInnerHTML={{ __html: cssCode }}
                     />
                 ))}
             </head>

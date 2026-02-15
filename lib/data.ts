@@ -129,16 +129,23 @@ export interface CollectionSettings {
     show_newsletter_section: string;
 }
 
+function safeJsonParse<T>(filePath: string, fallback: T): T {
+    try {
+        const fileContents = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(fileContents);
+    } catch {
+        return fallback;
+    }
+}
+
 export function getHomeData(): HomeData {
     const fullPath = path.join(dataDirectory, 'home.json');
     if (fs.existsSync(fullPath)) {
-        const fileContents = fs.readFileSync(fullPath, 'utf8');
-        const homeData = JSON.parse(fileContents);
+        const homeData = safeJsonParse(fullPath, {} as HomeData);
 
         const sitePath = path.join(dataDirectory, 'site.json');
         if (fs.existsSync(sitePath)) {
-            const siteFile = fs.readFileSync(sitePath, 'utf8');
-            const siteData = JSON.parse(siteFile);
+            const siteData = safeJsonParse(sitePath, {});
             return { ...homeData, ...siteData };
         }
         return homeData;
@@ -205,6 +212,7 @@ export function getPosts(section: string): Post[] {
                 order_priority: data.order_priority ?? data.order ?? 0,
                 author_username: data.author_username || '',
                 video_embed_link: data.video_embed_link || '',
+                tags: data.tags || [],
                 ...data,
             } as Post;
         });
@@ -226,10 +234,7 @@ export function getPost(slug: string, section: string): Post | null {
     const dirPath = path.join(contentDirectory, section);
     const fullPath = path.join(dirPath, `${slug}.md`);
 
-    console.log(`[getPost] Checking path: ${fullPath}`);
-
     if (!fs.existsSync(fullPath)) {
-        console.log(`[getPost] File does not exist: ${fullPath}`);
         return null;
     }
 
@@ -245,10 +250,13 @@ export function getPost(slug: string, section: string): Post | null {
         tools: data.tools || '',
         cover: data.cover,
         thumbnail: data.thumbnail,
+        image: data.image,
         link: data.link,
+        collection: section,
         order_priority: data.order_priority ?? data.order ?? 0,
         author_username: data.author_username || '',
         video_embed_link: data.video_embed_link || '',
+        tags: data.tags || [],
         ...data,
     } as Post;
 }
@@ -319,9 +327,7 @@ export function getNavbarPage(slug: string): Post | null {
 export function getAuthors(): Author[] {
     const fullPath = path.join(dataDirectory, 'authors.json');
     if (!fs.existsSync(fullPath)) return [];
-
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    return JSON.parse(fileContents);
+    return safeJsonParse(fullPath, []);
 }
 
 export function getAuthor(username: string): Author | null {
@@ -334,18 +340,14 @@ export function getAuthor(username: string): Author | null {
 export function getCollectionSettings(collectionName: string): CollectionSettings | null {
     const fullPath = path.join(dataDirectory, 'collection_settings.json');
     if (!fs.existsSync(fullPath)) return null;
-
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const settings = JSON.parse(fileContents);
+    const settings = safeJsonParse<Record<string, CollectionSettings>>(fullPath, {});
     return settings[collectionName.toLowerCase()] || null;
 }
 
 export function getAllCollectionSettings(): Record<string, CollectionSettings> {
     const fullPath = path.join(dataDirectory, 'collection_settings.json');
     if (!fs.existsSync(fullPath)) return {};
-
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    return JSON.parse(fileContents);
+    return safeJsonParse(fullPath, {});
 }
 
 // --- New: Code Injection ---
@@ -353,9 +355,15 @@ export function getAllCollectionSettings(): Record<string, CollectionSettings> {
 export function getCodeInjection(): string[] {
     const fullPath = path.join(dataDirectory, 'code_injection.json');
     if (!fs.existsSync(fullPath)) return [];
+    return safeJsonParse(fullPath, []);
+}
 
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    return JSON.parse(fileContents);
+// --- New: CSS Injection ---
+
+export function getCssInjection(): string[] {
+    const fullPath = path.join(dataDirectory, 'css_injection.json');
+    if (!fs.existsSync(fullPath)) return [];
+    return safeJsonParse(fullPath, []);
 }
 
 // --- New: All Posts (for search) ---

@@ -1,15 +1,11 @@
-
 import { css } from '@/styled-system/css';
-import { container, stack, flex } from '@/styled-system/patterns';
+import { container, flex } from '@/styled-system/patterns';
 import { InfoSectionData } from '@/lib/data';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 
 export function InfoSection({ data }: { data: InfoSectionData }) {
-    // view_type: 'col_centered_view' | 'col_left_view' | 'row_reverse_view' | 'row_view'
-    // Default to col_centered_view
     const viewType = data.view_type || 'col_centered_view';
-
     const isRow = viewType === 'row_view' || viewType === 'row_reverse_view';
     const isReverse = viewType === 'row_reverse_view';
     const isCentered = viewType === 'col_centered_view';
@@ -19,11 +15,11 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
             <div className={flex({
                 direction: {
                     base: 'column',
-                    md: isRow ? (isReverse ? 'row-reverse' : 'row') : 'column'
+                    md: isRow ? (isReverse ? 'row-reverse' : 'row') : 'column',
                 },
-                gap: isRow ? '60px' : '40px',
+                gap: isRow ? '48px' : '32px',
                 align: 'center',
-                textAlign: isCentered ? 'center' : 'left', // This applies to all breakpoints unless overridden
+                textAlign: isCentered ? 'center' : 'left',
                 justify: 'center',
                 flexWrap: isRow ? 'nowrap' : 'wrap',
             })}>
@@ -39,10 +35,10 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
                             position: 'relative',
                             width: '100%',
                             height: 'auto',
-                            aspectRatio: '16/9', // Or auto?
-                            borderRadius: '16px',
+                            aspectRatio: '16/9',
+                            borderRadius: '12px',
                             overflow: 'hidden',
-                            boxShadow: 'lg',
+                            border: '1px solid token(colors.border.default)',
                         })}>
                             <Image
                                 src={data.image}
@@ -60,26 +56,28 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
                     flex: isRow ? '1' : 'initial',
                     maxWidth: isRow ? 'none' : '800px',
                     mx: isCentered ? 'auto' : '0',
-                    animation: 'fadeInUp 0.8s ease-out forwards',
-                    opacity: 0, // Start hidden for animation
+                    animationName: 'fadeInUp',
+                    animationDuration: '0.6s',
+                    animationTimingFunction: 'ease-out',
+                    animationFillMode: 'forwards',
+                    opacity: 0,
                 })}>
                     <h2 className={css({
-                        fontSize: { base: '2.5rem', md: '3rem', lg: '3.5rem' },
+                        fontSize: { base: '2.2rem', md: '2.8rem', lg: '3.2rem' },
                         fontWeight: '800',
                         lineHeight: '1.1',
-                        mb: '20px',
+                        mb: '16px',
                         color: 'text.primary',
-                        letterSpacing: '-0.02em',
-                        // Gradient text option? The user likes premium design.
+                        letterSpacing: '-0.03em',
                     })}>
                         {data.title}
                     </h2>
                     <p className={css({
-                        fontSize: '1.2rem',
-                        lineHeight: '1.6',
+                        fontSize: '1.1rem',
+                        lineHeight: '1.7',
                         color: 'text.secondary',
-                        mb: '30px',
-                        whiteSpace: 'pre-wrap', // Handle newlines
+                        mb: '28px',
+                        whiteSpace: 'pre-wrap',
                     })}>
                         {data.description}
                     </p>
@@ -93,21 +91,22 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '8px',
-                                bg: 'text.primary',
-                                color: 'bg.primary',
+                                bg: 'var(--colors-text-primary)',
+                                color: 'var(--colors-bg-primary) !important',
                                 px: '24px',
-                                py: '14px',
-                                borderRadius: 'full',
+                                py: '12px',
+                                borderRadius: '12px',
                                 fontWeight: '600',
-                                transition: 'transform 0.2s, opacity 0.2s',
+                                fontSize: '0.9rem',
+                                transition: 'all 0.2s ease',
                                 _hover: {
-                                    transform: 'translateY(-2px)',
+                                    transform: 'translateY(-1px)',
                                     opacity: 0.9,
-                                }
+                                },
                             })}
                         >
                             Explore
-                            <ArrowRight size={18} />
+                            <ArrowRight size={16} />
                         </a>
                     )}
                 </div>

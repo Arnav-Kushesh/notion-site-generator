@@ -7,6 +7,7 @@ import {
     dummyCollectionSettings,
     dummyAuthors,
     dummyCodeInjection,
+    dummyCssInjection,
 } from './dummy-data.mjs';
 
 /**
@@ -80,6 +81,7 @@ export async function seedNotion(rootPageId, notion) {
     await createConfigDB(settingsPageId, notion);
     await createCollectionSettingsPage(settingsPageId, notion);
     await createCodeInjectionPage(settingsPageId, notion);
+    await createCssInjectionPage(settingsPageId, notion);
 
 
     console.log("✨ Seeding process completed successfully!");
@@ -569,4 +571,21 @@ async function createCodeInjectionPage(parentId, notion) {
     });
 
     console.log(`   ✅ Code Injection Page created (ID: ${page.id})`);
+}
+
+// --- 8. CSS Injection Page ---
+
+async function createCssInjectionPage(parentId, notion) {
+    console.log("\n📦 Creating Page: CSS Injection...");
+
+    const children = dummyCssInjection.map(code => codeBlock(code, 'css'));
+
+    const page = await notion.pages.create({
+        parent: { page_id: parentId },
+        properties: { title: { title: plainText('CSS') } },
+        icon: { type: "emoji", emoji: "🎨" },
+        children: children,
+    });
+
+    console.log(`   ✅ CSS Injection Page created (ID: ${page.id})`);
 }

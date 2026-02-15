@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Footer } from './Footer';
@@ -22,7 +21,7 @@ export function AppLayout({ sidebar, navbar, children }: { sidebar: ReactNode, n
                 opacity: showSidebar ? 1 : 0,
                 pointerEvents: showSidebar ? 'auto' : 'none',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                width: 'auto' // Sidebar itself defines width (260px + margins)
+                width: 'auto',
             })}>
                 {sidebar}
             </div>
@@ -33,7 +32,7 @@ export function AppLayout({ sidebar, navbar, children }: { sidebar: ReactNode, n
                 top: 0,
                 left: 0,
                 right: 0,
-                zIndex: 30, // Below sidebar
+                zIndex: 30,
                 transform: showSidebar ? 'translateY(-100%)' : 'translateY(0)',
                 opacity: showSidebar ? 0 : 1,
                 pointerEvents: showSidebar ? 'none' : 'auto',
@@ -45,20 +44,20 @@ export function AppLayout({ sidebar, navbar, children }: { sidebar: ReactNode, n
             {/* Main Content Wrapper */}
             <div className={css({
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                marginLeft: showSidebar ? '300px' : '0', // Adjust for sidebar width
-                paddingTop: showSidebar ? '40px' : '80px', // Adjust for navbar or top spacing
+                marginLeft: showSidebar ? '292px' : '0',
+                paddingTop: showSidebar ? '32px' : '72px',
                 minHeight: '100vh',
                 display: 'flex',
                 justifyContent: 'center',
             })}>
                 <div className={css({
                     width: '100%',
-                    maxWidth: '1200px', // Increased from 800px to fix "widtch too small"
-                    px: '20px',
+                    maxWidth: '1200px',
+                    px: '24px',
                     transition: 'max-width 0.3s',
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: 'calc(100vh - 80px)' // Ensure footer pused down
+                    minHeight: 'calc(100vh - 72px)',
                 })}>
                     <div className={css({ flex: 1 })}>
                         {children}

@@ -14,34 +14,41 @@ const navbarStyle = css({
     w: '100%',
     zIndex: 100,
     bg: 'bg.primary',
-    // _dark: { bg: 'rgba(18, 18, 18, 0.8)' }, // Remove transparency
-    backdropFilter: 'blur(10px)',
+    backdropFilter: 'blur(12px)',
     borderBottom: '1px solid token(colors.border.default)',
+    transition: 'all 0.2s ease',
 });
 
 const navbarContainerStyle = container({
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: '60px',
+    height: '56px',
+    px: '20px',
 });
 
 const logoStyle = css({
-    fontSize: '1.2rem',
-    fontWeight: 'bold',
+    fontSize: '1rem',
+    fontWeight: '600',
     color: 'text.primary',
     truncate: true,
     maxWidth: '200px',
+    letterSpacing: '-0.01em',
 });
 
-const navLinksContainerStyle = flex({ gap: '20px', alignItems: 'center' });
+const navLinksContainerStyle = flex({ gap: '6px', alignItems: 'center' });
 
 const linkStyle = css({
     color: 'text.secondary',
-    fontSize: '0.95rem',
+    fontSize: '0.875rem',
+    fontWeight: '500',
     transition: 'color 0.2s',
+    px: '10px',
+    py: '6px',
+    borderRadius: '6px',
     _hover: {
-        color: 'primary',
+        color: 'text.primary',
+        bg: 'bg.secondary',
     },
 });
 
@@ -58,16 +65,16 @@ export async function Navbar() {
                 {showLogo ? (
                     <Link
                         href="/"
-                        className={css({ display: 'flex', alignItems: 'center', gap: '2', textDecoration: 'none' })}
+                        className={css({ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' })}
                     >
                         {logo ? (
                             <div className={css({
-                                width: '32px',
-                                height: '32px',
+                                width: '28px',
+                                height: '28px',
                                 position: 'relative',
                                 borderRadius: 'full',
                                 overflow: 'hidden',
-                                border: '1px solid token(colors.border.subtle)'
+                                flexShrink: 0,
                             })}>
                                 <Image
                                     src={logo}
@@ -80,30 +87,42 @@ export async function Navbar() {
                         <span className={logoStyle}>{title}</span>
                     </Link>
                 ) : (
-                    <div></div> /* Spacer */
+                    <div />
                 )}
 
                 <div className={navLinksContainerStyle}>
-                    <Link href="/" className={linkStyle}>
-                        Home
-                    </Link>
-                    {pages.map((page) => (
-                        <Link
-                            key={page.slug}
-                            href={`/${page.slug}`}
-                            className={linkStyle}
-                        >
-                            {page.title}
+                    <div className={css({ display: { base: 'none', md: 'flex' }, alignItems: 'center', gap: '2px' })}>
+                        <Link href="/" className={linkStyle}>
+                            Home
                         </Link>
-                    ))}
+                        {pages.map((page) => (
+                            <Link
+                                key={page.slug}
+                                href={`/${page.slug}`}
+                                className={linkStyle}
+                            >
+                                {page.title}
+                            </Link>
+                        ))}
+                    </div>
 
-                    <div className={css({ display: { base: 'none', md: 'block' } })}>
+                    <div className={css({
+                        display: { base: 'none', lg: 'flex' },
+                        alignItems: 'center',
+                        ml: '8px',
+                        pl: '12px',
+                        borderLeft: '1px solid token(colors.border.default)',
+                    })}>
                         <SocialIcons config={homeData.info} />
                     </div>
 
-                    <SearchButton />
-
-                    <div className={css({ display: 'block' })}>
+                    <div className={css({
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2px',
+                        ml: '4px',
+                    })}>
+                        <SearchButton />
                         <SettingsMenu variant="vertical" />
                     </div>
                 </div>

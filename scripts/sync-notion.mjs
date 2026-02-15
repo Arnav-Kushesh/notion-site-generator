@@ -18,10 +18,6 @@ if (!process.env.NOTION_API_KEY || !ROOT_PAGE_ID) {
     process.exit(1);
 }
 
-console.log("DEBUG: Checking Notion Client...");
-console.log("DEBUG: notion.databases keys:", Object.keys(notion.databases || {}));
-console.log("DEBUG: notion.databases.query type:", typeof notion.databases?.query);
-
 
 // Helpers
 const slugify = (text) => text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
@@ -567,6 +563,30 @@ async function syncCodeInjection() {
     await fs.writeFile('notion_state/data/code_injection.json', JSON.stringify(codeBlocks, null, 2));
 }
 
+// --- New: Sync CSS Injection ---
+async function syncCssInjection() {
+    console.log("Syncing CSS Injection...");
+    const settingsPageId = await getPageByName(ROOT_PAGE_ID, "Settings");
+    if (!settingsPageId) {
+        console.warn("Settings page not found!");
+        return;
+    }
+
+    const cssInjectionPageId = await getPageByName(settingsPageId, "CSS");
+    if (!cssInjectionPageId) {
+        console.warn("CSS Injection page not found in Settings!");
+        return;
+    }
+
+    const children = await fetchAllChildren(cssInjectionPageId);
+    const codeBlocks = children
+        .filter(b => b.type === 'code')
+        .map(b => b.code.rich_text.map(t => t.plain_text).join(''));
+
+    await ensureDir('notion_state/data');
+    await fs.writeFile('notion_state/data/css_injection.json', JSON.stringify(codeBlocks, null, 2));
+}
+
 
 async function main() {
     try {
@@ -577,6 +597,7 @@ async function main() {
         await syncAuthors();
         await syncCollectionSettings();
         await syncCodeInjection();
+        await syncCssInjection();
         console.log("Completed sync.");
     } catch (e) {
         console.error(e);

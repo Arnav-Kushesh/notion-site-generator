@@ -1,8 +1,7 @@
-
 'use client';
 
-import { MoreHorizontal, MoreVertical, Check, Layout, Palette, X } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { MoreHorizontal, MoreVertical, Check, Layout, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { css } from '@/styled-system/css';
 import { useGlobalConfig } from '@/components/providers/GlobalConfigProvider';
@@ -16,7 +15,6 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
         setMounted(true);
     }, []);
 
-    // Lock scroll when open
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -27,12 +25,12 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
     }, [isOpen]);
 
     const themeColors: Record<string, string> = {
-        light: '#ffffff',
-        dark: '#121212',
-        blue: '#1e3a8a',
-        pink: '#be185d',
-        red: '#b91c1c',
-        green: '#047857',
+        light: '#f5f5f7',
+        dark: '#1a1a1a',
+        blue: '#1E293B',
+        pink: '#4c1d95',
+        red: '#450a0a',
+        green: '#064e3b',
         brown: '#431407',
     };
 
@@ -41,29 +39,33 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
     };
 
     const modalContent = (
-        <div className={css({
-            position: 'fixed',
-            inset: 0,
-            zIndex: 9999, // Highest z-index
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            bg: 'rgba(0,0,0,0.5)', // Backdrop
-            backdropFilter: 'blur(4px)',
-            animation: 'fadeIn 0.2s ease-out'
-        })}>
+        <div
+            onClick={() => setIsOpen(false)}
+            className={css({
+                position: 'fixed',
+                inset: 0,
+                zIndex: 9999,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                bg: 'rgba(0,0,0,0.4)',
+                backdropFilter: 'blur(4px)',
+                animation: 'fadeIn 0.15s ease-out',
+            })}
+        >
             <div
+                onClick={(e) => e.stopPropagation()}
                 className={css({
                     bg: 'bg.primary',
                     width: '90%',
-                    maxWidth: '400px',
-                    borderRadius: '2xl',
+                    maxWidth: '380px',
+                    borderRadius: '16px',
                     boxShadow: '2xl',
-                    border: '1px solid token(colors.border.subtle)',
+                    border: '1px solid token(colors.border.default)',
                     overflow: 'hidden',
-                    animation: 'scaleUp 0.2s ease-out',
+                    animation: 'scaleUp 0.15s ease-out',
                     maxHeight: '90vh',
-                    overflowY: 'auto'
+                    overflowY: 'auto',
                 })}
             >
                 {/* Header */}
@@ -72,21 +74,29 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     p: '20px',
-                    borderBottom: '1px solid token(colors.border.subtle)'
+                    borderBottom: '1px solid token(colors.border.default)',
                 })}>
-                    <h2 className={css({ fontSize: 'xl', fontWeight: 'bold' })}>Settings</h2>
+                    <h2 className={css({ fontSize: '1rem', fontWeight: '600' })}>Settings</h2>
                     <button
                         onClick={() => setIsOpen(false)}
-                        className={css({ p: '2', borderRadius: 'full', cursor: 'pointer', _hover: { bg: 'bg.subtle' } })}
+                        className={css({
+                            p: '6px',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            color: 'text.tertiary',
+                            bg: 'transparent',
+                            border: 'none',
+                            _hover: { bg: 'bg.secondary', color: 'text.primary' },
+                        })}
                     >
-                        <X size={20} />
+                        <X size={18} />
                     </button>
                 </div>
 
-                <div className={css({ p: '20px' })}>
+                <div className={css({ p: '20px', display: 'flex', flexDirection: 'column', gap: '24px' })}>
                     {/* Layout Section */}
-                    <div className={css({ mb: '24px' })}>
-                        <h3 className={css({ fontSize: 'xs', fontWeight: 'bold', textTransform: 'uppercase', color: 'text.muted', mb: '12px' })}>
+                    <div>
+                        <h3 className={css({ fontSize: '0.7rem', fontWeight: '600', textTransform: 'uppercase', color: 'text.tertiary', mb: '10px', letterSpacing: '0.05em' })}>
                             Layout
                         </h3>
                         <div
@@ -95,37 +105,37 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'space-between',
-                                p: '3',
-                                borderRadius: 'xl',
+                                p: '12px',
+                                borderRadius: '10px',
                                 cursor: 'pointer',
-                                bg: 'bg.subtle',
+                                bg: 'bg.secondary',
                                 border: '1px solid transparent',
-                                transition: 'all 0.2s',
-                                _hover: { borderColor: 'border.active' }
+                                transition: 'all 0.15s ease',
+                                _hover: { borderColor: 'border.default' },
                             })}
                         >
-                            <div className={css({ display: 'flex', alignItems: 'center', gap: '3' })}>
-                                <Layout size={18} />
-                                <span className={css({ fontWeight: 'medium' })}>Show Sidebar</span>
+                            <div className={css({ display: 'flex', alignItems: 'center', gap: '10px' })}>
+                                <Layout size={16} className={css({ color: 'text.secondary' })} />
+                                <span className={css({ fontWeight: '500', fontSize: '0.875rem' })}>Sidebar</span>
                             </div>
                             <div className={css({
-                                w: '44px',
-                                h: '24px',
-                                bg: showSidebar ? 'green.500' : 'bg.muted',
+                                w: '40px',
+                                h: '22px',
+                                bg: showSidebar ? 'primary' : 'bg.tertiary',
                                 borderRadius: 'full',
                                 position: 'relative',
-                                transition: 'background 0.2s'
+                                transition: 'background 0.2s',
                             })}>
                                 <div className={css({
-                                    w: '20px',
-                                    h: '20px',
+                                    w: '18px',
+                                    h: '18px',
                                     bg: 'white',
                                     borderRadius: 'full',
                                     position: 'absolute',
                                     top: '2px',
-                                    left: showSidebar ? '22px' : '2px',
+                                    left: showSidebar ? '20px' : '2px',
                                     transition: 'left 0.2s',
-                                    shadow: 'sm'
+                                    shadow: 'sm',
                                 })} />
                             </div>
                         </div>
@@ -133,13 +143,13 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
 
                     {/* Theme Section */}
                     <div>
-                        <h3 className={css({ fontSize: 'xs', fontWeight: 'bold', textTransform: 'uppercase', color: 'text.muted', mb: '12px' })}>
+                        <h3 className={css({ fontSize: '0.7rem', fontWeight: '600', textTransform: 'uppercase', color: 'text.tertiary', mb: '10px', letterSpacing: '0.05em' })}>
                             Theme
                         </h3>
                         <div className={css({
                             display: 'grid',
                             gridTemplateColumns: 'repeat(4, 1fr)',
-                            gap: '12px'
+                            gap: '10px',
                         })}>
                             {availableThemes.map((theme) => (
                                 <button
@@ -147,33 +157,34 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
                                     onClick={() => handleThemeChange(theme)}
                                     className={css({
                                         aspectRatio: 'square',
-                                        borderRadius: 'xl',
+                                        borderRadius: '10px',
                                         border: '2px solid',
-                                        borderColor: colorMode === theme ? 'text.primary' : 'transparent',
+                                        borderColor: colorMode === theme ? 'primary' : 'transparent',
                                         cursor: 'pointer',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        transition: 'all 0.2s',
+                                        transition: 'all 0.15s ease',
                                         position: 'relative',
                                         overflow: 'hidden',
-                                        _hover: { transform: 'scale(1.05)' }
+                                        bg: 'transparent',
+                                        _hover: { transform: 'scale(1.08)' },
                                     })}
-                                    title={theme}
+                                    title={theme.charAt(0).toUpperCase() + theme.slice(1)}
                                 >
                                     <div
-                                        className={css({ position: 'absolute', inset: 0 })}
+                                        className={css({ position: 'absolute', inset: 0, borderRadius: '8px' })}
                                         style={{ backgroundColor: themeColors[theme] || '#888' }}
                                     />
                                     {colorMode === theme && (
                                         <div className={css({
                                             position: 'relative',
                                             zIndex: 1,
-                                            bg: 'rgba(0,0,0,0.2)',
+                                            bg: 'rgba(0,0,0,0.25)',
                                             borderRadius: 'full',
-                                            p: '1'
+                                            p: '2px',
                                         })}>
-                                            <Check size={16} color="white" />
+                                            <Check size={14} color="white" />
                                         </div>
                                     )}
                                 </button>
@@ -190,17 +201,18 @@ export function SettingsMenu({ variant = 'horizontal' }: { variant?: 'horizontal
             <button
                 onClick={() => setIsOpen(true)}
                 className={css({
-                    p: '2',
-                    borderRadius: 'full',
-                    color: 'text.secondary',
-                    transition: 'all 0.2s',
+                    p: '6px',
+                    borderRadius: '8px',
+                    color: 'text.tertiary',
+                    transition: 'all 0.15s ease',
                     cursor: 'pointer',
                     bg: 'transparent',
-                    _hover: { color: 'text.primary', bg: 'bg.subtle' }
+                    border: 'none',
+                    _hover: { color: 'text.primary', bg: 'bg.secondary' },
                 })}
                 aria-label="Settings"
             >
-                {variant === 'vertical' ? <MoreVertical size={20} /> : <MoreHorizontal size={20} />}
+                {variant === 'vertical' ? <MoreVertical size={18} /> : <MoreHorizontal size={18} />}
             </button>
             {mounted && isOpen && createPortal(modalContent, document.body)}
         </>

@@ -46,11 +46,12 @@ Integrate newsletter signups directly into your site.
 
 ## 6. Ad & Monetization Support
 
-Inject custom scripts (Google Ads, analytics, tracking pixels) via the **Code Injection** page.
+Inject custom scripts (Google Ads, analytics, tracking pixels) via the **Code Injection** page, or custom styles via the **CSS Injection** page.
 
-- **No code deployment needed**: Add scripts in Notion, they appear in `<head>`
+- **No code deployment needed**: Add scripts or styles in Notion, they appear in `<head>`
 - **Analytics**: Google Analytics, Plausible, Fathom, etc.
 - **Ad networks**: Google AdSense or any ad script
+- **Custom styling**: Override or extend the site's design via CSS code blocks in the Settings > CSS page
 
 ## 7. Content Ownership & Independence
 

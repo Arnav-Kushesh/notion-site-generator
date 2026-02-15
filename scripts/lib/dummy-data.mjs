@@ -324,6 +324,14 @@ export const dummyCodeInjection = [
   '<!-- Swan Code Injection: Add your analytics, meta tags, or custom scripts here -->',
 ];
 
+/**
+ * CSS INJECTION
+ * CSS code blocks to inject as <style> tags in <head>
+ */
+export const dummyCssInjection = [
+  '/* Swan CSS Injection: Add your custom styles here */',
+];
+
 export const dummyNavbarPages = [
   {
     title: 'About',

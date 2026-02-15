@@ -18,13 +18,13 @@ export function AuthorInfo({ authorUsername }: AuthorInfoProps) {
             className={css({
                 display: 'flex',
                 alignItems: 'center',
-                gap: '3',
-                marginTop: '4',
-                padding: '3',
-                borderRadius: 'lg',
-                transition: 'all 0.2s',
+                gap: '10px',
+                mt: '12px',
+                p: '8px 12px',
+                borderRadius: '10px',
+                transition: 'all 0.15s ease',
                 textDecoration: 'none',
-                _hover: { bg: 'bg.subtle' },
+                _hover: { bg: 'bg.secondary' },
             })}
         >
             {author.picture && (
@@ -32,16 +32,17 @@ export function AuthorInfo({ authorUsername }: AuthorInfoProps) {
                     src={author.picture}
                     alt={author.name}
                     className={css({
-                        width: '36px',
-                        height: '36px',
+                        width: '32px',
+                        height: '32px',
                         borderRadius: 'full',
                         objectFit: 'cover',
+                        flexShrink: 0,
                     })}
                 />
             )}
             <div>
-                <p className={css({ fontWeight: 'semibold', fontSize: 'sm' })}>{author.name}</p>
-                <p className={css({ color: 'text.muted', fontSize: 'xs' })}>@{author.username}</p>
+                <p className={css({ fontWeight: '600', fontSize: '0.85rem', color: 'text.primary' })}>{author.name}</p>
+                <p className={css({ color: 'text.tertiary', fontSize: '0.75rem' })}>@{author.username}</p>
             </div>
         </Link>
     );

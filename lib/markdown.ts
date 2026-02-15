@@ -8,7 +8,7 @@ export async function processMarkdown(content: string): Promise<string> {
     const result = await unified()
         .use(remarkParse)
         .use(remarkGfm)
-        .use(remarkHtml)
+        .use(remarkHtml, { allowDangerousHtml: true })
         .process(content);
     return result.toString();
 }
