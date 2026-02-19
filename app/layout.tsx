@@ -9,6 +9,7 @@ import { Sidebar } from '@/components/Sidebar';
 import { AppLayout } from '@/components/AppLayout';
 import { getHomeData, getCodeInjection, getCssInjection, getAllPosts } from '@/lib/data';
 import { GlobalConfigProvider } from '@/components/providers/GlobalConfigProvider';
+import { ExperimentPanel } from '@/components/ExperimentPanel';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -79,6 +80,7 @@ export default async function RootLayout({
                     >
                         {children}
                     </AppLayout>
+                    <ExperimentPanel />
                 </GlobalConfigProvider>
             </body>
         </html>

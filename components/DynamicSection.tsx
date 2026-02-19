@@ -19,6 +19,7 @@ export function DynamicSection({ data }: { data: DynamicSectionData }) {
     return (
         <section className={container({ py: '60px', maxWidth: '1200px' })}>
             <InteractiveSection
+                sectionId={data.id}
                 title={title}
                 items={items}
                 initialViewType={view_type || 'list_view'}

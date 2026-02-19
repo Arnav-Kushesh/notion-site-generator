@@ -1,11 +1,15 @@
+'use client';
+
 import { css } from '@/styled-system/css';
 import { container, flex } from '@/styled-system/patterns';
 import { InfoSectionData } from '@/lib/data';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
+import { useGlobalConfig } from './providers/GlobalConfigProvider';
 
 export function InfoSection({ data }: { data: InfoSectionData }) {
-    const viewType = data.view_type || 'col_centered_view';
+    const { sectionViewOverrides } = useGlobalConfig();
+    const viewType = sectionViewOverrides[data.id] || data.view_type || 'col_centered_view';
     const isRow = viewType === 'row_view' || viewType === 'row_reverse_view';
     const isReverse = viewType === 'row_reverse_view';
     const isCentered = viewType === 'col_centered_view';

@@ -28,8 +28,8 @@ The `scripts/sync-notion.mjs` script connects to the Notion API and downloads:
 | Collection items | `notion_state/content/{collection}/*.md` | Markdown with frontmatter |
 | Authors database | `notion_state/data/authors.json` | JSON array |
 | Configure Collections | `notion_state/data/collection_settings.json` | JSON key-value (Synced from Settings > Configure Collections) |
-| Code Injection | `notion_state/data/code_injection.json` | JSON string array (Synced from Settings > Code) |
-| CSS Injection | `notion_state/data/css_injection.json` | JSON string array (Synced from Settings > CSS) |
+| Code Injection | `notion_state/data/code_injection.json` | JSON string array (Synced from Settings > HTML Head Code) |
+| CSS Injection | `notion_state/data/css_injection.json` | JSON string array (Synced from Settings > CSS Styling) |
 | Navbar Pages | `notion_state/content/navbarPages/*.md` | Markdown with frontmatter |
 | Images | `public/images/*` | Downloaded binary files |
 
@@ -89,7 +89,7 @@ For continuous deployment, set up a webhook or cron job that triggers the build 
 - Enables analytics, ads, and custom meta tags without code changes
 
 ### CSS Injection
-- Raw CSS content from a Notion page (Settings > CSS)
+- Raw CSS content from a Notion page (Settings > CSS Styling)
 - Injected into `<head>` as `<style>` tags during build
 - Enables custom styling overrides without code changes
 

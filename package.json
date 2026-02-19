@@ -10,7 +10,7 @@
     "sync": "npm run clean && node scripts/sync-notion.mjs",
     "clean": "rm -rf notion_state .next out",
     "sync-and-build": "npm run prepare && npm run sync && next build",
-    "prepare": "panda codegen && node scripts/add-dummy-data.mjs",
+    "seed": "panda codegen && node scripts/add-dummy-data.mjs",
     "add-dummy-data": "node scripts/add-dummy-data.mjs"
   },
   "dependencies": {

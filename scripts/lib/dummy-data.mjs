@@ -40,7 +40,7 @@ export const dummyConfig = [
 // 1. Hero Section (Info Section)
 export const dummyHeroSection = {
   type: 'info_section',
-  visibility: 'true',
+  enabled: 'true',
   title: 'Hero Section',
   data: [
     {
@@ -56,7 +56,7 @@ export const dummyHeroSection = {
 // 2. Dynamic Sections
 export const dummyDynamicGallery = {
   type: 'dynamic_section',
-  visibility: 'true',
+  enabled: 'true',
   title: 'My Gallery',
   data: [
     {
@@ -69,7 +69,7 @@ export const dummyDynamicGallery = {
 
 export const dummyDynamicProjects = {
   type: 'dynamic_section',
-  visibility: 'true',
+  enabled: 'true',
   title: 'Selected Projects',
   data: [
     {
@@ -82,7 +82,7 @@ export const dummyDynamicProjects = {
 
 export const dummyDynamicBlog = {
   type: 'dynamic_section',
-  visibility: 'true',
+  enabled: 'true',
   title: 'Recent Writing',
   data: [
     {
@@ -93,12 +93,83 @@ export const dummyDynamicBlog = {
   ]
 };
 
+// 3. HTML Section (disabled by default)
+export const dummyHtmlSection = {
+  type: 'html_section',
+  enabled: 'false',
+  title: 'Custom HTML',
+  data: [
+    {
+      title: 'Custom HTML',
+      html_code: `<div style="font-family: system-ui; padding: 16px;">
+  <h2>👋 Hello from user HTML</h2>
+  <p>This content is rendered inside an iframe.</p>
+
+  <button id="btn">Click me</button>
+  <p id="output"></p>
+</div>
+
+<script>
+  const btn = document.getElementById('btn');
+  const output = document.getElementById('output');
+
+  btn.addEventListener('click', () => {
+    output.textContent = 'Button clicked at ' + new Date().toLocaleTimeString();
+  });
+</script>`,
+    }
+  ]
+};
+
+// 4. Iframe Section (disabled by default)
+export const dummyIframeSection = {
+  type: 'iframe_section',
+  enabled: 'false',
+  title: 'Embedded Page',
+  data: [
+    {
+      title: 'Example Website',
+      url: 'https://example.com',
+    }
+  ]
+};
+
+// 5. Video Embed Section (disabled by default)
+export const dummyVideoEmbedSection = {
+  type: 'video_embed_section',
+  enabled: 'false',
+  title: 'Featured Video',
+  data: [
+    {
+      title: 'Featured Video',
+      url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    }
+  ]
+};
+
+// 6. Mail Based Comment Section (disabled by default)
+export const dummyMailBasedCommentSection = {
+  type: 'mail_based_comment_section',
+  enabled: 'false',
+  title: 'Leave a Comment',
+  data: [
+    {
+      topic_title: 'Feedback on my portfolio',
+      author_email: 'john@example.com',
+    }
+  ]
+};
+
 // The order here determines the order of creation on the Home Page, and thus the default order on the site.
 export const dummyHomePageSections = [
   dummyHeroSection,
   dummyDynamicGallery,
   dummyDynamicProjects,
-  dummyDynamicBlog
+  dummyDynamicBlog,
+  dummyHtmlSection,
+  dummyIframeSection,
+  dummyVideoEmbedSection,
+  dummyMailBasedCommentSection,
 ];
 
 /**
@@ -338,6 +409,29 @@ export const dummyNavbarPages = [
     content: [
       { type: 'heading_1', content: 'About Me' },
       { type: 'paragraph', content: 'I am a passionate developer building open source projects.' },
+    ],
+    sections: [
+      {
+        type: 'html_section',
+        enabled: 'false',
+        title: 'About HTML Widget',
+        data: [{
+          title: 'About HTML Widget',
+          html_code: '<div style="font-family: system-ui; padding: 16px;"><p>Custom HTML on the About page.</p></div>',
+        }]
+      },
+      {
+        type: 'iframe_section',
+        enabled: 'false',
+        title: 'About Embed',
+        data: [{ title: 'About Embed', url: 'https://example.com' }]
+      },
+      {
+        type: 'video_embed_section',
+        enabled: 'false',
+        title: 'About Video',
+        data: [{ title: 'About Video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }]
+      },
     ]
   },
   {
@@ -345,6 +439,105 @@ export const dummyNavbarPages = [
     content: [
       { type: 'heading_1', content: 'Contact' },
       { type: 'paragraph', content: 'Reach out to me on social media.' },
+    ],
+    sections: [
+      {
+        type: 'html_section',
+        enabled: 'false',
+        title: 'Contact HTML Widget',
+        data: [{
+          title: 'Contact HTML Widget',
+          html_code: '<div style="font-family: system-ui; padding: 16px;"><p>Custom HTML on the Contact page.</p></div>',
+        }]
+      },
+      {
+        type: 'iframe_section',
+        enabled: 'false',
+        title: 'Contact Embed',
+        data: [{ title: 'Contact Embed', url: 'https://example.com' }]
+      },
+      {
+        type: 'video_embed_section',
+        enabled: 'false',
+        title: 'Contact Video',
+        data: [{ title: 'Contact Video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }]
+      },
     ]
   }
 ];
+
+/**
+ * EXTRA SECTIONS FOR COLLECTION PAGES
+ * Stored in Root > Settings > Collection Page Extra Sections > [Page per collection] > [Inline DBs]
+ */
+export const dummyExtraSections = {
+  Gallery: [
+    {
+      type: 'html_section',
+      enabled: 'false',
+      title: 'Gallery Extra HTML',
+      data: [{
+        title: 'Gallery Extra HTML',
+        html_code: '<div style="font-family: system-ui; padding: 16px;"><p>Extra HTML section for Gallery pages.</p></div>',
+      }]
+    },
+    {
+      type: 'iframe_section',
+      enabled: 'false',
+      title: 'Gallery Extra Embed',
+      data: [{ title: 'Gallery Extra Embed', url: 'https://example.com' }]
+    },
+    {
+      type: 'video_embed_section',
+      enabled: 'false',
+      title: 'Gallery Extra Video',
+      data: [{ title: 'Gallery Extra Video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }]
+    },
+  ],
+  Projects: [
+    {
+      type: 'html_section',
+      enabled: 'false',
+      title: 'Projects Extra HTML',
+      data: [{
+        title: 'Projects Extra HTML',
+        html_code: '<div style="font-family: system-ui; padding: 16px;"><p>Extra HTML section for Project pages.</p></div>',
+      }]
+    },
+    {
+      type: 'iframe_section',
+      enabled: 'false',
+      title: 'Projects Extra Embed',
+      data: [{ title: 'Projects Extra Embed', url: 'https://example.com' }]
+    },
+    {
+      type: 'video_embed_section',
+      enabled: 'false',
+      title: 'Projects Extra Video',
+      data: [{ title: 'Projects Extra Video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }]
+    },
+  ],
+  Blogs: [
+    {
+      type: 'html_section',
+      enabled: 'false',
+      title: 'Blogs Extra HTML',
+      data: [{
+        title: 'Blogs Extra HTML',
+        html_code: '<div style="font-family: system-ui; padding: 16px;"><p>Extra HTML section for Blog pages.</p></div>',
+      }]
+    },
+    {
+      type: 'iframe_section',
+      enabled: 'false',
+      title: 'Blogs Extra Embed',
+      data: [{ title: 'Blogs Extra Embed', url: 'https://example.com' }]
+    },
+    {
+      type: 'video_embed_section',
+      enabled: 'false',
+      title: 'Blogs Extra Video',
+      data: [{ title: 'Blogs Extra Video', url: 'https://www.youtube.com/embed/dQw4w9WgXcQ' }]
+    },
+  ],
+};

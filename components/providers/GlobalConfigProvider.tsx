@@ -15,19 +15,23 @@ interface GlobalConfigContextType {
     config: HomeData;
     colorMode: string;
     setColorMode: (mode: string) => void;
+    setColorModeTemporary: (mode: string) => void;
     availableThemes: string[];
     showSidebar: boolean;
     toggleSidebar: () => void;
+    setSidebarTemporary: (show: boolean) => void;
     isSearchOpen: boolean;
     toggleSearch: () => void;
     searchIndex: SearchItem[];
+    sectionViewOverrides: Record<string, string>;
+    setSectionViewOverride: (sectionId: string, viewType: string) => void;
 }
 
 const GlobalConfigContext = createContext<GlobalConfigContextType | undefined>(undefined);
 
-export const THEMES = [
-    'light', 'dark', 'blue', 'pink', 'red', 'green', 'brown'
-];
+export const LIGHT_THEMES = ['light', 'cream', 'pink'];
+export const DARK_THEMES = ['dark', 'blue', 'purple', 'red', 'green'];
+export const THEMES = [...LIGHT_THEMES, ...DARK_THEMES];
 
 export function GlobalConfigProvider({
     initialConfig,
@@ -41,9 +45,21 @@ export function GlobalConfigProvider({
     const [colorMode, setColorMode] = useState<string>((initialConfig.info?.default_color_mode as string) || 'light');
     const [showSidebar, setShowSidebar] = useState<boolean>(initialConfig.info?.sidebar_navigation === 'true');
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [sectionViewOverrides, setSectionViewOverrides] = useState<Record<string, string>>({});
 
     const toggleSidebar = () => setShowSidebar(prev => !prev);
+    const setSidebarTemporary = (show: boolean) => setShowSidebar(show);
     const toggleSearch = useCallback(() => setIsSearchOpen(prev => !prev), []);
+    const setSectionViewOverride = (sectionId: string, viewType: string) => {
+        setSectionViewOverrides(prev => ({ ...prev, [sectionId]: viewType }));
+    };
+
+    // Temporary color mode change (no localStorage persistence)
+    const setColorModeTemporary = (mode: string) => {
+        setColorMode(mode);
+        // Remove from localStorage so it won't persist after refresh
+        localStorage.removeItem('swan-color-mode');
+    };
 
     useEffect(() => {
         const saved = localStorage.getItem('swan-color-mode');
@@ -74,12 +90,16 @@ export function GlobalConfigProvider({
             config: initialConfig,
             colorMode,
             setColorMode,
+            setColorModeTemporary,
             availableThemes: THEMES,
             showSidebar,
             toggleSidebar,
+            setSidebarTemporary,
             isSearchOpen,
             toggleSearch,
             searchIndex,
+            sectionViewOverrides,
+            setSectionViewOverride,
         }}>
             {children}
         </GlobalConfigContext.Provider>

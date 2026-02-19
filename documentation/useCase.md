@@ -51,7 +51,7 @@ Inject custom scripts (Google Ads, analytics, tracking pixels) via the **Code In
 - **No code deployment needed**: Add scripts or styles in Notion, they appear in `<head>`
 - **Analytics**: Google Analytics, Plausible, Fathom, etc.
 - **Ad networks**: Google AdSense or any ad script
-- **Custom styling**: Override or extend the site's design via CSS code blocks in the Settings > CSS page
+- **Custom styling**: Override or extend the site's design via CSS code blocks in the Settings > CSS Styling page
 
 ## 7. Content Ownership & Independence
 

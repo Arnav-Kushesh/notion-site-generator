@@ -68,9 +68,9 @@
   --colors-primary: #f87171;
 }
 
-[data-theme="pink"] {
+[data-theme="purple"] {
+  /* Berry Purple */
   --colors-bg-primary: #2e1065;
-  /* Berry -> Pink/Purple (Close enough, let's tweak to be more pink if needed, but existing Berry is nice) */
   --colors-bg-secondary: #4c1d95;
   --colors-bg-tertiary: #5b21b6;
   --colors-text-primary: #f3e8ff;
@@ -78,17 +78,29 @@
   --colors-text-tertiary: #c084fc;
   --colors-border-default: #4c1d95;
   --colors-primary: #e879f9;
-  /* Tweaked to be more Pink */
 }
 
-[data-theme="brown"] {
-  --colors-bg-primary: #271c19;
-  /* Coffee -> Brown */
-  --colors-bg-secondary: #431407;
-  --colors-bg-tertiary: #572d24;
-  --colors-text-primary: #fff7ed;
-  --colors-text-secondary: #fdba74;
-  --colors-text-tertiary: #c2410c;
-  --colors-border-default: #431407;
-  --colors-primary: #fb923c;
+[data-theme="pink"] {
+  /* Soft Pink */
+  --colors-bg-primary: #FFF0F6;
+  --colors-bg-secondary: #FFE0ED;
+  --colors-bg-tertiary: #FFCADB;
+  --colors-text-primary: #4A1942;
+  --colors-text-secondary: #9B4D7F;
+  --colors-text-tertiary: #CC8EB3;
+  --colors-border-default: #F5C2D4;
+  --colors-primary: #E84393;
 }
+
+[data-theme="cream"] {
+  /* Light Cream */
+  --colors-bg-primary: #FFFDF7;
+  --colors-bg-secondary: #FFF8EC;
+  --colors-bg-tertiary: #F5EDD6;
+  --colors-text-primary: #3D3226;
+  --colors-text-secondary: #8B7355;
+  --colors-text-tertiary: #C4AD8A;
+  --colors-border-default: #E8DCC8;
+  --colors-primary: #8B6914;
+}
+

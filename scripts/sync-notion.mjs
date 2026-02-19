@@ -210,7 +210,7 @@ async function fetchInfoSectionData(dbId) {
         description: props.description?.rich_text?.[0]?.plain_text || props.Description?.rich_text?.[0]?.plain_text || '',
         link: props.link?.url || props.Link?.url || '',
         view_type: props.view_type?.select?.name || props['View Type']?.select?.name || 'col_centered_view',
-        visibility: props.visibility?.checkbox ?? true,
+        enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
     };
 
     const imageProp = props.image?.files || props.Image?.files;
@@ -238,7 +238,73 @@ async function fetchDynamicSectionData(dbId) {
         collection_name: props.collection_name?.title?.[0]?.plain_text || '',
         section_title: props.section_title?.rich_text?.[0]?.plain_text || '',
         view_type: props.view_type?.select?.name || 'list_view',
-        visibility: props.visibility?.checkbox ?? true,
+        enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
+    };
+}
+
+// New Helper to fetch HTML Section Data
+async function fetchHtmlSectionData(dbId) {
+    const pages = await fetchAllDatabasePages(dbId);
+    if (pages.length === 0) return null;
+
+    const page = pages[0];
+    const props = page.properties;
+
+    const title = props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '';
+    const enabled = props.enabled?.checkbox ?? props.visibility?.checkbox ?? true;
+
+    // Read the page content (code blocks) for html_code
+    const children = await fetchAllChildren(page.id);
+    const codeBlocks = children
+        .filter(b => b.type === 'code')
+        .map(b => b.code.rich_text.map(t => t.plain_text).join(''));
+    const html_code = codeBlocks.join('\n');
+
+    return { title, html_code, enabled };
+}
+
+// New Helper to fetch Iframe Section Data
+async function fetchIframeSectionData(dbId) {
+    const pages = await fetchAllDatabasePages(dbId);
+    if (pages.length === 0) return null;
+
+    const page = pages[0];
+    const props = page.properties;
+
+    return {
+        title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
+        url: props.url?.url || props.URL?.url || '',
+        enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
+    };
+}
+
+// New Helper to fetch Video Embed Section Data
+async function fetchVideoEmbedSectionData(dbId) {
+    const pages = await fetchAllDatabasePages(dbId);
+    if (pages.length === 0) return null;
+
+    const page = pages[0];
+    const props = page.properties;
+
+    return {
+        title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
+        url: props.url?.url || props.URL?.url || '',
+        enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
+    };
+}
+
+// New Helper to fetch Mail Based Comment Section Data
+async function fetchMailBasedCommentSectionData(dbId) {
+    const pages = await fetchAllDatabasePages(dbId);
+    if (pages.length === 0) return null;
+
+    const page = pages[0];
+    const props = page.properties;
+
+    return {
+        topic_title: props.topic_title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
+        author_email: props.author_email?.rich_text?.[0]?.plain_text || props.author_email?.email || '',
+        enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
     };
 }
 
@@ -262,6 +328,74 @@ async function fetchDatabaseDetails(databaseId) {
     return await response.json();
 }
 
+// Reusable: process all section databases on a given page
+async function processSectionsFromPage(pageId) {
+    const sections = [];
+    const childrenBlocks = await fetchAllChildren(pageId);
+    const databases = childrenBlocks.filter(b => b.type === 'child_database');
+
+    for (const dbBlock of databases) {
+        const dbId = dbBlock.id;
+        const dbTitle = dbBlock.child_database.title;
+
+        console.log(`   > Processing: ${dbTitle}`);
+
+        // Fetch database schema to check if section_type property exists
+        const dbDetails = await fetchDatabaseDetails(dbId);
+        const schemaProps = dbDetails.properties || {};
+
+        // Read section_type from the first row of the database (not from schema)
+        let sectionType = null;
+        if (schemaProps['section_type'] || schemaProps['Section Type']) {
+            const rows = await fetchAllDatabasePages(dbId);
+            if (rows.length > 0) {
+                const rowProps = rows[0].properties;
+                sectionType = rowProps['section_type']?.select?.name || rowProps['Section Type']?.select?.name || null;
+            }
+        }
+
+        // Also check schema for fallback property-based detection
+        const props = schemaProps;
+
+        let section = null;
+
+        if (sectionType === 'dynamic_section') {
+            const data = await fetchDynamicSectionData(dbId);
+            if (data) section = { type: 'dynamic_section', id: dbId, title: data.section_title || dbTitle, ...data };
+        } else if (sectionType === 'info_section') {
+            const data = await fetchInfoSectionData(dbId);
+            if (data) section = { type: 'info_section', id: dbId, title: dbTitle, ...data };
+        } else if (sectionType === 'html_section') {
+            const data = await fetchHtmlSectionData(dbId);
+            if (data) section = { type: 'html_section', id: dbId, title: dbTitle, ...data };
+        } else if (sectionType === 'iframe_section') {
+            const data = await fetchIframeSectionData(dbId);
+            if (data) section = { type: 'iframe_section', id: dbId, title: dbTitle, ...data };
+        } else if (sectionType === 'video_embed_section') {
+            const data = await fetchVideoEmbedSectionData(dbId);
+            if (data) section = { type: 'video_embed_section', id: dbId, title: dbTitle, ...data };
+        } else if (sectionType === 'mail_based_comment_section') {
+            const data = await fetchMailBasedCommentSectionData(dbId);
+            if (data) section = { type: 'mail_based_comment_section', id: dbId, title: dbTitle, ...data };
+        } else {
+            // Fallback to property check (legacy/inference)
+            if (props['collection_name']) {
+                const data = await fetchDynamicSectionData(dbId);
+                if (data) section = { type: 'dynamic_section', id: dbId, title: data.section_title || dbTitle, ...data };
+            } else if ((props['description'] && props['title']) || (props['Description'] && props['Title'])) {
+                const data = await fetchInfoSectionData(dbId);
+                if (data) section = { type: 'info_section', id: dbId, title: dbTitle, ...data };
+            } else {
+                console.log(`     ! Unknown database type: ${dbTitle}`);
+            }
+        }
+
+        if (section) sections.push(section);
+    }
+
+    return sections;
+}
+
 // Updated syncHomePage
 async function syncHomePage() {
     console.log("Syncing Home Page...");
@@ -271,74 +405,8 @@ async function syncHomePage() {
         return;
     }
 
-    const sections = [];
-
-    // Fetch all children
-    const homeChildrenBlocks = await fetchAllChildren(homePageId);
-    const databases = homeChildrenBlocks.filter(b => b.type === 'child_database');
-
-    console.log(`   > Found ${databases.length} databases on Home Page.`);
-
-    for (const dbBlock of databases) {
-        const dbId = dbBlock.id;
-        const dbTitle = dbBlock.child_database.title;
-
-        console.log(`   > Processing: ${dbTitle}`);
-
-        const dbDetails = await fetchDatabaseDetails(dbId);
-
-        const props = dbDetails.properties || {};
-
-        // Check for explicit section_type first
-        const sectionType = props['section_type']?.select?.name || props['Section Type']?.select?.name;
-
-        if (sectionType === 'dynamic_section') {
-            const data = await fetchDynamicSectionData(dbId);
-            if (data) {
-                sections.push({
-                    type: 'dynamic_section',
-                    id: dbId,
-                    title: data.section_title || dbTitle,
-                    ...data
-                });
-            }
-        } else if (sectionType === 'info_section') {
-            const data = await fetchInfoSectionData(dbId);
-            if (data) {
-                sections.push({
-                    type: 'info_section',
-                    id: dbId,
-                    title: dbTitle,
-                    ...data
-                });
-            }
-        } else {
-            // Fallback to property check (legacy/inference)
-            if (props['collection_name']) {
-                const data = await fetchDynamicSectionData(dbId);
-                if (data) {
-                    sections.push({
-                        type: 'dynamic_section',
-                        id: dbId,
-                        title: data.section_title || dbTitle,
-                        ...data
-                    });
-                }
-            } else if ((props['description'] && props['title']) || (props['Description'] && props['Title'])) {
-                const data = await fetchInfoSectionData(dbId);
-                if (data) {
-                    sections.push({
-                        type: 'info_section',
-                        id: dbId,
-                        title: dbTitle,
-                        ...data
-                    });
-                }
-            } else {
-                console.log(`     ! Unknown database type: ${dbTitle}`);
-            }
-        }
-    }
+    const sections = await processSectionsFromPage(homePageId);
+    console.log(`   > Found ${sections.length} sections on Home Page.`);
 
     const homeData = { sections };
     await ensureDir('notion_state/data');
@@ -436,12 +504,18 @@ async function syncNavbarPagesContainer() {
 
             console.log(`     - Fetching page: ${title}`);
             const mdBlocks = await n2m.pageToMarkdown(pageId);
-            const mdString = n2m.toMarkdownString(mdBlocks);
+            // Filter out child_database blocks so inline DB titles don't appear as text
+            const filteredMdBlocks = mdBlocks.filter(b => b.type !== 'child_database');
+            const mdString = n2m.toMarkdownString(filteredMdBlocks);
+
+            // Also check for inline databases (sections) on the navbar page
+            const sections = await processSectionsFromPage(pageId);
 
             const frontmatter = {
                 title,
                 date: new Date().toISOString(),
-                menu: "main"
+                menu: "main",
+                sections: sections.length > 0 ? sections : undefined,
             };
 
             const fileContent = `---\n${JSON.stringify(frontmatter, null, 2)}\n---\n\n${mdString.parent}`;
@@ -548,7 +622,7 @@ async function syncCodeInjection() {
         return;
     }
 
-    const codeInjectionPageId = await getPageByName(settingsPageId, "Code");
+    const codeInjectionPageId = await getPageByName(settingsPageId, "HTML Head Code") || await getPageByName(settingsPageId, "HTML Code") || await getPageByName(settingsPageId, "Code");
     if (!codeInjectionPageId) {
         console.warn("Code Injection page not found in Settings!");
         return;
@@ -572,7 +646,7 @@ async function syncCssInjection() {
         return;
     }
 
-    const cssInjectionPageId = await getPageByName(settingsPageId, "CSS");
+    const cssInjectionPageId = await getPageByName(settingsPageId, "CSS Styling") || await getPageByName(settingsPageId, "CSS");
     if (!cssInjectionPageId) {
         console.warn("CSS Injection page not found in Settings!");
         return;
@@ -588,6 +662,41 @@ async function syncCssInjection() {
 }
 
 
+// --- New: Sync Extra Sections for Collection Pages ---
+async function syncExtraSections() {
+    console.log("Syncing Collection Page Extra Sections...");
+    const settingsPageId = await getPageByName(ROOT_PAGE_ID, "Settings");
+    if (!settingsPageId) {
+        console.warn("Settings page not found!");
+        return;
+    }
+
+    const extraSectionsPageId = await getPageByName(settingsPageId, "Collection Page Extra Sections");
+    if (!extraSectionsPageId) {
+        console.warn("Collection Page Extra Sections page not found in Settings!");
+        return;
+    }
+
+    const children = await fetchAllChildren(extraSectionsPageId);
+    const extraSections = {};
+
+    for (const block of children) {
+        if (block.type === 'child_page') {
+            const collectionName = block.child_page.title;
+            const slug = slugify(collectionName);
+            console.log(`     - Processing extra sections for: ${collectionName}`);
+
+            const sections = await processSectionsFromPage(block.id);
+            if (sections.length > 0) {
+                extraSections[slug] = sections;
+            }
+        }
+    }
+
+    await ensureDir('notion_state/data');
+    await fs.writeFile('notion_state/data/extra_sections.json', JSON.stringify(extraSections, null, 2));
+}
+
 async function main() {
     try {
         await syncConfig();
@@ -598,6 +707,7 @@ async function main() {
         await syncCollectionSettings();
         await syncCodeInjection();
         await syncCssInjection();
+        await syncExtraSections();
         console.log("Completed sync.");
     } catch (e) {
         console.error(e);

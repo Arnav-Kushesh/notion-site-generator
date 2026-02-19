@@ -1,8 +1,9 @@
-import { getPosts, getPost, getAuthor } from '../../../lib/data';
+import { getPosts, getPost, getAuthor, getExtraSections } from '../../../lib/data';
 import { processMarkdown } from '../../../lib/markdown';
 import { postContentStyle } from '../../../components/shared/post-styles';
 import { AuthorInfo } from '../../../components/AuthorInfo';
 import { MessageAuthor } from '../../../components/MessageAuthor';
+import { SectionRenderer } from '../../../components/SectionRenderer';
 import { notFound } from 'next/navigation';
 import { css } from '../../../styled-system/css';
 import { format } from 'date-fns';
@@ -52,6 +53,7 @@ export default async function Page({ params }: { params: Promise<{ slug: string;
 
     const content = await processMarkdown(post.content);
     const author = post.author_username ? getAuthor(post.author_username) : null;
+    const extraSections = getExtraSections(slug).filter(s => s.enabled !== false);
 
     return (
         <article className={css({ maxWidth: '800px', margin: '0 auto', py: '40px', px: '20px' })}>
@@ -156,6 +158,15 @@ export default async function Page({ params }: { params: Promise<{ slug: string;
                         })}>
                         Visit Project
                     </a>
+                </div>
+            )}
+
+            {/* Extra Sections */}
+            {extraSections.length > 0 && (
+                <div className={css({ mt: '40px', display: 'flex', flexDirection: 'column', gap: '0' })}>
+                    {extraSections.map((section) => (
+                        <SectionRenderer key={section.id} section={section} />
+                    ))}
                 </div>
             )}
 

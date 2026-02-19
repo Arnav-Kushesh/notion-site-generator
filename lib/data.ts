@@ -64,7 +64,7 @@ export interface InfoSectionData {
     link?: string;
     image?: string;
     view_type?: 'col_centered_view' | 'col_left_view' | 'row_reverse_view' | 'row_view';
-    visibility?: boolean;
+    enabled?: boolean;
 }
 
 export interface DynamicSectionData {
@@ -73,10 +73,43 @@ export interface DynamicSectionData {
     title: string;
     collection_name: string;
     view_type?: 'list_view' | 'card_view' | 'grid_view' | 'minimal_list_view';
-    visibility?: boolean;
+    enabled?: boolean;
 }
 
-export type SectionData = InfoSectionData | DynamicSectionData;
+export interface HtmlSectionData {
+    type: 'html_section';
+    id: string;
+    title: string;
+    html_code: string;
+    enabled?: boolean;
+}
+
+export interface IframeSectionData {
+    type: 'iframe_section';
+    id: string;
+    title: string;
+    url: string;
+    enabled?: boolean;
+}
+
+export interface VideoEmbedSectionData {
+    type: 'video_embed_section';
+    id: string;
+    title: string;
+    url: string;
+    enabled?: boolean;
+}
+
+export interface MailBasedCommentSectionData {
+    type: 'mail_based_comment_section';
+    id: string;
+    title: string;
+    topic_title: string;
+    author_email: string;
+    enabled?: boolean;
+}
+
+export type SectionData = InfoSectionData | DynamicSectionData | HtmlSectionData | IframeSectionData | VideoEmbedSectionData | MailBasedCommentSectionData;
 
 export interface HomeData {
     info?: InfoConfig;
@@ -301,7 +334,11 @@ export function getNavbarPages(): { slug: string; title: string }[] {
         });
 }
 
-export function getNavbarPage(slug: string): Post | null {
+export interface NavbarPageData extends Post {
+    sections?: SectionData[];
+}
+
+export function getNavbarPage(slug: string): NavbarPageData | null {
     const dirPath = path.join(contentDirectory, 'navbarPages');
     const fullPath = path.join(dirPath, `${slug}.md`);
 
@@ -318,8 +355,18 @@ export function getNavbarPage(slug: string): Post | null {
         title: data.title,
         date: data.date ? new Date(data.date).toISOString() : '',
         description: data.description || '',
+        sections: data.sections || [],
         ...data,
-    } as Post;
+    } as NavbarPageData;
+}
+
+// --- New: Extra Sections for Collection Pages ---
+
+export function getExtraSections(collectionName: string): SectionData[] {
+    const fullPath = path.join(dataDirectory, 'extra_sections.json');
+    if (!fs.existsSync(fullPath)) return [];
+    const data = safeJsonParse<Record<string, SectionData[]>>(fullPath, {});
+    return data[collectionName.toLowerCase()] || [];
 }
 
 // --- New: Authors ---
