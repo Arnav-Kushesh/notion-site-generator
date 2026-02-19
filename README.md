@@ -9,8 +9,6 @@
 
 </div>
 
-# Swan - Notion as a Website 🦢
-
 Swan is a powerful **Notion-to-Website** engine that turns your Notion workspace into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**, it offers the simplicity of a CMS with the speed of a static site.
 
 ## ✨ Features
