@@ -1,8 +1,17 @@
+<div align="center">
+<br/><br/>
+<img alt="start-simple-logo" src="https://raw.githubusercontent.com/arnav-kushesh/swan/master/assets/swan.png" height="128"/>
+<h3 style="margin-top: 9px;">Swan - Notion as a Website</h3>
+
+<br/>
+
+![Static Badge](https://img.shields.io/badge/DISCORD-JOIN-blue?style=for-the-badge&logo=discord&labelColor=black&color=%235965f2&link=https://discord.gg/aAsZqZkJKW)
+
+</div>
+
 # Swan - Notion as a Website 🦢
 
 Swan is a powerful **Notion-to-Website** engine that turns your Notion workspace into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**, it offers the simplicity of a CMS with the speed of a static site.
-
-![Swan Logo](assets/swan.png)
 
 ## ✨ Features
 
