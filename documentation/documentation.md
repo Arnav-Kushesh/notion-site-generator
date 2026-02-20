@@ -18,6 +18,7 @@ Root Page
 │   ├── [Inline DB] Custom HTML (html_section)
 │   ├── [Inline DB] Embedded Page (iframe_section)
 │   ├── [Inline DB] Featured Video (video_embed_section)
+│   ├── [Inline DB] Newsletter (newsletter_section)
 │   └── [Inline DB] Leave a Comment (mail_based_comment_section)
 ├── Navbar Pages
 │   ├── About (page, can contain inline DB sections)
@@ -27,17 +28,16 @@ Root Page
 │   ├── Projects (database)
 │   └── Blogs (database)
 ├── Settings
+│   ├── Main Configuration (database)
 │   ├── General Configuration (database)
-│   ├── Configure Collections (page)
-│   │   ├── Gallery Settings (inline DB)
-│   │   ├── Projects Settings (inline DB)
-│   │   └── Blogs Settings (inline DB)
+│   ├── Social Links (database)
+│   ├── Configure Collections (database)
+│   ├── Collection Page Extra Sections
+│   │   ├── Gallery (page with inline DB sections)
+│   │   ├── Projects (page with inline DB sections)
+│   │   └── Blogs (page with inline DB sections)
 │   ├── HTML Head Code (page with code blocks)
-│   ├── CSS Styling (page with code blocks)
-│   └── Collection Page Extra Sections
-│       ├── Gallery (page with inline DB sections)
-│       ├── Projects (page with inline DB sections)
-│       └── Blogs (page with inline DB sections)
+│   └── CSS Styling (page with code blocks)
 └── Authors (database)
 ```
 
@@ -86,7 +86,7 @@ Renders custom HTML inside a sandboxed iframe. The HTML code is stored as a code
 | `section_type` | Select | Must be `html_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
-**HTML Head Code:** Open the first row as a page, add a code block with your HTML.
+**How to use:** Open the first row as a page, add a code block with your HTML.
 
 ### 4. `iframe_section`
 
@@ -112,7 +112,17 @@ Embeds a video (YouTube, Vimeo, etc.) using the embed URL.
 | `section_type` | Select | Must be `video_embed_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
-### 6. `mail_based_comment_section`
+### 6. `newsletter_section`
+
+Renders a Mailchimp-powered newsletter signup form. Reads the `mailchimp_form_link` from General Configuration.
+
+**Database Properties:**
+| Property | Type | Description |
+|----------|------|-------------|
+| `section_type` | Select | Must be `newsletter_section` |
+| `enabled` | Checkbox | Show/hide the section |
+
+### 7. `mail_based_comment_section`
 
 A simple email-based comment form using `mailto:` links.
 
@@ -143,57 +153,79 @@ Collections are full-page databases stored under the "Collections" page. Each it
 
 The page content (body) of each item becomes the full article content, rendered as markdown.
 
+### Collection Settings
+
+Per-collection configuration is managed in **Settings > Configure Collections**, a single database with one row per collection:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `collection_name` | Title | Name of the collection |
+| `enable_rss` | Checkbox | Generate an RSS feed for this collection |
+| `show_newsletter_section` | Checkbox | Show newsletter signup on collection pages |
+| `show_mail_based_comment_section` | Checkbox | Show email comment section on collection pages |
+
 ---
 
-## General Configuration
+## Configuration
 
-The "General Configuration" database in Settings stores site-wide settings as key-value pairs:
+### Main Configuration
 
-| Key | Description |
-|-----|-------------|
-| `title` | Site title |
-| `tagline` | Site tagline/subtitle |
-| `description` | Meta description |
-| `logo` | Site logo (via Media field) |
-| `favicon` | Favicon image (via Media field) |
-| `og_image` | OpenGraph image (via Media field) |
-| `keywords` | SEO keywords |
-| `sidebar_navigation` | `true`/`false` - Enable sidebar by default |
-| `disable_logo_in_topbar` | `true`/`false` |
-| `disable_logo_in_sidebar` | `true`/`false` |
-| `default_color_mode` | Default theme: `light`, `dark`, `blue`, `pink`, `red`, `green`, `brown`, `cream`, `rose` |
-| `social_github` | GitHub profile URL |
-| `social_twitter` | Twitter/X profile URL |
-| `social_linkedin` | LinkedIn profile URL |
-| `social_instagram` | Instagram profile URL |
-| `social_youtube` | YouTube channel URL |
-| `social_facebook` | Facebook profile URL |
-| `social_twitch` | Twitch channel URL |
-| `social_email` | Contact email |
-| `enable_newsletter` | `true`/`false` - Enable newsletter functionality |
-| `mailchimp_form_link` | Mailchimp form URL |
-| `show_newsletter_section_on_home` | `true`/`false` |
-| `mention_this_tool_in_footer` | `true`/`false` - Show "Built with Swan" in footer |
+Stores your site's identity and branding as individual columns with a single row of data.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `title` | Title | Site title |
+| `description` | Rich Text | Meta description |
+| `tagline` | Rich Text | Site tagline/subtitle |
+| `keywords` | Rich Text | SEO keywords |
+| `logo` | Files | Site logo |
+| `favicon` | Files | Favicon image |
+| `og_image` | Files | OpenGraph image for social sharing |
+| `default_color_mode` | Select | Default theme (light, dark, blue, purple, pink, red, green, cream) |
+| `sidebar_navigation` | Checkbox | Enable sidebar navigation by default |
+
+### General Configuration
+
+Stores feature flags and toggles as individual checkbox/URL columns with a single row of data.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `disable_logo_in_topbar` | Checkbox | Hide logo from the top navbar |
+| `disable_logo_in_sidebar` | Checkbox | Hide logo from the sidebar |
+| `enable_newsletter` | Checkbox | Enable newsletter functionality site-wide |
+| `mailchimp_form_link` | URL | Mailchimp form URL |
+| `mention_this_tool_in_footer` | Checkbox | Show "Built with Swan" in the footer |
+| `show_newsletter_section_on_home` | Checkbox | Show a newsletter section on the homepage |
+
+### Social Links
+
+Stores social media profiles with one row per social platform.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `name` | Title | Social platform name (e.g., `github`) |
+| `data` | Rich Text | Profile URL or contact info (e.g., email address) |
+
+Supported: github, twitter, linkedin, instagram, youtube, facebook, twitch, email.
 
 ---
 
 ## Color Modes
 
-Swan supports 9 color themes:
+Swan supports 8 color themes:
 
-| Theme | Description |
-|-------|-------------|
-| `light` | Clean white/gray (default) |
-| `dark` | Dark mode |
-| `blue` | Midnight blue |
-| `pink` | Berry pink/purple |
-| `red` | Sunset red |
-| `green` | Forest green |
-| `brown` | Coffee brown |
-| `cream` | Light cream/warm white |
-| `rose` | Light pink |
+| Theme | Type | Description |
+|-------|------|-------------|
+| `light` | Light | Clean white/gray (default) |
+| `cream` | Light | Warm white/cream |
+| `pink` | Light | Berry pink/purple |
+| `dark` | Dark | Dark mode |
+| `blue` | Dark | Midnight blue |
+| `purple` | Dark | Deep purple |
+| `red` | Dark | Sunset red |
+| `green` | Dark | Forest green |
 
-Set the default via `default_color_mode` in General Configuration. Users can change themes via the Settings menu or the Experiment panel.
+Set the default via `default_color_mode` in Main Configuration. Users can change themes via the Settings menu or the Experiment panel.
 
 ---
 
@@ -204,7 +236,7 @@ Swan supports two navigation layouts:
 - **Navbar (Top Bar):** Default. Shows logo, navigation links, social icons, settings, and search.
 - **Sidebar (Left Panel):** Fixed left sidebar with profile, navigation, social icons, and settings.
 
-Set the default via `sidebar_navigation` in General Configuration. Users can toggle via the Experiment panel (changes don't persist).
+Set the default via `sidebar_navigation` in Main Configuration.
 
 ---
 
@@ -238,9 +270,9 @@ Extra sections can be added to collection entry pages (blog posts, projects, etc
 
 **Settings > Collection Page Extra Sections > [Collection Name]**
 
-Each collection name page contains inline databases representing sections. These sections are rendered on every entry page of that collection, above the comment/email section.
+Each collection name page contains inline databases representing sections. These sections are rendered on every entry page of that collection.
 
-All section types are supported (info, dynamic, html, iframe, video_embed, mail_based_comment).
+All 7 section types are supported (info, dynamic, html, iframe, video_embed, newsletter, mail_based_comment).
 
 ---
 
@@ -257,16 +289,16 @@ A floating "Experiment" button in the bottom-right corner opens a panel for tryi
 - **Section Views:** Change the view type of any homepage section in real time
   - *Info sections:* `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view`
   - *Dynamic sections:* `list_view`, `card_view`, `grid_view`, `minimal_list_view`
-- **Color Mode:** Switch between all 9 themes
+- **Color Mode:** Switch between all 8 themes
 - **Sidebar Toggle:** Enable/disable sidebar navigation
 
-Changes made via the Experiment panel are **temporary** and will not persist after a page refresh. This is intentional for experimentation purposes.
+Changes made via the Experiment panel are **temporary** and will not persist after a page refresh.
 
 ---
 
 ## RSS Feeds
 
-RSS feeds are auto-generated for collections with `enable_rss: true` in their collection settings. Access them at `/rss/[collection-name]`.
+RSS feeds are auto-generated for collections with `enable_rss` checked in their collection settings. Access them at `/rss/[collection-name]`.
 
 ---
 

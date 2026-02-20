@@ -23,15 +23,29 @@ The `scripts/sync-notion.mjs` script connects to the Notion API and downloads:
 
 | Data Source | Output Location | Format |
 |---|---|---|
-| General Configuration | `notion_state/data/site.json` | JSON key-value pairs (Synced from Settings > General Configuration) |
+| Main Configuration | `notion_state/data/site.json` | JSON (merged with General Configuration and Social Links) |
+| General Configuration | `notion_state/data/site.json` | JSON (merged into site.json) |
+| Social Links | `notion_state/data/site.json` | JSON (merged as `social_<name>` keys into site.json) |
 | Home Page sections | `notion_state/data/home.json` | JSON section array |
 | Collection items | `notion_state/content/{collection}/*.md` | Markdown with frontmatter |
 | Authors database | `notion_state/data/authors.json` | JSON array |
-| Configure Collections | `notion_state/data/collection_settings.json` | JSON key-value (Synced from Settings > Configure Collections) |
-| Code Injection | `notion_state/data/code_injection.json` | JSON string array (Synced from Settings > HTML Head Code) |
-| CSS Injection | `notion_state/data/css_injection.json` | JSON string array (Synced from Settings > CSS Styling) |
+| Configure Collections | `notion_state/data/collection_settings.json` | JSON per-collection settings |
+| Code Injection | `notion_state/data/code_injection.json` | JSON string array (from Settings > HTML Head Code) |
+| CSS Injection | `notion_state/data/css_injection.json` | JSON string array (from Settings > CSS Styling) |
 | Navbar Pages | `notion_state/content/navbarPages/*.md` | Markdown with frontmatter |
 | Images | `public/images/*` | Downloaded binary files |
+
+#### Configuration Merge
+
+The sync script reads three separate databases under Settings and merges them into a single `site.json`:
+
+```
+Main Configuration  →  { title, description, tagline, keywords, logo, favicon, og_image, default_color_mode, sidebar_navigation }
+General Configuration  →  { disable_logo_in_topbar, disable_logo_in_sidebar, enable_newsletter, mailchimp_form_link, ... }
+Social Links  →  { social_github, social_twitter, social_linkedin, social_instagram, ... }
+
+Merged into: site.json → { info: { ...all fields } }
+```
 
 ### 2. Local State → Next.js Pages (`lib/data.ts`)
 
@@ -52,6 +66,7 @@ Next.js generates static HTML/CSS/JS at build time:
 - Each collection entry becomes a static page at `/{collection}/{slug}`
 - Author pages at `/author/{username}`
 - RSS feeds at `/rss/{collection}`
+- Sitemap at `/sitemap.xml`
 - Search index is baked into the client-side bundle
 
 ## Update Mechanism
@@ -77,6 +92,13 @@ For continuous deployment, set up a webhook or cron job that triggers the build 
 - **Maximum performance**: Pure static files served from CDN
 - **Security**: No server-side API keys exposed at runtime
 
+### Three-Tier Configuration
+- **Main Configuration**: Site identity (title, logo, favicon, theme, navigation mode)
+- **General Configuration**: Feature flags (newsletter, logo visibility, footer branding)
+- **Social Links**: Social media profiles (one row per platform)
+
+This separation keeps each settings page focused and easy to manage. All three are merged into a single `site.json` at sync time for seamless frontend access.
+
 ### Client-Side Search
 - Search index is built at compile time from all posts
 - No external search service (Algolia, etc.) required
@@ -84,7 +106,7 @@ For continuous deployment, set up a webhook or cron job that triggers the build 
 - Searches across title, description, tags, and collection name
 
 ### Code Injection
-- Raw HTML/script content from a Notion page (Settings > Code)
+- Raw HTML/script content from a Notion page (Settings > HTML Head Code)
 - Injected into `<head>` as `<script>` tags during build
 - Enables analytics, ads, and custom meta tags without code changes
 
