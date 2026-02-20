@@ -257,7 +257,7 @@ async function createBasicConfigDB(parentId, notion) {
 
   await notion.databases.update({
     database_id: db.id,
-    icon: { type: "emoji", emoji: "🏷️" },
+    icon: { type: "emoji", emoji: "🛠️" },
   });
 
   console.log(`   Main Configuration Database created (ID: ${db.id})`);
@@ -268,14 +268,20 @@ async function createBasicConfigDB(parentId, notion) {
     description: { rich_text: plainText(dummyBasicConfig.description) },
     tagline: { rich_text: plainText(dummyBasicConfig.tagline) },
     keywords: { rich_text: plainText(dummyBasicConfig.keywords) },
-    default_color_mode: { select: { name: dummyBasicConfig.default_color_mode } },
+    default_color_mode: {
+      select: { name: dummyBasicConfig.default_color_mode },
+    },
     sidebar_navigation: { checkbox: dummyBasicConfig.sidebar_navigation },
   };
 
   if (dummyBasicConfig.logo) {
     props.logo = {
       files: [
-        { type: "external", name: "Logo", external: { url: dummyBasicConfig.logo } },
+        {
+          type: "external",
+          name: "Logo",
+          external: { url: dummyBasicConfig.logo },
+        },
       ],
     };
   }
@@ -283,7 +289,11 @@ async function createBasicConfigDB(parentId, notion) {
   if (dummyBasicConfig.favicon) {
     props.favicon = {
       files: [
-        { type: "external", name: "Favicon", external: { url: dummyBasicConfig.favicon } },
+        {
+          type: "external",
+          name: "Favicon",
+          external: { url: dummyBasicConfig.favicon },
+        },
       ],
     };
   }
@@ -291,7 +301,11 @@ async function createBasicConfigDB(parentId, notion) {
   if (dummyBasicConfig.og_image) {
     props.og_image = {
       files: [
-        { type: "external", name: "OG Image", external: { url: dummyBasicConfig.og_image } },
+        {
+          type: "external",
+          name: "OG Image",
+          external: { url: dummyBasicConfig.og_image },
+        },
       ],
     };
   }
@@ -336,11 +350,17 @@ async function createConfigDB(parentId, notion) {
     properties: {
       label: { title: plainText("Site Settings") },
       disable_logo_in_topbar: { checkbox: dummyConfig.disable_logo_in_topbar },
-      disable_logo_in_sidebar: { checkbox: dummyConfig.disable_logo_in_sidebar },
+      disable_logo_in_sidebar: {
+        checkbox: dummyConfig.disable_logo_in_sidebar,
+      },
       enable_newsletter: { checkbox: dummyConfig.enable_newsletter },
       mailchimp_form_link: { url: dummyConfig.mailchimp_form_link || null },
-      mention_this_tool_in_footer: { checkbox: dummyConfig.mention_this_tool_in_footer },
-      show_newsletter_section_on_home: { checkbox: dummyConfig.show_newsletter_section_on_home },
+      mention_this_tool_in_footer: {
+        checkbox: dummyConfig.mention_this_tool_in_footer,
+      },
+      show_newsletter_section_on_home: {
+        checkbox: dummyConfig.show_newsletter_section_on_home,
+      },
     },
   });
 }
