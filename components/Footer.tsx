@@ -17,8 +17,13 @@ export function Footer() {
         textAlign: "center",
         color: "text.tertiary",
         fontSize: "0.8rem",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "6px",
       })}
     >
+      <span>Copyright © {new Date().getFullYear()} {config.info?.title || 'My Website'}</span>
       {showSwanLink && (
         <Link
           href="https://github.com/arnav-kushesh/swan"
