@@ -713,7 +713,7 @@ async function syncCollectionSettings() {
             collection_name: collectionName,
             enable_rss: props.enable_rss?.checkbox ? 'true' : 'false',
             show_newsletter_section: props.show_newsletter_section?.checkbox ? 'true' : 'false',
-            show_mailto_section: props.show_mailto_section?.checkbox ? 'true' : 'false',
+            show_mailto_comment_section: props.show_mailto_comment_section?.checkbox ? 'true' : 'false',
         };
     }
 

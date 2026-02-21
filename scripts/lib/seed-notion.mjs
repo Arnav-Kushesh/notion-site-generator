@@ -1025,7 +1025,7 @@ async function createCollectionSettingsPage(parentId, notion) {
       collection_name: { title: {} },
       enable_rss: { checkbox: {} },
       show_newsletter_section: { checkbox: {} },
-      show_mailto_section: { checkbox: {} },
+      show_mailto_comment_section: { checkbox: {} },
     },
   });
 
@@ -1049,8 +1049,8 @@ async function createCollectionSettingsPage(parentId, notion) {
         show_newsletter_section: {
           checkbox: settings.show_newsletter_section === "true",
         },
-        show_mailto_section: {
-          checkbox: settings.show_mailto_section === "true",
+        show_mailto_comment_section: {
+          checkbox: settings.show_mailto_comment_section === "true",
         },
       },
     });

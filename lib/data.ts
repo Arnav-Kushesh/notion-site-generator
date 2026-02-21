@@ -170,7 +170,7 @@ export interface CollectionSettings {
     collection_name: string;
     enable_rss: string;
     show_newsletter_section: string;
-    show_mailto_section: string;
+    show_mailto_comment_section: string;
 }
 
 function safeJsonParse<T>(filePath: string, fallback: T): T {

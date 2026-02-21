@@ -213,7 +213,7 @@ Go to Settings > Configure Collections. This is a single database with one row p
 
 - `enable_rss` — generate an RSS feed for the collection
 - `show_newsletter_section` — show newsletter signup on collection entry pages
-- `show_mailto_section` — show mailto contact form on collection entry pages
+- `show_mailto_comment_section` — show mailto contact form on collection entry pages
 
 ---
 

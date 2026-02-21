@@ -494,9 +494,9 @@ export const dummyCollections = {
  * Stored in Settings > Configure Collections > [Inline DB per collection]
  */
 export const dummyCollectionSettings = {
-  Gallery: { collection_name: 'Gallery', enable_rss: 'false', show_newsletter_section: 'false', show_mailto_section: 'true' },
-  Projects: { collection_name: 'Projects', enable_rss: 'true', show_newsletter_section: 'false', show_mailto_section: 'true' },
-  Blogs: { collection_name: 'Blogs', enable_rss: 'true', show_newsletter_section: 'true', show_mailto_section: 'true' },
+  Gallery: { collection_name: 'Gallery', enable_rss: 'false', show_newsletter_section: 'false', show_mailto_comment_section: 'true' },
+  Projects: { collection_name: 'Projects', enable_rss: 'true', show_newsletter_section: 'false', show_mailto_comment_section: 'true' },
+  Blogs: { collection_name: 'Blogs', enable_rss: 'true', show_newsletter_section: 'true', show_mailto_comment_section: 'true' },
 };
 
 /**

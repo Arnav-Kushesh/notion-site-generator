@@ -185,7 +185,7 @@ Per-collection configuration is managed in **Settings > Configure Collections**,
 | `collection_name`         | Title    | Name of the collection                         |
 | `enable_rss`              | Checkbox | Generate an RSS feed for this collection       |
 | `show_newsletter_section` | Checkbox | Show newsletter signup on collection pages     |
-| `show_mailto_section`     | Checkbox | Show mailto section on collection pages        |
+| `show_mailto_comment_section`     | Checkbox | Show mailto comment section on collection pages        |
 
 ### Collection Page Extra Sections
 
