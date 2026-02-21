@@ -15,15 +15,14 @@ export function MediaSection({ data }: { data: MediaSectionData }) {
 
     const containerStyles = fullWidth
         ? css({
-              width: '100vw',
-              marginLeft: 'calc(-50vw + 50%)',
-              overflow: 'hidden',
-          })
+            width: '100vw',
+            marginLeft: 'calc(-50vw + 50%)',
+            overflow: 'hidden',
+        })
         : css({
-              borderRadius: '12px',
-              overflow: 'hidden',
-              border: '1px solid token(colors.border.default)',
-          });
+            borderRadius: '12px',
+            overflow: 'hidden',
+        });
 
     return (
         <div

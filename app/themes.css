@@ -22,7 +22,7 @@
 }
 
 [data-theme="dark"] {
-  --colors-bg-primary: #0a0a0a;
+  --colors-bg-primary: #000000;
   --colors-bg-secondary: #161616;
   --colors-bg-tertiary: #1f1f1f;
   --colors-text-primary: #ededed;
@@ -103,4 +103,3 @@
   --colors-border-default: #E8DCC8;
   --colors-primary: #8B6914;
 }
-

@@ -8,12 +8,13 @@ const socialContainerStyle = flex({ gap: '8px', alignItems: 'center', wrap: 'wra
 
 const iconStyle = css({
     color: 'text.primary',
-    transition: 'color 0.15s ease',
+    opacity: 1,
+    transition: 'all 0.15s ease',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    p: '4px',
+    p: '5px',
     borderRadius: '6px',
     _hover: {
         opacity: 0.7,
@@ -27,42 +28,42 @@ export function SocialIcons({ config }: { config?: InfoConfig }) {
         <div className={socialContainerStyle}>
             {config.social_twitter && (
                 <a href={config.social_twitter} target="_blank" rel="noreferrer" className={iconStyle}>
-                    <FaTwitter size={16} />
+                    <FaTwitter size={18} />
                 </a>
             )}
             {config.social_github && (
                 <a href={config.social_github} target="_blank" rel="noreferrer" className={iconStyle}>
-                    <FaGithub size={16} />
+                    <FaGithub size={18} />
                 </a>
             )}
             {config.social_linkedin && (
                 <a href={config.social_linkedin} target="_blank" rel="noreferrer" className={iconStyle}>
-                    <FaLinkedin size={16} />
+                    <FaLinkedin size={18} />
                 </a>
             )}
             {config.social_email && (
                 <a href={`mailto:${config.social_email}`} className={iconStyle}>
-                    <FaEnvelope size={16} />
+                    <FaEnvelope size={18} />
                 </a>
             )}
             {config.social_instagram && (
                 <a href={config.social_instagram} target="_blank" rel="noreferrer" className={iconStyle}>
-                    <RiInstagramFill size={16} />
+                    <RiInstagramFill size={18} />
                 </a>
             )}
             {config.social_youtube && (
                 <a href={config.social_youtube} target="_blank" rel="noreferrer" className={iconStyle}>
-                    <FaYoutube size={16} />
+                    <FaYoutube size={18} />
                 </a>
             )}
             {config.social_facebook && (
                 <a href={config.social_facebook} target="_blank" rel="noreferrer" className={iconStyle}>
-                    <FaFacebook size={16} />
+                    <FaFacebook size={18} />
                 </a>
             )}
             {config.social_twitch && (
                 <a href={config.social_twitch} target="_blank" rel="noreferrer" className={iconStyle}>
-                    <FaTwitch size={16} />
+                    <FaTwitch size={18} />
                 </a>
             )}
         </div>
