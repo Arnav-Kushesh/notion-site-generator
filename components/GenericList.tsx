@@ -98,21 +98,34 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                     _hover: { transform: 'translateY(-2px)', borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)' },
                                 })}
                             >
-                                {hasVideo ? (
-                                    <div className={css({ width: '100%', height: '100%', pointerEvents: 'none' })}>
-                                        <iframe
-                                            src={post.video_embed_link}
-                                            title={title}
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            className={css({ width: '100%', height: '100%', border: 'none' })}
+                                {getItemImage(item) ? (
+                                    <>
+                                        <img
+                                            src={getItemImage(item)}
+                                            alt={title}
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
                                         />
-                                    </div>
-                                ) : getItemImage(item) ? (
-                                    <img
-                                        src={getItemImage(item)}
-                                        alt={title}
-                                        className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
-                                    />
+                                        {hasVideo && (
+                                            <div className={css({
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '50%',
+                                                transform: 'translate(-50%, -50%)',
+                                                width: '44px',
+                                                height: '44px',
+                                                borderRadius: 'full',
+                                                bg: 'rgba(0,0,0,0.55)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '1.1rem',
+                                                backdropFilter: 'blur(4px)',
+                                            })}>
+                                                ▶
+                                            </div>
+                                        )}
+                                    </>
                                 ) : (
                                     <div className={css({ width: '100%', height: '100%', bg: 'bg.secondary', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'text.tertiary', fontSize: '0.875rem' })}>
                                         No image
@@ -171,18 +184,8 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                     _hover: { borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)', transform: 'translateY(-2px)' },
                                 })}
                             >
-                                {hasVideo ? (
-                                    <div className={css({ aspectRatio: '16/9', overflow: 'hidden' })}>
-                                        <iframe
-                                            src={post.video_embed_link}
-                                            title={title}
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                            className={css({ width: '100%', height: '100%', border: 'none' })}
-                                        />
-                                    </div>
-                                ) : image ? (
-                                    <div className={css({ aspectRatio: '16/9', overflow: 'hidden' })}>
+                                {image ? (
+                                    <div className={css({ aspectRatio: '16/9', overflow: 'hidden', position: 'relative' })}>
                                         <img
                                             src={image}
                                             alt={title}
@@ -193,6 +196,26 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                                 transition: 'transform 0.3s ease',
                                             })}
                                         />
+                                        {hasVideo && (
+                                            <div className={css({
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '50%',
+                                                transform: 'translate(-50%, -50%)',
+                                                width: '48px',
+                                                height: '48px',
+                                                borderRadius: 'full',
+                                                bg: 'rgba(0,0,0,0.55)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '1.2rem',
+                                                backdropFilter: 'blur(4px)',
+                                            })}>
+                                                ▶
+                                            </div>
+                                        )}
                                     </div>
                                 ) : null}
                                 <div className={css({ p: '20px', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' })}>
@@ -269,11 +292,33 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                 })}
                             >
                                 {image ? (
-                                    <img
-                                        src={image}
-                                        alt={getItemTitle(item)}
-                                        className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
-                                    />
+                                    <>
+                                        <img
+                                            src={image}
+                                            alt={getItemTitle(item)}
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                        />
+                                        {(item as Post).video_embed_link && (
+                                            <div className={css({
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '50%',
+                                                transform: 'translate(-50%, -50%)',
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: 'full',
+                                                bg: 'rgba(0,0,0,0.55)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '0.8rem',
+                                                backdropFilter: 'blur(4px)',
+                                            })}>
+                                                ▶
+                                            </div>
+                                        )}
+                                    </>
                                 ) : (
                                     <div className={css({ width: '100%', height: '100%', bg: 'bg.secondary' })} />
                                 )}
@@ -316,7 +361,7 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                 })}
                             >
                                 {image && (
-                                    <div className={css({ aspectRatio: '4/3', overflow: 'hidden' })}>
+                                    <div className={css({ aspectRatio: '4/3', overflow: 'hidden', position: 'relative' })}>
                                         <img
                                             src={image}
                                             alt={title}
@@ -326,6 +371,26 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                                 objectFit: 'cover',
                                             })}
                                         />
+                                        {post.video_embed_link && (
+                                            <div className={css({
+                                                position: 'absolute',
+                                                top: '50%',
+                                                left: '50%',
+                                                transform: 'translate(-50%, -50%)',
+                                                width: '48px',
+                                                height: '48px',
+                                                borderRadius: 'full',
+                                                bg: 'rgba(0,0,0,0.55)',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                color: 'white',
+                                                fontSize: '1.2rem',
+                                                backdropFilter: 'blur(4px)',
+                                            })}>
+                                                ▶
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                                 <div className={css({ p: '20px', display: 'flex', flexDirection: 'column', gap: '8px' })}>
@@ -381,6 +446,7 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                         >
                             {!isMinimal && image && (
                                 <div className={css({
+                                    position: 'relative',
                                     aspectRatio: 1,
                                     height: { base: '180px', sm: '110px' },
                                     flexShrink: 0,
@@ -392,6 +458,26 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                         alt={title}
                                         className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
                                     />
+                                    {post.video_embed_link && (
+                                        <div className={css({
+                                            position: 'absolute',
+                                            top: '50%',
+                                            left: '50%',
+                                            transform: 'translate(-50%, -50%)',
+                                            width: '36px',
+                                            height: '36px',
+                                            borderRadius: 'full',
+                                            bg: 'rgba(0,0,0,0.55)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            color: 'white',
+                                            fontSize: '0.9rem',
+                                            backdropFilter: 'blur(4px)',
+                                        })}>
+                                            ▶
+                                        </div>
+                                    )}
                                 </div>
                             )}
 

@@ -378,6 +378,10 @@ The "General Configuration" database stores feature flags and toggles. All boole
 | `mailchimp_form_link`             | URL      | Mailchimp form URL                        |
 | `mention_this_tool_in_footer`     | Checkbox | Show "Built with Swan" in the footer      |
 | `show_newsletter_section_on_home` | Checkbox | Show a newsletter section on the homepage |
+| `primary_font`                    | Rich Text | Primary font family name                 |
+| `secondary_font`                  | Rich Text | Secondary font family name               |
+
+> **Tip:** All fonts available on [Google Fonts](https://fonts.google.com/) are supported. Just type the font name (e.g., `Outfit`, `Roboto`, `Playfair Display`) and it will be automatically imported — no code changes needed.
 
 ### Advanced Configuration
 
