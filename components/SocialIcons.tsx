@@ -4,7 +4,7 @@ import { FaGithub, FaLinkedin, FaTwitter, FaYoutube, FaFacebook, FaTwitch, FaEnv
 import { RiInstagramFill } from 'react-icons/ri';
 import { InfoConfig } from '@/lib/data';
 
-const socialContainerStyle = flex({ gap: '8px', alignItems: 'center', wrap: 'wrap' });
+const socialContainerStyle = flex({ gap: '8px', alignItems: 'center', justifyContent: 'center', wrap: 'wrap' });
 
 const iconStyle = css({
     color: 'text.primary',

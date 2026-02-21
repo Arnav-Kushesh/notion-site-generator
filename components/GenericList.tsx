@@ -95,7 +95,7 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                     overflow: 'hidden',
                                     border: '1px solid token(colors.border.default)',
                                     transition: 'all 0.2s ease',
-                                    _hover: { transform: 'translateY(-2px)', borderColor: 'primary' },
+                                    _hover: { transform: 'translateY(-2px)', borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)' },
                                 })}
                             >
                                 {hasVideo ? (
@@ -168,7 +168,7 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                     overflow: 'hidden',
                                     transition: 'all 0.2s ease',
                                     cursor: 'pointer',
-                                    _hover: { borderColor: 'primary', transform: 'translateY(-2px)' },
+                                    _hover: { borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)', transform: 'translateY(-2px)' },
                                 })}
                             >
                                 {hasVideo ? (
@@ -265,7 +265,7 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                     overflow: 'hidden',
                                     border: '1px solid token(colors.border.default)',
                                     transition: 'all 0.2s ease',
-                                    _hover: { transform: 'scale(1.03)', borderColor: 'primary' },
+                                    _hover: { transform: 'scale(1.03)', borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)' },
                                 })}
                             >
                                 {image ? (
@@ -312,7 +312,7 @@ export function GenericList({ items, viewType, itemsPerPage }: GenericListProps)
                                     bg: 'bg.secondary',
                                     border: '1px solid token(colors.border.default)',
                                     transition: 'all 0.2s ease',
-                                    _hover: { transform: 'translateY(-3px)', borderColor: 'primary' },
+                                    _hover: { transform: 'translateY(-3px)', borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)' },
                                 })}
                             >
                                 {image && (
