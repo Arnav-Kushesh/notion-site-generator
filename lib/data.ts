@@ -37,7 +37,7 @@ export interface InfoSectionData {
     id: string;
     title: string;
     description: string;
-    link?: string;
+    button_link?: string;
     button_text?: string;
     image?: string;
     view_type?: 'col_centered_view' | 'col_left_view' | 'row_reverse_view' | 'row_view';
@@ -55,7 +55,7 @@ export interface DynamicSectionData {
     collection_name: string;
     view_type?: 'list_view' | 'card_view' | 'grid_view' | 'minimal_list_view' | 'tiny_card_view' | 'big_card_view';
     items_in_view?: number;
-    top_section_centered?: boolean;
+    top_part_centered?: boolean;
     enabled?: boolean;
 }
 
@@ -63,10 +63,12 @@ export interface HtmlSectionData {
     type: 'html_section';
     id: string;
     title: string;
+    description?: string;
     html_code: string;
     height?: string;
     mobile_height?: string;
     full_width?: boolean;
+    top_part_centered?: boolean;
     enabled?: boolean;
 }
 
@@ -74,10 +76,12 @@ export interface IframeSectionData {
     type: 'iframe_section';
     id: string;
     title: string;
+    description?: string;
     url: string;
     height?: string;
     mobile_height?: string;
     full_width?: boolean;
+    top_part_centered?: boolean;
     enabled?: boolean;
 }
 
@@ -85,7 +89,9 @@ export interface VideoEmbedSectionData {
     type: 'video_embed_section';
     id: string;
     title: string;
+    description?: string;
     url: string;
+    top_part_centered?: boolean;
     enabled?: boolean;
 }
 
@@ -93,10 +99,12 @@ export interface MediaSectionData {
     type: 'media_section';
     id: string;
     title: string;
+    description?: string;
     media?: string;
     height?: string;
     mobile_height?: string;
     full_width?: boolean;
+    top_part_centered?: boolean;
     enabled?: boolean;
 }
 
@@ -105,7 +113,7 @@ export interface MailtoSectionData {
     id: string;
     title: string;
     subject: string;
-    receiver: string;
+    receiver_email: string;
     placeholder_text?: string;
     button_text?: string;
     enabled?: boolean;
@@ -145,6 +153,7 @@ export interface Post {
     tags?: string[];
     author_username?: string;
     video_embed_url?: string;
+    status?: 'draft' | 'in_review' | 'published' | 'archived';
 }
 
 export interface GalleryItem {
@@ -226,10 +235,12 @@ export function getPosts(section: string): Post[] {
                 order_priority: data.order_priority ?? data.order ?? 0,
                 author_username: data.author_username || '',
                 video_embed_url: data.video_embed_url || '',
+                status: data.status || 'published',
                 tags: data.tags || [],
                 ...data,
             } as Post;
-        });
+        })
+        .filter((post) => post.status === 'published');
 
     // Sort posts: higher order_priority first, then by date descending
     return allPosts.sort((a, b) => {
@@ -270,6 +281,7 @@ export function getPost(slug: string, section: string): Post | null {
         order_priority: data.order_priority ?? data.order ?? 0,
         author_username: data.author_username || '',
         video_embed_url: data.video_embed_url || '',
+        status: data.status || 'published',
         tags: data.tags || [],
         ...data,
     } as Post;

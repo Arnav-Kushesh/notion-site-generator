@@ -124,11 +124,11 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
                         {data.description}
                     </p>
 
-                    {data.link && (
+                    {data.button_link && (
                         <a
-                            href={data.link}
-                            target={data.link.startsWith('/') ? '_self' : '_blank'}
-                            rel={data.link.startsWith('/') ? '' : 'noreferrer'}
+                            href={data.button_link}
+                            target={data.button_link.startsWith('/') ? '_self' : '_blank'}
+                            rel={data.button_link.startsWith('/') ? '' : 'noreferrer'}
                             className={css({
                                 display: 'inline-flex',
                                 alignItems: 'center',

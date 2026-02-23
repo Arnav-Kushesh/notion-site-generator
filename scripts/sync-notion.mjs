@@ -120,7 +120,7 @@ async function getPageByName(parentId, name) {
     return null;
 }
 
-// --- Fetch Main Configuration (individual columns, single row) ---
+// --- Fetch Main Config (individual columns, single row) ---
 async function fetchBasicConfig(dbId) {
     if (!dbId) return {};
     const pages = await fetchAllDatabasePages(dbId);
@@ -159,7 +159,7 @@ async function fetchBasicConfig(dbId) {
     return data;
 }
 
-// --- Fetch General Configuration (individual columns with checkboxes, single row) ---
+// --- Fetch General Config (individual columns with checkboxes, single row) ---
 async function fetchGeneralConfig(dbId) {
     if (!dbId) return {};
     const pages = await fetchAllDatabasePages(dbId);
@@ -191,7 +191,7 @@ async function fetchGeneralConfig(dbId) {
     return data;
 }
 
-// --- Fetch Social Links (name/data columns, one row per social link) ---
+// --- Fetch Social (name/data columns, one row per social link) ---
 async function fetchSocialLinks(dbId) {
     if (!dbId) return {};
     const pages = await fetchAllDatabasePages(dbId);
@@ -222,9 +222,9 @@ async function syncConfig() {
     }
 
     // Fetch from all three config databases
-    const basicConfigDbId = await findFullPageDb("Main Configuration", settingsPageId);
-    const generalConfigDbId = await findFullPageDb("General Configuration", settingsPageId);
-    const socialLinksDbId = await findFullPageDb("Social Links", settingsPageId);
+    const basicConfigDbId = await findFullPageDb("Main Config", settingsPageId);
+    const generalConfigDbId = await findFullPageDb("General Config", settingsPageId);
+    const socialLinksDbId = await findFullPageDb("Social", settingsPageId);
 
     const basicConfig = await fetchBasicConfig(basicConfigDbId);
     const generalConfig = await fetchGeneralConfig(generalConfigDbId);
@@ -262,7 +262,7 @@ async function fetchInfoSectionData(dbId) {
     const data = {
         title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
         description: props.description?.rich_text?.[0]?.plain_text || props.Description?.rich_text?.[0]?.plain_text || '',
-        link: props.link?.url || props.Link?.url || '',
+        button_link: props.button_link?.url || props.link?.url || '',
         button_text: props.button_text?.rich_text?.[0]?.plain_text || '',
         view_type: props.view_type?.select?.name || props['View Type']?.select?.name || 'col_centered_view',
         media_aspect_ratio: props.media_aspect_ratio?.rich_text?.[0]?.plain_text || '',
@@ -294,11 +294,11 @@ async function fetchDynamicSectionData(dbId) {
 
     return {
         collection_name: props.collection_name?.title?.[0]?.plain_text || '',
-        section_title: props.section_title?.rich_text?.[0]?.plain_text || '',
+        title: props.title?.rich_text?.[0]?.plain_text || '',
         description: props.description?.rich_text?.[0]?.plain_text || '',
         view_type: props.view_type?.select?.name || 'list_view',
         items_in_view: props.items_in_view?.number || 6,
-        top_section_centered: props.top_section_centered?.checkbox ?? false,
+        top_part_centered: props.top_part_centered?.checkbox ?? false,
         enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
     };
 }
@@ -326,7 +326,10 @@ async function fetchHtmlSectionData(dbId) {
 
     const full_width = props.full_width?.checkbox ?? false;
 
-    return { title, html_code, height, mobile_height, full_width, enabled };
+    const description = props.description?.rich_text?.[0]?.plain_text || '';
+    const top_part_centered = props.top_part_centered?.checkbox ?? false;
+
+    return { title, description, html_code, height, mobile_height, full_width, top_part_centered, enabled };
 }
 
 // New Helper to fetch Iframe Section Data
@@ -339,10 +342,12 @@ async function fetchIframeSectionData(dbId) {
 
     return {
         title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
+        description: props.description?.rich_text?.[0]?.plain_text || '',
         url: props.url?.url || props.URL?.url || '',
         height: props.height?.rich_text?.[0]?.plain_text || '',
         mobile_height: props.mobile_height?.rich_text?.[0]?.plain_text || '',
         full_width: props.full_width?.checkbox ?? false,
+        top_part_centered: props.top_part_centered?.checkbox ?? false,
         enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
     };
 }
@@ -357,7 +362,9 @@ async function fetchVideoEmbedSectionData(dbId) {
 
     return {
         title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
+        description: props.description?.rich_text?.[0]?.plain_text || '',
         url: props.url?.url || props.URL?.url || '',
+        top_part_centered: props.top_part_centered?.checkbox ?? false,
         enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
     };
 }
@@ -384,10 +391,12 @@ async function fetchMediaSectionData(dbId) {
 
     return {
         title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
+        description: props.description?.rich_text?.[0]?.plain_text || '',
         media,
         height: props.height?.rich_text?.[0]?.plain_text || '',
         mobile_height: props.mobile_height?.rich_text?.[0]?.plain_text || '',
         full_width: props.full_width?.checkbox ?? false,
+        top_part_centered: props.top_part_centered?.checkbox ?? false,
         enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
     };
 }
@@ -403,7 +412,7 @@ async function fetchMailtoSectionData(dbId) {
     return {
         title: props.title?.title?.[0]?.plain_text || props.Title?.title?.[0]?.plain_text || '',
         subject: props.subject?.rich_text?.[0]?.plain_text || '',
-        receiver: props.receiver?.rich_text?.[0]?.plain_text || '',
+        receiver_email: props.receiver_email?.rich_text?.[0]?.plain_text || '',
         placeholder_text: props.placeholder_text?.rich_text?.[0]?.plain_text || '',
         button_text: props.button_text?.rich_text?.[0]?.plain_text || '',
         enabled: props.enabled?.checkbox ?? props.visibility?.checkbox ?? true,
@@ -462,7 +471,7 @@ async function processSectionsFromPage(pageId) {
 
         if (sectionType === 'dynamic_section') {
             const data = await fetchDynamicSectionData(dbId);
-            if (data) section = { type: 'dynamic_section', id: dbId, title: data.section_title || dbTitle, ...data };
+            if (data) section = { type: 'dynamic_section', id: dbId, title: data.title || dbTitle, ...data };
         } else if (sectionType === 'info_section') {
             const data = await fetchInfoSectionData(dbId);
             if (data) section = { type: 'info_section', id: dbId, title: dbTitle, ...data };
@@ -488,7 +497,7 @@ async function processSectionsFromPage(pageId) {
             // Fallback to property check (legacy/inference)
             if (props['collection_name']) {
                 const data = await fetchDynamicSectionData(dbId);
-                if (data) section = { type: 'dynamic_section', id: dbId, title: data.section_title || dbTitle, ...data };
+                if (data) section = { type: 'dynamic_section', id: dbId, title: data.title || dbTitle, ...data };
             } else if ((props['description'] && props['title']) || (props['Description'] && props['Title'])) {
                 const data = await fetchInfoSectionData(dbId);
                 if (data) section = { type: 'info_section', id: dbId, title: dbTitle, ...data };
@@ -571,6 +580,7 @@ async function syncAllCollections() {
             const author_username = props.author_username?.rich_text?.[0]?.plain_text || '';
             const video_embed_url = props.video_embed_url?.url || '';
             const button_text = props.button_text?.rich_text?.[0]?.plain_text || '';
+            const status = props.status?.select?.name || 'published';
 
             const frontmatter = {
                 slug: itemSlug,
@@ -588,6 +598,7 @@ async function syncAllCollections() {
                 order_priority,
                 author_username,
                 video_embed_url,
+                status,
             };
 
             const body = mdString?.parent || '';
@@ -806,16 +817,16 @@ async function syncExtraSections() {
 }
 
 async function syncAdvancedConfig() {
-    console.log("Syncing Advanced Configuration...");
+    console.log("Syncing Advanced Config...");
     const settingsPageId = await getPageByName(ROOT_PAGE_ID, "Settings");
     if (!settingsPageId) {
         console.warn("Settings page not found!");
         return;
     }
 
-    const advancedConfigDbId = await findFullPageDb("Advanced Configuration", settingsPageId);
+    const advancedConfigDbId = await findFullPageDb("Advanced Config", settingsPageId);
     if (!advancedConfigDbId) {
-        console.warn("Advanced Configuration database not found in Settings!");
+        console.warn("Advanced Config database not found in Settings!");
         return;
     }
 

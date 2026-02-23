@@ -1,7 +1,7 @@
 
 /**
  * MAIN CONFIGURATION
- * Stored in Settings > Main Configuration (Database)
+ * Stored in Settings > Main Config (Database)
  * Contains site identity fields: title, description, tagline, keywords, logo, favicon, og_image
  */
 export const dummyBasicConfig = {
@@ -18,7 +18,7 @@ export const dummyBasicConfig = {
 
 /**
  * SOCIAL LINKS
- * Stored in Settings > Social Links (Database)
+ * Stored in Settings > Social (Database)
  * Contains all social media URLs
  */
 export const dummySocialLinks = [
@@ -34,7 +34,7 @@ export const dummySocialLinks = [
 
 /**
  * GENERAL CONFIGURATION
- * Stored in Settings > General Configuration (Database)
+ * Stored in Settings > General Config (Database)
  * Individual columns with checkboxes for boolean fields
  */
 export const dummyConfig = {
@@ -60,7 +60,7 @@ export const dummyHeroSection = {
     {
       title: 'Welcome to my portfolio',
       description: 'This is a longer bio paragraph about yourself. I build things with code.',
-      link: 'https://example.com/about',
+      button_link: 'https://example.com/about',
       button_text: 'Explore',
       image: 'https://picsum.photos/id/1025/500/500',
       view_type: 'col_centered_view',
@@ -79,11 +79,11 @@ export const dummyDynamicGallery = {
   data: [
     {
       collection_name: 'Gallery',
-      section_title: 'My Gallery',
+      title: 'My Gallery',
       description: '',
       view_type: 'grid_view',
       items_in_view: 9,
-      top_section_centered: false,
+      top_part_centered: false,
     }
   ]
 };
@@ -95,11 +95,11 @@ export const dummyDynamicProjects = {
   data: [
     {
       collection_name: 'Projects',
-      section_title: 'Selected Projects',
+      title: 'Selected Projects',
       description: 'A selection of my favorite projects',
       view_type: 'card_view',
       items_in_view: 6,
-      top_section_centered: false,
+      top_part_centered: false,
     }
   ]
 };
@@ -111,11 +111,11 @@ export const dummyDynamicBlog = {
   data: [
     {
       collection_name: 'Blogs',
-      section_title: 'Recent Writing',
+      title: 'Recent Writing',
       description: '',
       view_type: 'minimal_list_view', // Text only
       items_in_view: 6,
-      top_section_centered: false,
+      top_part_centered: false,
     }
   ]
 };
@@ -128,9 +128,11 @@ export const dummyHtmlSection = {
   data: [
     {
       title: 'Custom HTML',
+      description: '',
       height: '300px',
       mobile_height: '200px',
       full_width: false,
+      top_part_centered: false,
       html_code: `<div style="font-family: system-ui; padding: 16px;">
   <h2>Hello from user HTML</h2>
   <p>This content is rendered inside an iframe.</p>
@@ -159,10 +161,12 @@ export const dummyIframeSection = {
   data: [
     {
       title: 'Example Website',
+      description: '',
       url: 'https://example.com',
       height: '500px',
       mobile_height: '300px',
       full_width: false,
+      top_part_centered: false,
     }
   ]
 };
@@ -175,7 +179,9 @@ export const dummyVideoEmbedSection = {
   data: [
     {
       title: 'Featured Video',
+      description: '',
       url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      top_part_centered: false,
     }
   ]
 };
@@ -189,7 +195,7 @@ export const dummyMailtoSection = {
     {
       title: 'Leave a Comment',
       subject: 'Feedback on my portfolio',
-      receiver: 'john@example.com',
+      receiver_email: 'john@example.com',
       placeholder_text: 'Share your thoughts...',
       button_text: 'Send',
     }
@@ -204,10 +210,12 @@ export const dummyMediaSection = {
   data: [
     {
       title: 'Media',
+      description: '',
       media: 'https://picsum.photos/id/1035/1200/600',
       height: '400px',
       mobile_height: '250px',
       full_width: false,
+      top_part_centered: false,
     }
   ]
 };
@@ -252,6 +260,7 @@ export const dummyCollections = {
       link: 'https://unsplash.com',
       order_priority: 6,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'This photograph was taken during an early morning hike through the Appalachian mountains. The light was perfect, casting long shadows across the valley below.' },
         { type: 'paragraph', content: 'I used a wide-angle lens to capture the full expanse of the landscape. The clouds were rolling in just as the sun broke through, creating a dramatic contrast.' },
@@ -265,6 +274,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 5,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'A long exposure photograph of the downtown skyline at night. The trails of car headlights create streaks of white and red across the frame.' },
         { type: 'paragraph', content: 'Shot from a rooftop parking garage, this image captures the energy and vibrancy of the city after dark.' },
@@ -278,6 +288,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 4,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'The golden hour at the beach is always magical. This shot captures the moment when the sun dips below the horizon and the sky turns shades of orange and purple.' },
       ],
@@ -290,6 +301,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 3,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'Taken at dawn in a Pacific Northwest forest. The mist weaves between the towering pine trees, creating an ethereal atmosphere.' },
       ],
@@ -302,6 +314,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 2,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'The Sahara Desert stretches endlessly in every direction. The wind sculpts the dunes into elegant curves and ridges that shift with each passing day.' },
       ],
@@ -314,6 +327,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 1,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'Contemporary architecture at its finest. These glass and steel structures reflect the sky and surrounding buildings, creating a kaleidoscope of shapes and colors.' },
       ],
@@ -328,6 +342,7 @@ export const dummyCollections = {
       link: 'https://github.com',
       order_priority: 6,
       author_username: 'johndoe',
+      status: 'published',
       video_embed_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       rich_content: [
         { type: 'heading_2', content: 'About This Project' },
@@ -346,6 +361,7 @@ export const dummyCollections = {
       link: 'https://github.com',
       order_priority: 5,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'An intelligent chatbot that uses the OpenAI API to generate context-aware responses. Built with a React frontend and Python backend.' },
         { type: 'paragraph', content: 'The chatbot supports multi-turn conversations and can be customized with different personas and knowledge bases.' },
@@ -359,6 +375,7 @@ export const dummyCollections = {
       link: 'https://github.com',
       order_priority: 4,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'A complete e-commerce solution with product listings, shopping cart, checkout flow, and payment processing via Stripe.' },
         { type: 'paragraph', content: 'Includes an admin dashboard for managing products, orders, and customer data.' },
@@ -372,6 +389,7 @@ export const dummyCollections = {
       link: 'https://github.com',
       order_priority: 3,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'A productivity application built with Vue.js and Firebase. Features drag-and-drop task organization, due dates, and priority levels.' },
       ],
@@ -384,6 +402,7 @@ export const dummyCollections = {
       link: 'https://github.com',
       order_priority: 2,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'A weather application that uses geolocation to provide real-time forecasts. Displays temperature, humidity, wind speed, and a 7-day outlook.' },
       ],
@@ -396,6 +415,7 @@ export const dummyCollections = {
       link: 'https://github.com',
       order_priority: 1,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'A personal finance tracker that visualizes income and expenses with interactive D3.js charts. Supports multiple accounts and budget categories.' },
       ],
@@ -410,6 +430,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 6,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'Welcome to my blog! This is my first post and I am excited to share my thoughts and experiences with you.' },
         { type: 'paragraph', content: 'I have been working as a software engineer for several years now, and I have learned a lot along the way. This blog will be a place for me to document my journey and share what I have learned.' },
@@ -425,6 +446,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 5,
       author_username: 'janedoe',
+      status: 'published',
       video_embed_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
       rich_content: [
         { type: 'paragraph', content: 'The web development landscape is evolving rapidly. With the rise of AI-powered tools and new JavaScript frameworks, developers need to stay adaptable.' },
@@ -439,6 +461,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 4,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'CSS Grid is one of the most powerful layout systems available in CSS. In this tutorial, I will walk you through the fundamentals and show you how to build complex, responsive layouts.' },
         { type: 'heading_2', content: 'Getting Started' },
@@ -453,6 +476,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 3,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'Next.js has become my go-to framework for building React applications. The built-in support for server-side rendering and static site generation makes it incredibly versatile.' },
         { type: 'paragraph', content: 'In this post, I share the reasons why I chose Next.js for my projects and how it has improved my development workflow.' },
@@ -466,6 +490,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 2,
       author_username: 'johndoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'Working remotely offers many benefits, but it also comes with unique challenges. Here are some tips I have gathered over the years to stay productive and maintain a healthy work-life balance.' },
         { type: 'bullet_list_item', content: 'Set up a dedicated workspace' },
@@ -481,6 +506,7 @@ export const dummyCollections = {
       link: '',
       order_priority: 1,
       author_username: 'janedoe',
+      status: 'published',
       rich_content: [
         { type: 'paragraph', content: 'Rust has been on my radar for a while, and I finally decided to take the plunge. In this post, I share my experience learning Rust as someone coming from a JavaScript background.' },
         { type: 'paragraph', content: 'The ownership model and borrow checker were initially challenging, but they have fundamentally changed how I think about memory management.' },

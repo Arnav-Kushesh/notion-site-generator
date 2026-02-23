@@ -223,14 +223,14 @@ const sectionTypeOptions = [
   { name: "newsletter_section", color: "yellow" },
 ];
 
-// --- 1. Main Configuration ---
+// --- 1. Main Config ---
 
 async function createBasicConfigDB(parentId, notion) {
-  console.log("\nCreating Database: Main Configuration...");
+  console.log("\nCreating Database: Main Config...");
 
   const db = await notion.databases.create({
     parent: { type: "page_id", page_id: parentId },
-    title: plainText("Main Configuration"),
+    title: plainText("Main Config"),
     properties: {
       title: { title: {} },
       description: { rich_text: {} },
@@ -262,8 +262,8 @@ async function createBasicConfigDB(parentId, notion) {
     icon: { type: "emoji", emoji: "🔩" },
   });
 
-  console.log(`   Main Configuration Database created (ID: ${db.id})`);
-  console.log("   > Seeding Main Configuration data...");
+  console.log(`   Main Config Database created (ID: ${db.id})`);
+  console.log("   > Seeding Main Config data...");
 
   const props = {
     title: { title: plainText(dummyBasicConfig.title) },
@@ -318,14 +318,14 @@ async function createBasicConfigDB(parentId, notion) {
   });
 }
 
-// --- 2. General Configuration (Restructured with individual columns) ---
+// --- 2. General Config (Restructured with individual columns) ---
 
 async function createConfigDB(parentId, notion) {
-  console.log("\nCreating Database: General Configuration...");
+  console.log("\nCreating Database: General Config...");
 
   const db = await notion.databases.create({
     parent: { type: "page_id", page_id: parentId },
-    title: plainText("General Configuration"),
+    title: plainText("General Config"),
     properties: {
       label: { title: {} },
       hide_topbar_logo: { checkbox: {} },
@@ -343,8 +343,8 @@ async function createConfigDB(parentId, notion) {
     icon: { type: "emoji", emoji: "🗜️" },
   });
 
-  console.log(`   General Configuration Database created (ID: ${db.id})`);
-  console.log("   > Seeding General Configuration data...");
+  console.log(`   General Config Database created (ID: ${db.id})`);
+  console.log("   > Seeding General Config data...");
 
   await notion.pages.create({
     parent: { database_id: db.id },
@@ -369,14 +369,14 @@ async function createConfigDB(parentId, notion) {
   });
 }
 
-// --- 3. Social Links ---
+// --- 3. Social ---
 
 async function createSocialLinksDB(parentId, notion) {
-  console.log("\nCreating Database: Social Links...");
+  console.log("\nCreating Database: Social...");
 
   const db = await notion.databases.create({
     parent: { type: "page_id", page_id: parentId },
-    title: plainText("Social Links"),
+    title: plainText("Social"),
     properties: {
       name: { title: {} },
       data: { rich_text: {} },
@@ -388,8 +388,8 @@ async function createSocialLinksDB(parentId, notion) {
     icon: { type: "emoji", emoji: "🔗" },
   });
 
-  console.log(`   Social Links Database created (ID: ${db.id})`);
-  console.log("   > Seeding Social Links data...");
+  console.log(`   Social Database created (ID: ${db.id})`);
+  console.log("   > Seeding Social data...");
 
   // Create one row per social link
   const reversedLinks = [...dummySocialLinks].reverse();
@@ -429,6 +429,16 @@ async function createCollections(parentId, notion) {
     order_priority: { number: { format: "number" } },
     author_username: { rich_text: {} },
     video_embed_url: { url: {} },
+    status: {
+      select: {
+        options: [
+          { name: "draft", color: "gray" },
+          { name: "in_review", color: "yellow" },
+          { name: "published", color: "green" },
+          { name: "archived", color: "red" },
+        ],
+      },
+    },
   };
 
   for (const [name, items] of Object.entries(dummyCollections)) {
@@ -463,6 +473,7 @@ async function createCollections(parentId, notion) {
         order_priority: { number: item.order_priority || 0 },
         author_username: { rich_text: plainText(item.author_username || "") },
         video_embed_url: { url: item.video_embed_url || null },
+        status: { select: { name: item.status || "published" } },
       };
 
       if (item.image) {
@@ -564,7 +575,7 @@ async function createInfoSection(notion, parentId, sectionData) {
   const properties = {
     title: { title: {} },
     description: { rich_text: {} },
-    link: { url: {} },
+    button_link: { url: {} },
     button_text: { rich_text: {} },
     image: { files: {} },
     view_type: {
@@ -599,7 +610,7 @@ async function createInfoSection(notion, parentId, sectionData) {
     const props = {
       title: { title: plainText(item.title) },
       description: { rich_text: plainText(item.description) },
-      link: { url: item.link || null },
+      button_link: { url: item.button_link || null },
       button_text: { rich_text: plainText(item.button_text || "") },
       view_type: { select: { name: item.view_type } },
       media_aspect_ratio: {
@@ -631,7 +642,7 @@ async function createDynamicSection(notion, parentId, sectionData) {
   // "collection_name" is the Title field
   const properties = {
     collection_name: { title: {} },
-    section_title: { rich_text: {} },
+    title: { rich_text: {} },
     description: { rich_text: {} },
     view_type: {
       select: {
@@ -646,7 +657,7 @@ async function createDynamicSection(notion, parentId, sectionData) {
       },
     },
     items_in_view: { number: {} },
-    top_section_centered: { checkbox: {} },
+    top_part_centered: { checkbox: {} },
     section_type: {
       select: { options: sectionTypeOptions },
     },
@@ -665,13 +676,13 @@ async function createDynamicSection(notion, parentId, sectionData) {
     const item = sectionData.data[0];
     const props = {
       collection_name: { title: plainText(item.collection_name) },
-      section_title: {
-        rich_text: plainText(item.section_title || sectionData.title),
+      title: {
+        rich_text: plainText(item.title || sectionData.title),
       },
       description: { rich_text: plainText(item.description || "") },
       view_type: { select: { name: item.view_type } },
       items_in_view: { number: item.items_in_view || 6 },
-      top_section_centered: { checkbox: item.top_section_centered || false },
+      top_part_centered: { checkbox: item.top_part_centered || false },
       section_type: { select: { name: "dynamic_section" } },
       enabled: { checkbox: sectionData.enabled === "true" },
     };
@@ -689,9 +700,11 @@ async function createHtmlSection(notion, parentId, sectionData) {
   console.log(`     - Creating HTML Section: ${sectionData.title}`);
   const properties = {
     title: { title: {} },
+    description: { rich_text: {} },
     height: { rich_text: {} },
     mobile_height: { rich_text: {} },
     full_width: { checkbox: {} },
+    top_part_centered: { checkbox: {} },
     section_type: {
       select: { options: sectionTypeOptions },
     },
@@ -711,9 +724,11 @@ async function createHtmlSection(notion, parentId, sectionData) {
       parent: { database_id: db.id },
       properties: {
         title: { title: plainText(item.title || sectionData.title) },
+        description: { rich_text: plainText(item.description || "") },
         height: { rich_text: plainText(item.height || "") },
         mobile_height: { rich_text: plainText(item.mobile_height || "") },
         full_width: { checkbox: item.full_width || false },
+        top_part_centered: { checkbox: item.top_part_centered || false },
         section_type: { select: { name: "html_section" } },
         enabled: { checkbox: sectionData.enabled === "true" },
       },
@@ -727,10 +742,12 @@ async function createIframeSection(notion, parentId, sectionData) {
   console.log(`     - Creating Iframe Section: ${sectionData.title}`);
   const properties = {
     title: { title: {} },
+    description: { rich_text: {} },
     url: { url: {} },
     height: { rich_text: {} },
     mobile_height: { rich_text: {} },
     full_width: { checkbox: {} },
+    top_part_centered: { checkbox: {} },
     section_type: {
       select: { options: sectionTypeOptions },
     },
@@ -750,10 +767,12 @@ async function createIframeSection(notion, parentId, sectionData) {
       parent: { database_id: db.id },
       properties: {
         title: { title: plainText(item.title || sectionData.title) },
+        description: { rich_text: plainText(item.description || "") },
         url: { url: item.url || null },
         height: { rich_text: plainText(item.height || "") },
         mobile_height: { rich_text: plainText(item.mobile_height || "") },
         full_width: { checkbox: item.full_width || false },
+        top_part_centered: { checkbox: item.top_part_centered || false },
         section_type: { select: { name: "iframe_section" } },
         enabled: { checkbox: sectionData.enabled === "true" },
       },
@@ -765,7 +784,9 @@ async function createVideoEmbedSection(notion, parentId, sectionData) {
   console.log(`     - Creating Video Embed Section: ${sectionData.title}`);
   const properties = {
     title: { title: {} },
+    description: { rich_text: {} },
     url: { url: {} },
+    top_part_centered: { checkbox: {} },
     section_type: {
       select: { options: sectionTypeOptions },
     },
@@ -785,7 +806,9 @@ async function createVideoEmbedSection(notion, parentId, sectionData) {
       parent: { database_id: db.id },
       properties: {
         title: { title: plainText(item.title || sectionData.title) },
+        description: { rich_text: plainText(item.description || "") },
         url: { url: item.url || null },
+        top_part_centered: { checkbox: item.top_part_centered || false },
         section_type: { select: { name: "video_embed_section" } },
         enabled: { checkbox: sectionData.enabled === "true" },
       },
@@ -797,10 +820,12 @@ async function createMediaSection(notion, parentId, sectionData) {
   console.log(`     - Creating Media Section: ${sectionData.title}`);
   const properties = {
     title: { title: {} },
+    description: { rich_text: {} },
     media: { files: {} },
     height: { rich_text: {} },
     mobile_height: { rich_text: {} },
     full_width: { checkbox: {} },
+    top_part_centered: { checkbox: {} },
     section_type: {
       select: { options: sectionTypeOptions },
     },
@@ -818,9 +843,11 @@ async function createMediaSection(notion, parentId, sectionData) {
     const item = sectionData.data[0];
     const props = {
       title: { title: plainText(item.title || sectionData.title) },
+      description: { rich_text: plainText(item.description || "") },
       height: { rich_text: plainText(item.height || "400px") },
       mobile_height: { rich_text: plainText(item.mobile_height || "") },
       full_width: { checkbox: item.full_width || false },
+      top_part_centered: { checkbox: item.top_part_centered || false },
       section_type: { select: { name: "media_section" } },
       enabled: { checkbox: sectionData.enabled === "true" },
     };
@@ -845,7 +872,7 @@ async function createMailtoSection(notion, parentId, sectionData) {
   const properties = {
     title: { title: {} },
     subject: { rich_text: {} },
-    receiver: { rich_text: {} },
+    receiver_email: { rich_text: {} },
     placeholder_text: { rich_text: {} },
     button_text: { rich_text: {} },
     section_type: {
@@ -868,7 +895,7 @@ async function createMailtoSection(notion, parentId, sectionData) {
       properties: {
         title: { title: plainText(item.title || sectionData.title) },
         subject: { rich_text: plainText(item.subject || "") },
-        receiver: { rich_text: plainText(item.receiver || "") },
+        receiver_email: { rich_text: plainText(item.receiver_email || "") },
         placeholder_text: { rich_text: plainText(item.placeholder_text || "") },
         button_text: { rich_text: plainText(item.button_text || "") },
         section_type: { select: { name: "mailto_section" } },
@@ -1051,10 +1078,10 @@ async function createCollectionSettingsPage(parentId, notion) {
   }
 }
 
-// --- Advanced Configuration ---
+// --- Advanced Config ---
 
 async function createAdvancedConfigDB(parentId, notion) {
-  console.log("\nCreating Database: Advanced Configuration...");
+  console.log("\nCreating Database: Advanced Config...");
 
   const themeOptions = [
     { name: "light", color: "default" },
@@ -1069,7 +1096,7 @@ async function createAdvancedConfigDB(parentId, notion) {
 
   const db = await notion.databases.create({
     parent: { type: "page_id", page_id: parentId },
-    title: plainText("Advanced Configuration"),
+    title: plainText("Advanced Config"),
     properties: {
       label: { title: {} },
       limit_theme_selection: {
@@ -1083,8 +1110,8 @@ async function createAdvancedConfigDB(parentId, notion) {
     icon: { type: "emoji", emoji: "🛠️" },
   });
 
-  console.log(`   Advanced Configuration Database created (ID: ${db.id})`);
-  console.log("   > Seeding Advanced Configuration data...");
+  console.log(`   Advanced Config Database created (ID: ${db.id})`);
+  console.log("   > Seeding Advanced Config data...");
 
   await notion.pages.create({
     parent: { database_id: db.id },

@@ -12,18 +12,35 @@ export function HtmlSection({ data }: { data: HtmlSectionData }) {
     const desktopHeight = data.height ? normalizeUnit(data.height) : '';
     const mobileHeight = data.mobile_height ? normalizeUnit(data.mobile_height) : desktopHeight;
 
+    const hasTopPart = !!(data.title || data.description);
+
     return (
         <section className={css({ mb: '40px' })}>
-            {data.title && (
-                <h2 className={css({
-                    fontSize: '1.5rem',
-                    fontWeight: '700',
-                    color: 'text.primary',
-                    letterSpacing: '-0.02em',
+            {hasTopPart && (
+                <div className={css({
                     mb: '16px',
+                    ...(data.top_part_centered ? { textAlign: 'center' } : {}),
                 })}>
-                    {data.title}
-                </h2>
+                    {data.title && (
+                        <h2 className={css({
+                            fontSize: '1.5rem',
+                            fontWeight: '700',
+                            color: 'text.primary',
+                            letterSpacing: '-0.02em',
+                        })}>
+                            {data.title}
+                        </h2>
+                    )}
+                    {data.description && (
+                        <p className={css({
+                            fontSize: '0.95rem',
+                            color: 'text.secondary',
+                            mt: '4px',
+                        })}>
+                            {data.description}
+                        </p>
+                    )}
+                </div>
             )}
             <div
                 className={fullWidth

@@ -15,6 +15,7 @@ export function MediaSection({ data }: { data: MediaSectionData }) {
     const desktopHeight = data.height ? normalizeUnit(data.height) : '400px';
     const mobileHeight = data.mobile_height ? normalizeUnit(data.mobile_height) : desktopHeight;
     const fullWidth = data.full_width ?? false;
+    const hasTopPart = !!(data.title || data.description);
 
     const containerStyles = fullWidth
         ? css({
@@ -28,7 +29,34 @@ export function MediaSection({ data }: { data: MediaSectionData }) {
         });
 
     return (
-        <div
+        <section className={css({ mb: '40px' })}>
+            {hasTopPart && (
+                <div className={css({
+                    mb: '16px',
+                    ...(data.top_part_centered ? { textAlign: 'center' } : {}),
+                })}>
+                    {data.title && (
+                        <h2 className={css({
+                            fontSize: '1.5rem',
+                            fontWeight: '700',
+                            color: 'text.primary',
+                            letterSpacing: '-0.02em',
+                        })}>
+                            {data.title}
+                        </h2>
+                    )}
+                    {data.description && (
+                        <p className={css({
+                            fontSize: '0.95rem',
+                            color: 'text.secondary',
+                            mt: '4px',
+                        })}>
+                            {data.description}
+                        </p>
+                    )}
+                </div>
+            )}
+            <div
             className={containerStyles}
             style={{
                 '--media-h-mobile': mobileHeight,
@@ -69,6 +97,7 @@ export function MediaSection({ data }: { data: MediaSectionData }) {
                     />
                 )}
             </div>
-        </div>
+            </div>
+        </section>
     );
 }

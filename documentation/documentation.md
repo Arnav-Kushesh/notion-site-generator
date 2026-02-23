@@ -29,10 +29,10 @@ Root Page
 │   ├── Projects (database)
 │   └── Blogs (database)
 ├── Settings
-│   ├── Main Configuration (database)
-│   ├── General Configuration (database)
-│   ├── Social Links (database)
-│   ├── Advanced Configuration (database)
+│   ├── Main Config (database)
+│   ├── General Config (database)
+│   ├── Social (database)
+│   ├── Advanced Config (database)
 │   ├── Configure Collections (database)
 │   ├── Collection Page Extra Sections
 │   │   ├── Gallery (page with inline DB sections)
@@ -58,7 +58,7 @@ A static content section with text, image/video, and optional CTA button. If the
 |----------|------|-------------|
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section body text |
-| `link` | URL | Optional CTA button link (button hidden if empty) |
+| `button_link` | URL | Optional CTA button link (button hidden if empty) |
 | `button_text` | Rich Text | Custom button label (defaults to "Explore") |
 | `image` | Files | Optional hero/feature image or video |
 | `view_type` | Select | Layout: `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view` |
@@ -73,11 +73,11 @@ Displays items from a collection (blogs, projects, gallery) in various view type
 | Property | Type | Description |
 |----------|------|-------------|
 | `collection_name` | Title | Name of the collection to display (e.g., "Blogs") |
-| `section_title` | Rich Text | Display title for the section |
+| `title` | Rich Text | Display title for the section |
 | `description` | Rich Text | Optional description shown below the title |
 | `view_type` | Select | Layout: `list_view`, `card_view`, `grid_view`, `minimal_list_view`, `tiny_card_view`, `big_card_view` |
 | `items_in_view` | Number | Number of items per page (default: 6) |
-| `top_section_centered` | Checkbox | Center the title and description |
+| `top_part_centered` | Checkbox | Center the title and description |
 | `section_type` | Select | Must be `dynamic_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -97,8 +97,11 @@ Renders custom HTML inside a sandboxed iframe. The HTML code is stored as a code
 | Property | Type | Description |
 |----------|------|-------------|
 | `title` | Title | Section heading |
-| `height` | Number | Custom height in pixels |
+| `description` | Rich Text | Section description (shown below the title) |
+| `height` | Rich Text | Custom height with CSS unit (e.g., `300px`, `50vh`) |
+| `mobile_height` | Rich Text | Height on mobile devices |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
+| `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `html_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -112,9 +115,12 @@ Embeds an external webpage in an iframe.
 | Property | Type | Description |
 |----------|------|-------------|
 | `title` | Title | Section heading |
+| `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | The URL to embed |
-| `height` | Number | Custom height in pixels (defaults to 16:9 aspect ratio) |
+| `height` | Rich Text | Custom height with CSS unit (e.g., `500px`, `80vh`; defaults to 16:9 aspect ratio) |
+| `mobile_height` | Rich Text | Height on mobile devices |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
+| `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `iframe_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -126,7 +132,9 @@ Embeds a video (YouTube, Vimeo, etc.) using the embed URL.
 | Property | Type | Description |
 |----------|------|-------------|
 | `title` | Title | Section heading |
+| `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | Video embed URL (e.g., `https://www.youtube.com/embed/VIDEO_ID`) |
+| `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `video_embed_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -138,9 +146,12 @@ Displays an image or a looping video. If the media file is a video (`.mp4`, `.we
 | Property | Type | Description |
 |----------|------|-------------|
 | `title` | Title | Section heading |
+| `description` | Rich Text | Section description (shown below the title) |
 | `media` | Files | Image or video file |
-| `height` | Number | Display height in pixels (default: 400) |
+| `height` | Rich Text | Display height with CSS unit (e.g., `400px`, `60vh`; default: `400px`) |
+| `mobile_height` | Rich Text | Height on mobile devices |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
+| `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `media_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -153,7 +164,7 @@ An email-based contact form. When a reader submits the form, their email client 
 |----------|------|-------------|
 | `title` | Title | Section heading |
 | `subject` | Rich Text | Email subject line |
-| `receiver` | Rich Text | Recipient email address |
+| `receiver_email` | Rich Text | Recipient email address |
 | `placeholder_text` | Rich Text | Textarea placeholder (defaults to "Share your thoughts...") |
 | `button_text` | Rich Text | Submit button label (defaults to "Send") |
 | `section_type` | Select | Must be `mailto_section` |
@@ -161,7 +172,7 @@ An email-based contact form. When a reader submits the form, their email client 
 
 ### 8. `newsletter_section`
 
-Renders a newsletter signup button that links visitors to your signup form. Reads the `newsletter_form_url` from General Configuration.
+Renders a newsletter signup button that links visitors to your signup form. Reads the `newsletter_form_url` from General Config.
 
 **How to set up the newsletter:**
 
@@ -169,7 +180,7 @@ Renders a newsletter signup button that links visitors to your signup form. Read
 2. Create an account and set up an audience/mailing list
 3. Generate a signup form or landing page — most platforms have a "Signup Forms" or "Landing Pages" section where you can create one
 4. Copy the URL of that form or landing page
-5. In your Notion workspace, go to **Settings > General Configuration** and paste the URL into the `newsletter_form_url` field
+5. In your Notion workspace, go to **Settings > General Config** and paste the URL into the `newsletter_form_url` field
 6. Make sure `enable_newsletter` is checked in the same configuration
 
 **Database Properties:**
@@ -195,6 +206,7 @@ Collections are full-page databases stored under the "Collections" page. Each it
 | `order_priority` | Number | Sort order (higher = first) |
 | `author_username` | Rich Text | Author username (links to Authors DB) |
 | `video_embed_url` | URL | Optional video embed URL |
+| `status` | Select | `draft`, `in_review`, or `published` (only `published` items appear on the site) |
 
 The page content (body) of each item becomes the full article content, rendered as markdown.
 
@@ -215,7 +227,7 @@ Per-collection configuration is managed in **Settings > Configure Collections**,
 
 ## Configuration
 
-### Main Configuration
+### Main Config
 
 Stores your site's identity and branding as individual columns with a single row of data.
 
@@ -231,7 +243,7 @@ Stores your site's identity and branding as individual columns with a single row
 | `default_color_mode` | Select | Default theme (light, dark, blue, purple, pink, red, green, cream) |
 | `sidebar_navigation` | Checkbox | Enable sidebar navigation by default |
 
-### General Configuration
+### General Config
 
 Stores feature flags and toggles as individual checkbox/URL columns with a single row of data.
 
@@ -243,7 +255,7 @@ Stores feature flags and toggles as individual checkbox/URL columns with a singl
 | `newsletter_form_url` | URL | Newsletter signup form URL (e.g., Mailchimp) |
 | `mention_this_tool_in_footer` | Checkbox | Show "Built with Swan" in the footer |
 
-### Advanced Configuration
+### Advanced Config
 
 Fine-grained control over site behavior with a single row of data.
 
@@ -253,7 +265,7 @@ Fine-grained control over site behavior with a single row of data.
 
 Remove themes from the multi-select to prevent users from selecting them in the Settings menu.
 
-### Social Links
+### Social
 
 Stores social media profiles with one row per social platform.
 
@@ -281,9 +293,9 @@ Swan supports 8 color themes:
 | `red` | Dark | Sunset red |
 | `green` | Dark | Forest green |
 
-Set the default via `default_color_mode` in Main Configuration. Users can change themes via the Settings menu or the Experiment panel.
+Set the default via `default_color_mode` in Main Config. Users can change themes via the Settings menu or the Experiment panel.
 
-To restrict which themes are available to users, edit the `limit_theme_selection` multi-select in Advanced Configuration.
+To restrict which themes are available to users, edit the `limit_theme_selection` multi-select in Advanced Config.
 
 ---
 
@@ -294,7 +306,7 @@ Swan supports two navigation layouts:
 - **Navbar (Top Bar):** Default. Shows logo, navigation links, social icons, settings, and search.
 - **Sidebar (Left Panel):** Fixed left sidebar with profile, navigation, social icons, and settings.
 
-Set the default via `sidebar_navigation` in Main Configuration.
+Set the default via `sidebar_navigation` in Main Config.
 
 ---
 
@@ -347,7 +359,7 @@ A floating "Experiment" button in the bottom-right corner (dev mode only) opens 
 - **Section Views:** Change the view type of any homepage section in real time
   - *Info sections:* `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view`
   - *Dynamic sections:* `list_view`, `card_view`, `grid_view`, `minimal_list_view`, `tiny_card_view`, `big_card_view`
-- **Color Mode:** Switch between all 8 themes (not restricted by Advanced Configuration)
+- **Color Mode:** Switch between all 8 themes (not restricted by Advanced Config)
 - **Sidebar Toggle:** Enable/disable sidebar navigation
 
 Changes made via the Experiment panel are **temporary** and will not persist after a page refresh.

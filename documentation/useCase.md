@@ -46,7 +46,7 @@ Integrate newsletter signups directly into your site.
 
 - **Newsletter sections**: Add `newsletter_section` to any page (homepage, navbar pages, collection extra sections)
 - **Per-collection control**: Toggle `show_newsletter_section` per collection in Configure Collections
-- **Easy setup**: Go to Mailchimp (or any email service), create a signup form, and paste the URL into `newsletter_form_url` in General Configuration
+- **Easy setup**: Go to Mailchimp (or any email service), create a signup form, and paste the URL into `newsletter_form_url` in General Config
 
 ## 6. Ad & Monetization Support
 

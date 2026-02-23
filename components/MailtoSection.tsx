@@ -14,7 +14,7 @@ export function MailtoSection({ data }: { data: MailtoSectionData }) {
         if (!message.trim()) return;
         const subject = encodeURIComponent(data.subject);
         const body = encodeURIComponent(message);
-        window.location.href = `mailto:${data.receiver}?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:${data.receiver_email}?subject=${subject}&body=${body}`;
     };
 
     return (

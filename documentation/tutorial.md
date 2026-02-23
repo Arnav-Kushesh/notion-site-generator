@@ -49,7 +49,7 @@ This creates:
 - Home Page with sections (info, dynamic, html, iframe, video_embed, media, mailto, newsletter)
 - Navbar Pages (About, Contact) with sections
 - Collections (Gallery, Projects, Blogs) with sample items and content
-- Settings page with Main Configuration, General Configuration, Social Links, Advanced Configuration, and Configure Collections
+- Settings page with Main Config, General Config, Social, Advanced Config, and Configure Collections
 - Authors database with sample authors
 
 ---
@@ -75,9 +75,9 @@ npm run dev     # Start dev server at localhost:3000
 
 ## Step 4: Customize Your Content
 
-### Edit Main Configuration
+### Edit Main Config
 
-Go to your Notion workspace > Settings > Main Configuration. Edit the single row:
+Go to your Notion workspace > Settings > Main Config. Edit the single row:
 
 - Change the `title` to your site name
 - Update `description` with your meta description
@@ -86,23 +86,23 @@ Go to your Notion workspace > Settings > Main Configuration. Edit the single row
 - Toggle `sidebar_navigation` for sidebar layout
 - Upload your `logo`, `favicon`, and `og_image`
 
-### Edit General Configuration
+### Edit General Config
 
-Go to Settings > General Configuration. Toggle the checkboxes:
+Go to Settings > General Config. Toggle the checkboxes:
 
 - `enable_newsletter` — enable newsletter functionality
 - `newsletter_form_url` — set your newsletter signup form URL (e.g., from Mailchimp)
 - `hide_topbar_logo` / `hide_sidebar_logo` — control logo visibility
 
-### Edit Advanced Configuration
+### Edit Advanced Config
 
-Go to Settings > Advanced Configuration. This controls fine-grained site behavior:
+Go to Settings > Advanced Config. This controls fine-grained site behavior:
 
 - `limit_theme_selection` — a multi-select field listing which themes users can choose from. Remove themes from the multi-select to prevent users from selecting them in the Settings menu. By default, all 8 themes are available.
 
-### Edit Social Links
+### Edit Social
 
-Go to Settings > Social Links. Each row has a `name` and `data`:
+Go to Settings > Social. Each row has a `name` and `data`:
 
 - Edit existing rows to update your profile URLs
 - Add new rows for additional platforms (github, twitter, linkedin, instagram, youtube, facebook, twitch, email)
@@ -125,7 +125,8 @@ Go to Collections > [Your Collection]. Add new pages to the database:
 3. Upload an Image
 4. Add Tags
 5. Set `order_priority` (higher = appears first)
-6. Write your content in the page body
+6. Set `status` to `published` (only published items appear on the site; use `draft` or `in_review` to hide items)
+7. Write your content in the page body
 
 ---
 
@@ -135,21 +136,21 @@ Go to Collections > [Your Collection]. Add new pages to the database:
 
 1. Go to your Home Page (or any navbar page)
 2. Type `/database` and create an inline database
-3. Add properties: `title` (Title), `description` (Rich Text), `link` (URL), `button_text` (Rich Text), `image` (Files), `view_type` (Select), `section_type` (Select), `enabled` (Checkbox)
+3. Add properties: `title` (Title), `description` (Rich Text), `button_link` (URL), `button_text` (Rich Text), `image` (Files), `view_type` (Select), `section_type` (Select), `enabled` (Checkbox)
 4. Set `view_type` options: `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view`
 5. Add a row, set `section_type` to `info_section`
 6. The image field supports both images and videos (`.mp4`, `.webm`, `.mov`, `.ogg`) — videos render as looping background videos
-7. The button is hidden if `link` is empty
+7. The button is hidden if `button_link` is empty
 8. Check `enabled` to show it
 
 ### Add a Dynamic Section
 
-1. Create an inline database with properties: `collection_name` (Title), `section_title` (Rich Text), `description` (Rich Text), `view_type` (Select), `items_in_view` (Number), `top_section_centered` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
+1. Create an inline database with properties: `collection_name` (Title), `title` (Rich Text), `description` (Rich Text), `view_type` (Select), `items_in_view` (Number), `top_part_centered` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
 2. Set `view_type` options: `list_view`, `card_view`, `grid_view`, `minimal_list_view`, `tiny_card_view`, `big_card_view`
 3. Add a row, set `section_type` to `dynamic_section`
 4. Set `collection_name` to the name of the collection to display (e.g., "Blogs")
 5. Optionally add a `description` — it will only render if provided
-6. Check `top_section_centered` to center the title and description
+6. Check `top_part_centered` to center the title and description
 7. Set `items_in_view` to control pagination (default: 6)
 8. Check `enabled` to show it
 
@@ -157,44 +158,48 @@ Go to Collections > [Your Collection]. Add new pages to the database:
 
 1. Go to your Home Page (or any navbar page)
 2. Type `/database` and create an inline database
-3. Add properties: `title` (Title), `height` (Number), `full_width` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
+3. Add properties: `title` (Title), `description` (Rich Text), `height` (Rich Text), `mobile_height` (Rich Text), `full_width` (Checkbox), `top_part_centered` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
 4. Set `section_type` options to include `html_section`
 5. Add a row, set `section_type` to `html_section`
 6. Open the row as a page
 7. Add a code block with your HTML content
-8. Optionally set `height` for a custom height in pixels
+8. Optionally set `height` for a custom height (e.g., `300px`, `50vh`)
 9. Check `full_width` for edge-to-edge display (removes border radius and border)
-10. Check `enabled` to show it
+10. Check `top_part_centered` to center-align the title and description
+11. Check `enabled` to show it
 
 ### Add an Iframe Section
 
-1. Create an inline database with properties: `title` (Title), `url` (URL), `height` (Number), `full_width` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
+1. Create an inline database with properties: `title` (Title), `description` (Rich Text), `url` (URL), `height` (Rich Text), `mobile_height` (Rich Text), `full_width` (Checkbox), `top_part_centered` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
 2. Add a row, set `section_type` to `iframe_section`, enter the URL
-3. Optionally set `height` for a custom height in pixels (defaults to 16:9 aspect ratio)
+3. Optionally set `height` for a custom height (e.g., `500px`, `80vh`; defaults to 16:9 aspect ratio)
 4. Check `full_width` for edge-to-edge display (removes border radius and border)
-5. Check `enabled` to show it
+5. Check `top_part_centered` to center-align the title and description
+6. Check `enabled` to show it
 
 ### Add a Video Embed Section
 
-1. Create an inline database with: `title` (Title), `url` (URL), `section_type` (Select), `enabled` (Checkbox)
+1. Create an inline database with: `title` (Title), `description` (Rich Text), `url` (URL), `top_part_centered` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
 2. Add a row, set `section_type` to `video_embed_section`
 3. Enter the video embed URL (e.g., `https://www.youtube.com/embed/VIDEO_ID`)
-4. Check `enabled` to show it
+4. Check `top_part_centered` to center-align the title and description
+5. Check `enabled` to show it
 
 ### Add a Media Section
 
-1. Create an inline database with: `title` (Title), `media` (Files), `height` (Number), `full_width` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
+1. Create an inline database with: `title` (Title), `description` (Rich Text), `media` (Files), `height` (Rich Text), `mobile_height` (Rich Text), `full_width` (Checkbox), `top_part_centered` (Checkbox), `section_type` (Select), `enabled` (Checkbox)
 2. Add a row, set `section_type` to `media_section`
 3. Upload an image or video file (`.mp4`, `.webm`, `.mov`, `.ogg` render as looping video)
-4. Optionally set `height` for display height in pixels (default: 400)
+4. Optionally set `height` for display height (e.g., `400px`, `60vh`; default: `400px`)
 5. Check `full_width` for edge-to-edge display (removes border radius and border)
-6. Check `enabled` to show it
+6. Check `top_part_centered` to center-align the title and description
+7. Check `enabled` to show it
 
 ### Add a Mailto Section
 
-1. Create an inline database with: `title` (Title), `subject` (Rich Text), `receiver` (Rich Text), `placeholder_text` (Rich Text), `button_text` (Rich Text), `section_type` (Select), `enabled` (Checkbox)
+1. Create an inline database with: `title` (Title), `subject` (Rich Text), `receiver_email` (Rich Text), `placeholder_text` (Rich Text), `button_text` (Rich Text), `section_type` (Select), `enabled` (Checkbox)
 2. Add a row, set `section_type` to `mailto_section`
-3. Enter the `subject` (email subject line) and `receiver` (recipient email address)
+3. Enter the `subject` (email subject line) and `receiver_email` (recipient email address)
 4. Optionally set `placeholder_text` (defaults to "Share your thoughts...") and `button_text` (defaults to "Send")
 5. Check `enabled` to show it
 
@@ -203,7 +208,7 @@ Go to Collections > [Your Collection]. Add new pages to the database:
 1. Create an inline database with: `section_type` (Select), `enabled` (Checkbox)
 2. Add a row, set `section_type` to `newsletter_section`
 3. Go to [Mailchimp](https://mailchimp.com/) (or any email marketing service), create a signup form, and copy the form URL
-4. In General Configuration, paste the URL into `newsletter_form_url` and check `enable_newsletter`
+4. In General Config, paste the URL into `newsletter_form_url` and check `enable_newsletter`
 5. Check `enabled` to show it
 
 ---
@@ -237,11 +242,11 @@ All 8 section types are supported: info, dynamic, html, iframe, video_embed, med
 Swan ships with 8 color themes: light, cream, pink, dark, blue, purple, red, green.
 
 **To set the default theme:**
-1. Go to Settings > Main Configuration
+1. Go to Settings > Main Config
 2. Set `default_color_mode` to your preferred theme name
 
 **To restrict available themes:**
-1. Go to Settings > Advanced Configuration
+1. Go to Settings > Advanced Config
 2. Edit the `limit_theme_selection` multi-select — remove themes you don't want users to access
 3. Only themes listed will appear in the Settings menu
 
@@ -259,7 +264,7 @@ Swan ships with 8 color themes: light, cream, pink, dark, blue, purple, red, gre
 ## Step 9: Configure Navigation
 
 **Sidebar vs Navbar:**
-- Check `sidebar_navigation` in Main Configuration for sidebar mode
+- Check `sidebar_navigation` in Main Config for sidebar mode
 - Uncheck it for top navbar mode
 
 **Add Navbar Pages:**
