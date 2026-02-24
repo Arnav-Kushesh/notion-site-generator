@@ -9,8 +9,6 @@ function normalizeUnit(value: string): string {
 
 export function HtmlSection({ data }: { data: HtmlSectionData }) {
     const fullWidth = data.full_width ?? false;
-    const desktopHeight = data.height ? normalizeUnit(data.height) : '';
-    const mobileHeight = data.mobile_height ? normalizeUnit(data.mobile_height) : desktopHeight;
 
     const hasTopPart = !!(data.title || data.description);
 
@@ -55,19 +53,7 @@ export function HtmlSection({ data }: { data: HtmlSectionData }) {
                         border: '1px solid token(colors.border.default)',
                     })
                 }
-                style={desktopHeight ? {
-                    '--html-h-mobile': mobileHeight,
-                    '--html-h-desktop': desktopHeight,
-                } as React.CSSProperties : undefined}
             >
-                {!!desktopHeight && (
-                    <style>{`
-                        .html-section-frame { height: var(--html-h-mobile); }
-                        @media (min-width: 768px) {
-                            .html-section-frame { height: var(--html-h-desktop); }
-                        }
-                    `}</style>
-                )}
                 <iframe
                     srcDoc={data.html_code}
                     title={data.title || 'HTML Content'}
@@ -77,6 +63,7 @@ export function HtmlSection({ data }: { data: HtmlSectionData }) {
                         minHeight: '200px',
                         border: 'none',
                         display: 'block',
+                        aspectRatio: data.aspect_ratio || '16/9',
                     })}`}
                 />
             </div>

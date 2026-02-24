@@ -18,11 +18,11 @@ import {
 // --- 1. Main Config ---
 
 export async function createBasicConfigDB(parentId, notion) {
-    console.log("\nCreating Database: Main Config...");
+    console.log("\nCreating Database: Main Configuration...");
 
     const db = await notion.databases.create({
         parent: { type: "page_id", page_id: parentId },
-        title: plainText("Main Config"),
+        title: plainText("Main Configuration"),
         properties: {
             title: { title: {} },
             description: { rich_text: {} },
@@ -54,8 +54,8 @@ export async function createBasicConfigDB(parentId, notion) {
         icon: { type: "emoji", emoji: "🔩" },
     });
 
-    console.log(`   Main Config Database created (ID: ${db.id})`);
-    console.log("   > Seeding Main Config data...");
+    console.log(`   Main Configuration Database created (ID: ${db.id})`);
+    console.log("   > Seeding Main Configuration data...");
 
     const props = {
         title: { title: plainText(dummyBasicConfig.title) },
@@ -110,14 +110,14 @@ export async function createBasicConfigDB(parentId, notion) {
     });
 }
 
-// --- 2. General Config ---
+// --- 2. General Configuration ---
 
 export async function createConfigDB(parentId, notion) {
-    console.log("\nCreating Database: General Config...");
+    console.log("\nCreating Database: General Configuration...");
 
     const db = await notion.databases.create({
         parent: { type: "page_id", page_id: parentId },
-        title: plainText("General Config"),
+        title: plainText("General Configuration"),
         properties: {
             label: { title: {} },
             hide_topbar_logo: { checkbox: {} },
@@ -135,8 +135,8 @@ export async function createConfigDB(parentId, notion) {
         icon: { type: "emoji", emoji: "🗜️" },
     });
 
-    console.log(`   General Config Database created (ID: ${db.id})`);
-    console.log("   > Seeding General Config data...");
+    console.log(`   General Configuration Database created (ID: ${db.id})`);
+    console.log("   > Seeding General Configuration data...");
 
     await notion.pages.create({
         parent: { database_id: db.id },
@@ -308,10 +308,10 @@ export async function createCollectionSettingsPage(parentId, notion) {
     }
 }
 
-// --- Advanced Config ---
+// --- Advanced Configuration ---
 
 export async function createAdvancedConfigDB(parentId, notion) {
-    console.log("\nCreating Database: Advanced Config...");
+    console.log("\nCreating Database: Advanced Configuration...");
 
     const themeOptions = [
         { name: "light", color: "default" },
@@ -326,7 +326,7 @@ export async function createAdvancedConfigDB(parentId, notion) {
 
     const db = await notion.databases.create({
         parent: { type: "page_id", page_id: parentId },
-        title: plainText("Advanced Config"),
+        title: plainText("Advanced Configuration"),
         properties: {
             label: { title: {} },
             limit_theme_selection: {
@@ -340,8 +340,8 @@ export async function createAdvancedConfigDB(parentId, notion) {
         icon: { type: "emoji", emoji: "🛠️" },
     });
 
-    console.log(`   Advanced Config Database created (ID: ${db.id})`);
-    console.log("   > Seeding Advanced Config data...");
+    console.log(`   Advanced Configuration Database created (ID: ${db.id})`);
+    console.log("   > Seeding Advanced Configuration data...");
 
     await notion.pages.create({
         parent: { database_id: db.id },

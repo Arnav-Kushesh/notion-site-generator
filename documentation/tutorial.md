@@ -49,7 +49,7 @@ This creates:
 - Home Page with sections (info, dynamic, html, iframe, video_embed, media, mailto, newsletter)
 - Navbar Pages (About, Contact) with sections
 - Collections (Gallery, Projects, Blogs) with sample items and content
-- Settings page with Main Config, General Config, Social, Advanced Config, and Configure Collections
+- Settings page with Main Configuration, General Configuration, Social, Advanced Configuration, and Configure Collections
 - Authors database with sample authors
 
 ---
@@ -75,9 +75,9 @@ npm run dev     # Start dev server at localhost:3000
 
 ## Step 4: Customize Your Content
 
-### Edit Main Config
+### Edit Main Configuration
 
-Go to your Notion workspace > Settings > Main Config. Edit the single row:
+Go to your Notion workspace > Settings > Main Configuration. Edit the single row:
 
 - Change the `title` to your site name
 - Update `description` with your meta description
@@ -86,17 +86,17 @@ Go to your Notion workspace > Settings > Main Config. Edit the single row:
 - Toggle `sidebar_navigation` for sidebar layout
 - Upload your `logo`, `favicon`, and `og_image`
 
-### Edit General Config
+### Edit General Configuration
 
-Go to Settings > General Config. Toggle the checkboxes:
+Go to Settings > General Configuration. Toggle the checkboxes:
 
 - `enable_newsletter` — enable newsletter functionality
 - `newsletter_form_url` — set your newsletter signup form URL (e.g., from Mailchimp)
 - `hide_topbar_logo` / `hide_sidebar_logo` — control logo visibility
 
-### Edit Advanced Config
+### Edit Advanced Configuration
 
-Go to Settings > Advanced Config. This controls fine-grained site behavior:
+Go to Settings > Advanced Configuration. This controls fine-grained site behavior:
 
 - `limit_theme_selection` — a multi-select field listing which themes users can choose from. Remove themes from the multi-select to prevent users from selecting them in the Settings menu. By default, all 8 themes are available.
 
@@ -208,7 +208,7 @@ Go to Collections > [Your Collection]. Add new pages to the database:
 1. Create an inline database with: `section_type` (Select), `enabled` (Checkbox)
 2. Add a row, set `section_type` to `newsletter_section`
 3. Go to [Mailchimp](https://mailchimp.com/) (or any email marketing service), create a signup form, and copy the form URL
-4. In General Config, paste the URL into `newsletter_form_url` and check `enable_newsletter`
+4. In General Configuration, paste the URL into `newsletter_form_url` and check `enable_newsletter`
 5. Check `enabled` to show it
 
 ---
@@ -242,11 +242,11 @@ All 8 section types are supported: info, dynamic, html, iframe, video_embed, med
 Swan ships with 8 color themes: light, cream, pink, dark, blue, purple, red, green.
 
 **To set the default theme:**
-1. Go to Settings > Main Config
+1. Go to Settings > Main Configuration
 2. Set `default_color_mode` to your preferred theme name
 
 **To restrict available themes:**
-1. Go to Settings > Advanced Config
+1. Go to Settings > Advanced Configuration
 2. Edit the `limit_theme_selection` multi-select — remove themes you don't want users to access
 3. Only themes listed will appear in the Settings menu
 
@@ -264,7 +264,7 @@ Swan ships with 8 color themes: light, cream, pink, dark, blue, purple, red, gre
 ## Step 9: Configure Navigation
 
 **Sidebar vs Navbar:**
-- Check `sidebar_navigation` in Main Config for sidebar mode
+- Check `sidebar_navigation` in Main Configuration for sidebar mode
 - Uncheck it for top navbar mode
 
 **Add Navbar Pages:**

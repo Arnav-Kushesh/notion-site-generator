@@ -156,8 +156,7 @@ async function createHtmlSection(notion, parentId, sectionData) {
     const properties = {
         title: { title: {} },
         description: { rich_text: {} },
-        height: { rich_text: {} },
-        mobile_height: { rich_text: {} },
+        aspect_ratio: { rich_text: {} },
         full_width: { checkbox: {} },
         top_part_centered: { checkbox: {} },
         section_type: {
@@ -180,8 +179,7 @@ async function createHtmlSection(notion, parentId, sectionData) {
             properties: {
                 title: { title: plainText(item.title || sectionData.title) },
                 description: { rich_text: plainText(item.description || "") },
-                height: { rich_text: plainText(item.height || "") },
-                mobile_height: { rich_text: plainText(item.mobile_height || "") },
+                aspect_ratio: { rich_text: plainText(item.aspect_ratio || "") },
                 full_width: { checkbox: item.full_width || false },
                 top_part_centered: { checkbox: item.top_part_centered || false },
                 section_type: { select: { name: "html_section" } },
@@ -199,8 +197,7 @@ async function createIframeSection(notion, parentId, sectionData) {
         title: { title: {} },
         description: { rich_text: {} },
         url: { url: {} },
-        height: { rich_text: {} },
-        mobile_height: { rich_text: {} },
+        aspect_ratio: { rich_text: {} },
         full_width: { checkbox: {} },
         top_part_centered: { checkbox: {} },
         section_type: {
@@ -224,8 +221,7 @@ async function createIframeSection(notion, parentId, sectionData) {
                 title: { title: plainText(item.title || sectionData.title) },
                 description: { rich_text: plainText(item.description || "") },
                 url: { url: item.url || null },
-                height: { rich_text: plainText(item.height || "") },
-                mobile_height: { rich_text: plainText(item.mobile_height || "") },
+                aspect_ratio: { rich_text: plainText(item.aspect_ratio || "") },
                 full_width: { checkbox: item.full_width || false },
                 top_part_centered: { checkbox: item.top_part_centered || false },
                 section_type: { select: { name: "iframe_section" } },
@@ -277,8 +273,7 @@ async function createMediaSection(notion, parentId, sectionData) {
         title: { title: {} },
         description: { rich_text: {} },
         media: { files: {} },
-        height: { rich_text: {} },
-        mobile_height: { rich_text: {} },
+        aspect_ratio: { rich_text: {} },
         full_width: { checkbox: {} },
         top_part_centered: { checkbox: {} },
         section_type: {
@@ -299,8 +294,7 @@ async function createMediaSection(notion, parentId, sectionData) {
         const props = {
             title: { title: plainText(item.title || sectionData.title) },
             description: { rich_text: plainText(item.description || "") },
-            height: { rich_text: plainText(item.height || "400px") },
-            mobile_height: { rich_text: plainText(item.mobile_height || "") },
+            aspect_ratio: { rich_text: plainText(item.aspect_ratio || "16/9") },
             full_width: { checkbox: item.full_width || false },
             top_part_centered: { checkbox: item.top_part_centered || false },
             section_type: { select: { name: "media_section" } },

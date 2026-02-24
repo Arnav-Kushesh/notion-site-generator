@@ -58,8 +58,7 @@ export interface HtmlSectionData {
     title: string;
     description?: string;
     html_code: string;
-    height?: string;
-    mobile_height?: string;
+    aspect_ratio?: string;
     full_width?: boolean;
     top_part_centered?: boolean;
     enabled?: boolean;
@@ -71,8 +70,7 @@ export interface IframeSectionData {
     title: string;
     description?: string;
     url: string;
-    height?: string;
-    mobile_height?: string;
+    aspect_ratio?: string;
     full_width?: boolean;
     top_part_centered?: boolean;
     enabled?: boolean;
@@ -94,8 +92,7 @@ export interface MediaSectionData {
     title: string;
     description?: string;
     media?: string;
-    height?: string;
-    mobile_height?: string;
+    aspect_ratio?: string;
     full_width?: boolean;
     top_part_centered?: boolean;
     enabled?: boolean;

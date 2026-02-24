@@ -148,7 +148,7 @@ async function createCollections(parentId, notion) {
       select: {
         options: [
           { name: "draft", color: "gray" },
-          { name: "in_review", color: "yellow" },
+          { name: "in_review", color: "brown" },
           { name: "published", color: "green" },
           { name: "archived", color: "red" },
         ],

@@ -23,8 +23,8 @@ The `scripts/sync-notion.mjs` script connects to the Notion API and downloads:
 
 | Data Source | Output Location | Format |
 |---|---|---|
-| Main Config | `notion_state/data/site.json` | JSON (merged with General Config and Social) |
-| General Config | `notion_state/data/site.json` | JSON (merged into site.json) |
+| Main Configuration | `notion_state/data/site.json` | JSON (merged with General Configuration and Social) |
+| General Configuration | `notion_state/data/site.json` | JSON (merged into site.json) |
 | Social | `notion_state/data/site.json` | JSON (merged as `social_<name>` keys into site.json) |
 | Home Page sections | `notion_state/data/home.json` | JSON section array |
 | Collection items | `notion_state/content/{collection}/*.md` | Markdown with frontmatter |
@@ -40,8 +40,8 @@ The `scripts/sync-notion.mjs` script connects to the Notion API and downloads:
 The sync script reads three separate databases under Settings and merges them into a single `site.json`:
 
 ```
-Main Config  →  { title, description, tagline, keywords, logo, favicon, og_image, default_color_mode, sidebar_navigation }
-General Config  →  { hide_topbar_logo, hide_sidebar_logo, enable_newsletter, newsletter_form_url, ... }
+Main Configuration  →  { title, description, tagline, keywords, logo, favicon, og_image, default_color_mode, sidebar_navigation }
+General Configuration  →  { hide_topbar_logo, hide_sidebar_logo, enable_newsletter, newsletter_form_url, ... }
 Social  →  { social_github, social_twitter, social_linkedin, social_instagram, ... }
 
 Merged into: site.json → { info: { ...all fields } }
@@ -93,8 +93,8 @@ For continuous deployment, set up a webhook or cron job that triggers the build 
 - **Security**: No server-side API keys exposed at runtime
 
 ### Three-Tier Configuration
-- **Main Config**: Site identity (title, logo, favicon, theme, navigation mode)
-- **General Config**: Feature flags (newsletter, logo visibility, footer branding)
+- **Main Configuration**: Site identity (title, logo, favicon, theme, navigation mode)
+- **General Configuration**: Feature flags (newsletter, logo visibility, footer branding)
 - **Social**: Social media profiles (one row per platform)
 
 This separation keeps each settings page focused and easy to manage. All three are merged into a single `site.json` at sync time for seamless frontend access.

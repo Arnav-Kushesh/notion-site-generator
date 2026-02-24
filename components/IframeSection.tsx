@@ -7,9 +7,6 @@ function normalizeUnit(value: string): string {
 
 export function IframeSection({ data }: { data: IframeSectionData }) {
     const fullWidth = data.full_width ?? false;
-    const desktopHeight = data.height ? normalizeUnit(data.height) : '';
-    const mobileHeight = data.mobile_height ? normalizeUnit(data.mobile_height) : desktopHeight;
-    const hasExplicitHeight = !!desktopHeight;
 
     const hasTopPart = !!(data.title || data.description);
 
@@ -54,19 +51,7 @@ export function IframeSection({ data }: { data: IframeSectionData }) {
                         border: '1px solid token(colors.border.default)',
                     })
                 }
-                style={hasExplicitHeight ? {
-                    '--iframe-h-mobile': mobileHeight,
-                    '--iframe-h-desktop': desktopHeight,
-                } as React.CSSProperties : undefined}
             >
-                {hasExplicitHeight && (
-                    <style>{`
-                        .iframe-section-frame { height: var(--iframe-h-mobile); }
-                        @media (min-width: 768px) {
-                            .iframe-section-frame { height: var(--iframe-h-desktop); }
-                        }
-                    `}</style>
-                )}
                 <iframe
                     src={data.url}
                     title={data.title || 'Embedded Page'}
@@ -75,7 +60,7 @@ export function IframeSection({ data }: { data: IframeSectionData }) {
                         width: '100%',
                         border: 'none',
                         display: 'block',
-                        ...(!hasExplicitHeight ? { aspectRatio: '16/9' } : {}),
+                        aspectRatio: data.aspect_ratio || '16/9',
                     })}`}
                 />
             </div>

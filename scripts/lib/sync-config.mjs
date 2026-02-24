@@ -121,8 +121,8 @@ export async function syncConfig() {
     }
 
     // Fetch from all three config databases
-    const basicConfigDbId = await findFullPageDb("Main Config", settingsPageId);
-    const generalConfigDbId = await findFullPageDb("General Config", settingsPageId);
+    const basicConfigDbId = await findFullPageDb("Main Configuration", settingsPageId);
+    const generalConfigDbId = await findFullPageDb("General Configuration", settingsPageId);
     const socialLinksDbId = await findFullPageDb("Social", settingsPageId);
 
     const basicConfig = await fetchBasicConfig(basicConfigDbId);
@@ -225,16 +225,16 @@ export async function syncCssInjection() {
 }
 
 export async function syncAdvancedConfig() {
-    console.log("Syncing Advanced Config...");
+    console.log("Syncing Advanced Configuration...");
     const settingsPageId = await getPageByName(ROOT_PAGE_ID, "Settings");
     if (!settingsPageId) {
         console.warn("Settings page not found!");
         return;
     }
 
-    const advancedConfigDbId = await findFullPageDb("Advanced Config", settingsPageId);
+    const advancedConfigDbId = await findFullPageDb("Advanced Configuration", settingsPageId);
     if (!advancedConfigDbId) {
-        console.warn("Advanced Config database not found in Settings!");
+        console.warn("Advanced Configuration database not found in Settings!");
         return;
     }
 

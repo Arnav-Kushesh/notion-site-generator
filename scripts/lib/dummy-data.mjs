@@ -1,7 +1,7 @@
 
 /**
  * MAIN CONFIGURATION
- * Stored in Settings > Main Config (Database)
+ * Stored in Settings > Main Configuration (Database)
  * Contains site identity fields: title, description, tagline, keywords, logo, favicon, og_image
  */
 export const dummyBasicConfig = {
@@ -34,7 +34,7 @@ export const dummySocialLinks = [
 
 /**
  * GENERAL CONFIGURATION
- * Stored in Settings > General Config (Database)
+ * Stored in Settings > General Configuration (Database)
  * Individual columns with checkboxes for boolean fields
  */
 export const dummyConfig = {
@@ -129,8 +129,7 @@ export const dummyHtmlSection = {
     {
       title: 'Custom HTML',
       description: '',
-      height: '300px',
-      mobile_height: '200px',
+      aspect_ratio: '16/9',
       full_width: false,
       top_part_centered: false,
       html_code: `<div style="font-family: system-ui; padding: 16px;">
@@ -163,8 +162,7 @@ export const dummyIframeSection = {
       title: 'Example Website',
       description: '',
       url: 'https://example.com',
-      height: '500px',
-      mobile_height: '300px',
+      aspect_ratio: '16/9',
       full_width: false,
       top_part_centered: false,
     }
@@ -212,8 +210,7 @@ export const dummyMediaSection = {
       title: 'Media',
       description: '',
       media: 'https://picsum.photos/id/1035/1200/600',
-      height: '400px',
-      mobile_height: '250px',
+      aspect_ratio: '16/9',
       full_width: false,
       top_part_centered: false,
     }

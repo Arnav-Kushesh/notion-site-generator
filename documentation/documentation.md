@@ -29,10 +29,10 @@ Root Page
 │   ├── Projects (database)
 │   └── Blogs (database)
 ├── Settings
-│   ├── Main Config (database)
-│   ├── General Config (database)
+│   ├── Main Configuration (database)
+│   ├── General Configuration (database)
 │   ├── Social (database)
-│   ├── Advanced Config (database)
+│   ├── Advanced Configuration (database)
 │   ├── Configure Collections (database)
 │   ├── Collection Page Extra Sections
 │   │   ├── Gallery (page with inline DB sections)
@@ -98,8 +98,7 @@ Renders custom HTML inside a sandboxed iframe. The HTML code is stored as a code
 |----------|------|-------------|
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
-| `height` | Rich Text | Custom height with CSS unit (e.g., `300px`, `50vh`) |
-| `mobile_height` | Rich Text | Height on mobile devices |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `html_section` |
@@ -117,8 +116,7 @@ Embeds an external webpage in an iframe.
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | The URL to embed |
-| `height` | Rich Text | Custom height with CSS unit (e.g., `500px`, `80vh`; defaults to 16:9 aspect ratio) |
-| `mobile_height` | Rich Text | Height on mobile devices |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `iframe_section` |
@@ -148,8 +146,7 @@ Displays an image or a looping video. If the media file is a video (`.mp4`, `.we
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `media` | Files | Image or video file |
-| `height` | Rich Text | Display height with CSS unit (e.g., `400px`, `60vh`; default: `400px`) |
-| `mobile_height` | Rich Text | Height on mobile devices |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `media_section` |
@@ -172,7 +169,7 @@ An email-based contact form. When a reader submits the form, their email client 
 
 ### 8. `newsletter_section`
 
-Renders a newsletter signup button that links visitors to your signup form. Reads the `newsletter_form_url` from General Config.
+Renders a newsletter signup button that links visitors to your signup form. Reads the `newsletter_form_url` from General Configuration.
 
 **How to set up the newsletter:**
 
@@ -180,7 +177,7 @@ Renders a newsletter signup button that links visitors to your signup form. Read
 2. Create an account and set up an audience/mailing list
 3. Generate a signup form or landing page — most platforms have a "Signup Forms" or "Landing Pages" section where you can create one
 4. Copy the URL of that form or landing page
-5. In your Notion workspace, go to **Settings > General Config** and paste the URL into the `newsletter_form_url` field
+5. In your Notion workspace, go to **Settings > General Configuration** and paste the URL into the `newsletter_form_url` field
 6. Make sure `enable_newsletter` is checked in the same configuration
 
 **Database Properties:**
@@ -227,7 +224,7 @@ Per-collection configuration is managed in **Settings > Configure Collections**,
 
 ## Configuration
 
-### Main Config
+### Main Configuration
 
 Stores your site's identity and branding as individual columns with a single row of data.
 
@@ -243,7 +240,7 @@ Stores your site's identity and branding as individual columns with a single row
 | `default_color_mode` | Select | Default theme (light, dark, blue, purple, pink, red, green, cream) |
 | `sidebar_navigation` | Checkbox | Enable sidebar navigation by default |
 
-### General Config
+### General Configuration
 
 Stores feature flags and toggles as individual checkbox/URL columns with a single row of data.
 
@@ -255,7 +252,7 @@ Stores feature flags and toggles as individual checkbox/URL columns with a singl
 | `newsletter_form_url` | URL | Newsletter signup form URL (e.g., Mailchimp) |
 | `mention_this_tool_in_footer` | Checkbox | Show "Built with Swan" in the footer |
 
-### Advanced Config
+### Advanced Configuration
 
 Fine-grained control over site behavior with a single row of data.
 
@@ -293,9 +290,9 @@ Swan supports 8 color themes:
 | `red` | Dark | Sunset red |
 | `green` | Dark | Forest green |
 
-Set the default via `default_color_mode` in Main Config. Users can change themes via the Settings menu or the Experiment panel.
+Set the default via `default_color_mode` in Main Configuration. Users can change themes via the Settings menu or the Experiment panel.
 
-To restrict which themes are available to users, edit the `limit_theme_selection` multi-select in Advanced Config.
+To restrict which themes are available to users, edit the `limit_theme_selection` multi-select in Advanced Configuration.
 
 ---
 
@@ -306,7 +303,7 @@ Swan supports two navigation layouts:
 - **Navbar (Top Bar):** Default. Shows logo, navigation links, social icons, settings, and search.
 - **Sidebar (Left Panel):** Fixed left sidebar with profile, navigation, social icons, and settings.
 
-Set the default via `sidebar_navigation` in Main Config.
+Set the default via `sidebar_navigation` in Main Configuration.
 
 ---
 
@@ -359,7 +356,7 @@ A floating "Experiment" button in the bottom-right corner (dev mode only) opens 
 - **Section Views:** Change the view type of any homepage section in real time
   - *Info sections:* `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view`
   - *Dynamic sections:* `list_view`, `card_view`, `grid_view`, `minimal_list_view`, `tiny_card_view`, `big_card_view`
-- **Color Mode:** Switch between all 8 themes (not restricted by Advanced Config)
+- **Color Mode:** Switch between all 8 themes (not restricted by Advanced Configuration)
 - **Sidebar Toggle:** Enable/disable sidebar navigation
 
 Changes made via the Experiment panel are **temporary** and will not persist after a page refresh.

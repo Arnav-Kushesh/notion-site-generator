@@ -23,7 +23,7 @@ Swan is a powerful **Notion-to-Website** engine that turns your Notion workspace
 - **6 View Types for Dynamic Sections**: List, Card, Grid, Minimal List, Tiny Card, and Big Card views.
 - **Newsletter Ready**: Native Mailchimp integration form with per-collection and per-page control.
 - **Code & CSS Injection**: Add Analytics, Ads, or custom styles directly from Notion.
-- **8 Color Themes**: Light, Dark, Blue, Purple, Pink, Red, Green, and Cream — with optional theme restriction via Advanced Config.
+- **8 Color Themes**: Light, Dark, Blue, Purple, Pink, Red, Green, and Cream — with optional theme restriction via Advanced Configuration.
 - **Two Navigation Modes**: Top navbar or left sidebar — configurable from Notion.
 - **RSS Feeds**: Auto-generated feeds for every content collection.
 - **SEO Optimized**: Static generation with sitemap, meta tags, OpenGraph images, and keywords.
@@ -138,10 +138,10 @@ Root Page
 │   ├── Projects (database)
 │   └── Blogs (database)
 ├── Settings
-│   ├── Main Config (database)
-│   ├── General Config (database)
+│   ├── Main Configuration (database)
+│   ├── General Configuration (database)
 │   ├── Social (database)
-│   ├── Advanced Config (database)
+│   ├── Advanced Configuration (database)
 │   ├── Configure Collections (database)
 │   ├── Collection Page Extra Sections
 │   │   ├── Gallery (page with inline DB sections)
@@ -197,6 +197,8 @@ All 9 section types are supported.
 ---
 
 ## Section Types
+
+> Note: For HTML, Iframe, and Media sections, we use `aspect_ratio` instead of fixed heights. `aspect_ratio` allows maintaining size easily across all screens, as setting a pixel height for every device is impractical. Sections will span full width (or parent width) and height will automatically be calculated based on the aspect ratio.
 
 Sections are inline databases placed on the Home Page, Navbar Pages, or Collection Extra Sections pages. Each database must have a `section_type` select property to identify its type.
 
@@ -256,8 +258,7 @@ Renders custom HTML inside a sandboxed iframe. This is one of Swan's most powerf
 |----------|------|-------------|
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
-| `height` | Rich Text | Custom height with CSS unit (e.g., `300px`, `50vh`) |
-| `mobile_height` | Rich Text | Height on mobile devices |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `html_section` |
@@ -281,8 +282,7 @@ Embeds an external webpage in an iframe. Use this to embed any website, tool, or
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | The URL to embed |
-| `height` | Rich Text | Custom height with CSS unit (e.g., `500px`, `80vh`; defaults to 16:9 aspect ratio) |
-| `mobile_height` | Rich Text | Height on mobile devices |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `iframe_section` |
@@ -324,8 +324,7 @@ Displays an image or a looping video. If the media file is a video (`.mp4`, `.we
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `media` | Files | Image or video file |
-| `height` | Rich Text | Display height with CSS unit (e.g., `400px`, `60vh`; default: `400px`) |
-| `mobile_height` | Rich Text | Height on mobile devices |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `media_section` |
@@ -348,7 +347,7 @@ An email-based contact form. When a reader submits the form, their email client 
 
 ### 8. `newsletter_section`
 
-Renders a newsletter signup button that links visitors to your signup form. This section reads the `newsletter_form_url` from your General Config. Add it to the homepage, navbar pages, or collection extra sections.
+Renders a newsletter signup button that links visitors to your signup form. This section reads the `newsletter_form_url` from your General Configuration. Add it to the homepage, navbar pages, or collection extra sections.
 
 **How to set up the newsletter:**
 
@@ -356,7 +355,7 @@ Renders a newsletter signup button that links visitors to your signup form. This
 2. Create an account and set up an audience/mailing list
 3. Generate a signup form or landing page — most platforms have a "Signup Forms" or "Landing Pages" section where you can create one
 4. Copy the URL of that form or landing page
-5. In your Notion workspace, go to **Settings > General Config** and paste the URL into the `newsletter_form_url` field
+5. In your Notion workspace, go to **Settings > General Configuration** and paste the URL into the `newsletter_form_url` field
 6. Make sure `enable_newsletter` is checked in the same configuration
 
 **Database Properties:**
@@ -371,9 +370,9 @@ Renders a newsletter signup button that links visitors to your signup form. This
 
 Swan's configuration is split across multiple databases under the Settings page. This keeps concerns separated and makes each settings page focused and easy to manage.
 
-### Main Config
+### Main Configuration
 
-The "Main Config" database stores your site's identity and branding. It has individual columns for each setting with a single row of data.
+The "Main Configuration" database stores your site's identity and branding. It has individual columns for each setting with a single row of data.
 
 | Column               | Type      | Description                                                        |
 | -------------------- | --------- | ------------------------------------------------------------------ |
@@ -387,9 +386,9 @@ The "Main Config" database stores your site's identity and branding. It has indi
 | `default_color_mode` | Select    | Default theme (light, dark, blue, purple, pink, red, green, cream) |
 | `sidebar_navigation` | Checkbox  | Enable sidebar navigation by default                               |
 
-### General Config
+### General Configuration
 
-The "General Config" database stores feature flags and toggles. All boolean fields use checkboxes.
+The "General Configuration" database stores feature flags and toggles. All boolean fields use checkboxes.
 
 | Column                            | Type     | Description                               |
 | --------------------------------- | -------- | ----------------------------------------- |
@@ -403,9 +402,9 @@ The "General Config" database stores feature flags and toggles. All boolean fiel
 
 > **Tip:** All fonts available on [Google Fonts](https://fonts.google.com/) are supported. Just type the font name (e.g., `Outfit`, `Roboto`, `Playfair Display`) and it will be automatically imported — no code changes needed.
 
-### Advanced Config
+### Advanced Configuration
 
-The "Advanced Config" database allows fine-grained control over site behavior. It has a single row of data.
+The "Advanced Configuration" database allows fine-grained control over site behavior. It has a single row of data.
 
 | Column                   | Type         | Description                                                                 |
 | ------------------------ | ------------ | --------------------------------------------------------------------------- |
@@ -443,9 +442,9 @@ Swan supports 8 color themes:
 | `red`    | Dark  | Sunset red                 |
 | `green`  | Dark  | Forest green               |
 
-Set the default via `default_color_mode` in Main Config. Users can switch themes via the Settings menu in the navbar/sidebar, and the choice persists in their browser's localStorage.
+Set the default via `default_color_mode` in Main Configuration. Users can switch themes via the Settings menu in the navbar/sidebar, and the choice persists in their browser's localStorage.
 
-To restrict which themes are available to users, edit the `limit_theme_selection` multi-select in Advanced Config.
+To restrict which themes are available to users, edit the `limit_theme_selection` multi-select in Advanced Configuration.
 
 ### Navigation Modes
 
@@ -454,7 +453,7 @@ Swan supports two navigation layouts:
 - **Navbar (Top Bar):** Default. Shows logo, navigation links, social icons, settings, and search.
 - **Sidebar (Left Panel):** Fixed left sidebar with profile, navigation, social icons, and settings.
 
-Set the default via the `sidebar_navigation` checkbox in Main Config.
+Set the default via the `sidebar_navigation` checkbox in Main Configuration.
 
 ### CSS Injection
 
@@ -505,8 +504,8 @@ Swan is optimized for search engines out of the box:
 
 - **Static Generation**: Every page is pre-rendered as static HTML, giving search engines clean, fast-loading content to crawl.
 - **Auto-generated Sitemap**: A `sitemap.xml` is generated at build time covering all pages, collection items, and author profiles.
-- **Meta Tags**: Title, description, and keywords are set from your Main Config and per-page properties.
-- **OpenGraph Images**: Set a site-wide `og_image` in Main Config for social sharing previews.
+- **Meta Tags**: Title, description, and keywords are set from your Main Configuration and per-page properties.
+- **OpenGraph Images**: Set a site-wide `og_image` in Main Configuration for social sharing previews.
 - **Clean URLs**: SEO-friendly URLs like `/blogs/my-post-title` and `/author/username`.
 - **RSS Feeds**: Search engines can discover your RSS feeds for indexing.
 
@@ -562,7 +561,7 @@ A floating "Experiment" button in the bottom-right corner (dev mode only) opens 
 - **Section Views:** Change the view type of any homepage section in real time
   - _Info sections:_ `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view`
   - _Dynamic sections:_ `list_view`, `card_view`, `grid_view`, `minimal_list_view`, `tiny_card_view`, `big_card_view`
-- **Color Mode:** Switch between all 8 themes (not restricted by Advanced Config)
+- **Color Mode:** Switch between all 8 themes (not restricted by Advanced Configuration)
 - **Sidebar Toggle:** Enable/disable sidebar navigation
 
 Changes made via the Experiment panel are **temporary** and will not persist after a page refresh.
