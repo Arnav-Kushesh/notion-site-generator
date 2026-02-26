@@ -1,6 +1,6 @@
-# Notion Zero — System Architecture & Mechanism
+# Notion Site Generator — System Architecture & Mechanism
 
-This document describes the technical architecture, data flow, and update mechanisms of Notion Zero.
+This document describes the technical architecture, data flow, and update mechanisms of Notion Site Generator.
 
 ---
 

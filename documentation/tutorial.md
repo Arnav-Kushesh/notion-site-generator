@@ -1,6 +1,6 @@
-# Notion Zero Tutorial
+# Notion Site Generator Tutorial
 
-A step-by-step guide to setting up and customizing your Notion Zero-powered website.
+A step-by-step guide to setting up and customizing your Notion Site Generator-powered website.
 
 ---
 
@@ -16,8 +16,8 @@ A step-by-step guide to setting up and customizing your Notion Zero-powered webs
 
 1. Clone the repository:
    ```bash
-   git clone <repo-url> notion-zero
-   cd notion-zero
+   git clone <repo-url> notion-site-generator
+   cd notion-site-generator
    ```
 
 2. Install dependencies:
@@ -239,7 +239,7 @@ All 8 section types are supported: info, dynamic, html, iframe, video_embed, med
 
 ## Step 8: Customize Themes
 
-Notion Zero ships with 8 color themes: light, cream, pink, dark, blue, purple, red, green.
+Notion Site Generator ships with 8 color themes: light, cream, pink, dark, blue, purple, red, green.
 
 **To set the default theme:**
 1. Go to Settings > Main Configuration

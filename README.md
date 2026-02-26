@@ -1,7 +1,7 @@
 <div align="center">
 <br/><br/>
-<img alt="notion-zero-logo" src="https://raw.githubusercontent.com/arnav-kushesh/notion-zero/master/assets/notion-zero.png" height="128"/>
-<h3 style="margin-top: 9px;">Notion Zero - Notion Website Generator</h3>
+<img alt="notion-site-generator-logo" src="https://raw.githubusercontent.com/arnav-kushesh/notion-site-generator/master/assets/notion-site-generator.png" height="128"/>
+<h3 style="margin-top: 9px;">Notion Site Generator - Notion Website Generator</h3>
 
 <br/>
 
@@ -11,9 +11,9 @@
 
 **Build a website from Notion with zero code, zero setup, zero stress & Zero learning curve**
 
-Notion Zero is a powerful **Notion-to-Website** engine that turns your Notion workspace into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**, it offers the simplicity of a CMS with the speed of a static site.
+Notion Site Generator is a powerful **Notion-to-Website** engine that turns your Notion workspace into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**, it offers the simplicity of a CMS with the speed of a static site.
 
-**Why "Notion Zero"?** Because the technical knowledge required to use it is practically zero. Connect it to Netlify (or any static host), provide your Notion API key, and you have a live website — no coding, no frameworks to learn, no servers to manage.
+**Why "Notion Site Generator"?** Because the technical knowledge required to use it is practically zero. Connect it to Netlify (or any static host), provide your Notion API key, and you have a live website — no coding, no frameworks to learn, no servers to manage.
 
 ## Features
 
@@ -41,19 +41,19 @@ Notion Zero is a powerful **Notion-to-Website** engine that turns your Notion wo
 
 ### Blog Site
 
-Notion Zero is a natural fit for blogging. Write your posts in Notion, tag and categorize them, assign authors, and publish as a fast static blog with RSS feeds and newsletter signups. No WordPress, no Substack — just Notion and a static site that you fully own.
+Notion Site Generator is a natural fit for blogging. Write your posts in Notion, tag and categorize them, assign authors, and publish as a fast static blog with RSS feeds and newsletter signups. No WordPress, no Substack — just Notion and a static site that you fully own.
 
 ### Startup Website
 
-Use Notion Zero to build your startup's website entirely from Notion. Create landing pages with `info_section` hero blocks, embed demo videos with `video_embed_section`, add a newsletter signup with `newsletter_section`, and inject your analytics and ad scripts via code injection. Your marketing team can update content in Notion without touching code, and every change goes live with a single rebuild.
+Use Notion Site Generator to build your startup's website entirely from Notion. Create landing pages with `info_section` hero blocks, embed demo videos with `video_embed_section`, add a newsletter signup with `newsletter_section`, and inject your analytics and ad scripts via code injection. Your marketing team can update content in Notion without touching code, and every change goes live with a single rebuild.
 
 ### Portfolio Site
 
-Showcase your work using Notion Zero's collections and multiple view types (grid, card, list, minimal list, tiny card, big card). Create a Gallery for photography, a Projects collection for case studies, and a Blogs collection for writing — each with its own display style, RSS feed, and author attribution.
+Showcase your work using Notion Site Generator's collections and multiple view types (grid, card, list, minimal list, tiny card, big card). Create a Gallery for photography, a Projects collection for case studies, and a Blogs collection for writing — each with its own display style, RSS feed, and author attribution.
 
 ### Your Own YouTube Alternative
 
-Host your videos on any platform (Vimeo, Bunny Stream, your own server) and embed them on your Notion Zero site using the `video_embed_section` feature, `media_section` for looping background videos, or the `video_embed_url` property on collection items. Unlike YouTube, **no one can censor or demonetize your content**. You control the entire experience — the page layout, the branding, the ads. Monetize freely by placing Google AdSense or any ad network script via `html_section` blocks right alongside your videos, or inject ad scripts globally via the HTML Head Code page. Your content, your platform, your revenue — without a middleman taking a cut or deciding what's allowed.
+Host your videos on any platform (Vimeo, Bunny Stream, your own server) and embed them on your Notion Site Generator site using the `video_embed_section` feature, `media_section` for looping background videos, or the `video_embed_url` property on collection items. Unlike YouTube, **no one can censor or demonetize your content**. You control the entire experience — the page layout, the branding, the ads. Monetize freely by placing Google AdSense or any ad network script via `html_section` blocks right alongside your videos, or inject ad scripts globally via the HTML Head Code page. Your content, your platform, your revenue — without a middleman taking a cut or deciding what's allowed.
 
 ---
 
@@ -62,8 +62,8 @@ Host your videos on any platform (Vimeo, Bunny Stream, your own server) and embe
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/arnav-kushesh/notion-zero.git
-cd notion-zero
+git clone https://github.com/arnav-kushesh/notion-site-generator.git
+cd notion-site-generator
 npm install
 ```
 
@@ -103,7 +103,7 @@ npm run dev   # Starts Next.js at localhost:3000
 ## Project Structure
 
 ```
-notion-zero/
+notion-site-generator/
 ├── app/                 # Next.js App Router pages
 ├── components/          # React UI components
 ├── lib/                 # Utilities & Data Fetching
@@ -119,7 +119,7 @@ notion-zero/
 
 ## Notion Page Structure
 
-Notion Zero expects the following structure in your Notion workspace:
+Notion Site Generator expects the following structure in your Notion workspace:
 
 ```
 Root Page
@@ -160,7 +160,7 @@ Root Page
 
 ## Collections
 
-Collections are full-page databases stored under the "Collections" page. Notion Zero ships with three default collections — **Gallery**, **Projects**, and **Blogs** — but you can configure any number of them.
+Collections are full-page databases stored under the "Collections" page. Notion Site Generator ships with three default collections — **Gallery**, **Projects**, and **Blogs** — but you can configure any number of them.
 
 Each item in a collection has:
 
@@ -249,7 +249,7 @@ Displays items from a collection (blogs, projects, gallery) in various view type
 
 ### 3. `html_section`
 
-Renders custom HTML inside a sandboxed iframe. This is one of Notion Zero's most powerful features — it lets you embed **anything** that can be expressed as HTML directly from Notion.
+Renders custom HTML inside a sandboxed iframe. This is one of Notion Site Generator's most powerful features — it lets you embed **anything** that can be expressed as HTML directly from Notion.
 
 **Use cases:**
 
@@ -373,7 +373,7 @@ Renders a newsletter signup button that links visitors to your signup form. This
 
 ## Configuration
 
-Notion Zero's configuration is split across multiple databases under the Settings page. This keeps concerns separated and makes each settings page focused and easy to manage.
+Notion Site Generator's configuration is split across multiple databases under the Settings page. This keeps concerns separated and makes each settings page focused and easy to manage.
 
 ### Main Configuration
 
@@ -401,7 +401,7 @@ The "General Configuration" database stores feature flags and toggles. All boole
 | `hide_sidebar_logo`           | Checkbox  | Hide logo from the sidebar                   |
 | `enable_newsletter`           | Checkbox  | Enable newsletter functionality site-wide    |
 | `newsletter_form_url`         | URL       | Newsletter signup form URL (e.g., Mailchimp) |
-| `mention_this_tool_in_footer` | Checkbox  | Show "Made With Notion Zero" in the footer   |
+| `mention_this_tool_in_footer` | Checkbox  | Show "Made With Notion Site Generator" in the footer   |
 | `primary_font`                | Rich Text | Primary font family name                     |
 | `secondary_font`              | Rich Text | Secondary font family name                   |
 
@@ -434,7 +434,7 @@ Supported social platforms: github, twitter, linkedin, instagram, youtube, faceb
 
 ### Color Themes
 
-Notion Zero supports 8 color themes:
+Notion Site Generator supports 8 color themes:
 
 | Theme    | Type  | Description                |
 | -------- | ----- | -------------------------- |
@@ -453,7 +453,7 @@ To restrict which themes are available to users, edit the `limit_theme_selection
 
 ### Navigation Modes
 
-Notion Zero supports two navigation layouts:
+Notion Site Generator supports two navigation layouts:
 
 - **Navbar (Top Bar):** Default. Shows logo, navigation links, social icons, settings, and search.
 - **Sidebar (Left Panel):** Fixed left sidebar with profile, navigation, social icons, and settings.
@@ -472,20 +472,20 @@ Edit `app/themes.css` to customize the color variables for each theme. Global st
 
 ## Monetization & Ads
 
-Notion Zero gives you full control over monetization without any code changes:
+Notion Site Generator gives you full control over monetization without any code changes:
 
 - **Google AdSense / Ad Networks**: Add your ad scripts via **Settings > HTML Head Code** (code injection) or use an `html_section` to place ad units anywhere on your pages.
 - **Affiliate Links**: Add affiliate links directly in your Notion content or in `html_section` blocks.
 - **Sponsored Content**: No restrictions — you have full control over your content and layout.
 - **Newsletter Monetization**: Use the built-in Mailchimp integration to build an email list.
 
-Unlike platforms like Medium or Substack, Notion Zero doesn't take a cut of anything. Your ads, your revenue, your content.
+Unlike platforms like Medium or Substack, Notion Site Generator doesn't take a cut of anything. Your ads, your revenue, your content.
 
 ---
 
 ## Content Freedom
 
-Notion Zero is built on the principle that **you own your content**:
+Notion Site Generator is built on the principle that **you own your content**:
 
 - **No vendor lock-in**: Your content lives in Notion and is synced as Markdown files. You can export it anytime.
 - **No monthly fees**: Host on Vercel, Netlify, GitHub Pages, or any static host for free.
@@ -505,7 +505,7 @@ This enables readers to subscribe to your content using any RSS reader (Feedly, 
 
 ## SEO
 
-Notion Zero is optimized for search engines out of the box:
+Notion Site Generator is optimized for search engines out of the box:
 
 - **Static Generation**: Every page is pre-rendered as static HTML, giving search engines clean, fast-loading content to crawl.
 - **Auto-generated Sitemap**: A `sitemap.xml` is generated at build time covering all pages, collection items, and author profiles.
@@ -555,7 +555,7 @@ To add a navbar page, create a new child page under "Navbar Pages" in Notion.
 
 ## Search
 
-Notion Zero includes a built-in search (Cmd+K / Ctrl+K) that searches across all collection items by title, description, collection name, and tags. The search uses fuzzy matching with relevance scoring. The search index is built at compile time — no external search service required.
+Notion Site Generator includes a built-in search (Cmd+K / Ctrl+K) that searches across all collection items by title, description, collection name, and tags. The search uses fuzzy matching with relevance scoring. The search index is built at compile time — no external search service required.
 
 ---
 
@@ -591,7 +591,7 @@ Static HTML/CSS/JS (Next.js static export)
 
 ## Deployment
 
-Notion Zero is designed for static hosting.
+Notion Site Generator is designed for static hosting.
 
 ### Vercel / Netlify
 
@@ -605,7 +605,7 @@ Notion Zero is designed for static hosting.
 
 ### Updating Content from Notion
 
-Since Notion Zero is a Static Site Generator (SSG), changes in Notion do NOT appear automatically. You must **trigger a fresh build** (or redeploy) in your hosting dashboard (Netlify/Vercel) to fetch and render new content.
+Since Notion Site Generator is a Static Site Generator (SSG), changes in Notion do NOT appear automatically. You must **trigger a fresh build** (or redeploy) in your hosting dashboard (Netlify/Vercel) to fetch and render new content.
 
 ---
 
