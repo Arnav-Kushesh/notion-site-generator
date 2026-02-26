@@ -1,7 +1,7 @@
 <div align="center">
 <br/><br/>
 <img alt="start-simple-logo" src="https://raw.githubusercontent.com/arnav-kushesh/swan/master/assets/swan.png" height="128"/>
-<h3 style="margin-top: 9px;">Swan - Notion as a Website</h3>
+<h3 style="margin-top: 9px;">Swanotion - Notion Website Generator</h3>
 
 <br/>
 
@@ -9,7 +9,7 @@
 
 </div>
 
-Swan is a powerful **Notion-to-Website** engine that turns your Notion workspace into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**, it offers the simplicity of a CMS with the speed of a static site.
+Swanotion is a powerful **Notion-to-Website** engine that turns your Notion workspace into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**, it offers the simplicity of a CMS with the speed of a static site.
 
 ## Features
 
@@ -160,17 +160,17 @@ Collections are full-page databases stored under the "Collections" page. Swan sh
 
 Each item in a collection has:
 
-| Property           | Type         | Description                           |
-| ------------------ | ------------ | ------------------------------------- |
-| `Title`            | Title        | Item title                            |
-| `Description`      | Rich Text    | Short description                     |
-| `Image`            | Files        | Cover/thumbnail image                 |
-| `Tags`             | Multi-select | Categorization tags                   |
-| `Link`             | URL          | External link                         |
-| `button_text`      | Rich Text    | Custom button label                   |
-| `order_priority`   | Number       | Sort order (higher = first)           |
-| `author_username`  | Rich Text    | Author username (links to Authors DB) |
-| `video_embed_url` | URL          | Optional video embed URL              |
+| Property          | Type         | Description                                                                      |
+| ----------------- | ------------ | -------------------------------------------------------------------------------- |
+| `Title`           | Title        | Item title                                                                       |
+| `Description`     | Rich Text    | Short description                                                                |
+| `Image`           | Files        | Cover/thumbnail image                                                            |
+| `Tags`            | Multi-select | Categorization tags                                                              |
+| `Link`            | URL          | External link                                                                    |
+| `button_text`     | Rich Text    | Custom button label                                                              |
+| `order_priority`  | Number       | Sort order (higher = first)                                                      |
+| `author_username` | Rich Text    | Author username (links to Authors DB)                                            |
+| `video_embed_url` | URL          | Optional video embed URL                                                         |
 | `status`          | Select       | `draft`, `in_review`, or `published` (only `published` items appear on the site) |
 
 The page content (body) of each item becomes the full article content, rendered as markdown. You can write rich content using all of Notion's block types — headings, paragraphs, images, code blocks, callouts, quotes, bullet lists, numbered lists, toggle blocks, and more.
@@ -181,12 +181,12 @@ During sync, a `dominant_color` is automatically extracted from each item's imag
 
 Per-collection configuration is managed in **Settings > Configure Collections**, a single database with one row per collection:
 
-| Property                  | Type     | Description                                    |
-| ------------------------- | -------- | ---------------------------------------------- |
-| `collection_name`         | Title    | Name of the collection                         |
-| `enable_rss`              | Checkbox | Generate an RSS feed for this collection       |
-| `show_newsletter_section` | Checkbox | Show newsletter signup on collection pages     |
-| `show_mailto_comment_section`     | Checkbox | Show mailto comment section on collection pages        |
+| Property                      | Type     | Description                                     |
+| ----------------------------- | -------- | ----------------------------------------------- |
+| `collection_name`             | Title    | Name of the collection                          |
+| `enable_rss`                  | Checkbox | Generate an RSS feed for this collection        |
+| `show_newsletter_section`     | Checkbox | Show newsletter signup on collection pages      |
+| `show_mailto_comment_section` | Checkbox | Show mailto comment section on collection pages |
 
 ### Collection Page Extra Sections
 
@@ -235,6 +235,7 @@ Displays items from a collection (blogs, projects, gallery) in various view type
 | `enabled` | Checkbox | Show/hide the section |
 
 **View Types:**
+
 - **`list_view`**: Full-width list with image, title, description, and date
 - **`card_view`**: 3-column grid with image, title, description, and tags
 - **`grid_view`**: 3-column image grid with title overlay
@@ -390,15 +391,15 @@ The "Main Configuration" database stores your site's identity and branding. It h
 
 The "General Configuration" database stores feature flags and toggles. All boolean fields use checkboxes.
 
-| Column                            | Type     | Description                               |
-| --------------------------------- | -------- | ----------------------------------------- |
-| `hide_topbar_logo`          | Checkbox | Hide logo from the top navbar             |
-| `hide_sidebar_logo`         | Checkbox | Hide logo from the sidebar                |
-| `enable_newsletter`               | Checkbox | Enable newsletter functionality site-wide |
-| `newsletter_form_url`             | URL      | Newsletter signup form URL (e.g., Mailchimp) |
-| `mention_this_tool_in_footer`     | Checkbox | Show "Built with Swan" in the footer      |
-| `primary_font`                    | Rich Text | Primary font family name                 |
-| `secondary_font`                  | Rich Text | Secondary font family name               |
+| Column                        | Type      | Description                                  |
+| ----------------------------- | --------- | -------------------------------------------- |
+| `hide_topbar_logo`            | Checkbox  | Hide logo from the top navbar                |
+| `hide_sidebar_logo`           | Checkbox  | Hide logo from the sidebar                   |
+| `enable_newsletter`           | Checkbox  | Enable newsletter functionality site-wide    |
+| `newsletter_form_url`         | URL       | Newsletter signup form URL (e.g., Mailchimp) |
+| `mention_this_tool_in_footer` | Checkbox  | Show "Built with Swan" in the footer         |
+| `primary_font`                | Rich Text | Primary font family name                     |
+| `secondary_font`              | Rich Text | Secondary font family name                   |
 
 > **Tip:** All fonts available on [Google Fonts](https://fonts.google.com/) are supported. Just type the font name (e.g., `Outfit`, `Roboto`, `Playfair Display`) and it will be automatically imported — no code changes needed.
 
@@ -406,9 +407,9 @@ The "General Configuration" database stores feature flags and toggles. All boole
 
 The "Advanced Configuration" database allows fine-grained control over site behavior. It has a single row of data.
 
-| Column                   | Type         | Description                                                                 |
-| ------------------------ | ------------ | --------------------------------------------------------------------------- |
-| `limit_theme_selection`  | Multi-select | Which themes users can choose from (defaults to all 8 if all are selected)  |
+| Column                  | Type         | Description                                                                |
+| ----------------------- | ------------ | -------------------------------------------------------------------------- |
+| `limit_theme_selection` | Multi-select | Which themes users can choose from (defaults to all 8 if all are selected) |
 
 Remove themes from the multi-select to prevent users from selecting them in the Settings menu.
 
