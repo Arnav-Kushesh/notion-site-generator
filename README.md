@@ -1,7 +1,7 @@
 <div align="center">
 <br/><br/>
 <img alt="notion-site-generator-logo" src="https://raw.githubusercontent.com/arnav-kushesh/notion-site-generator/master/assets/notion-site-generator.png" height="128"/>
-<h3 style="margin-top: 9px;">Notion Site Generator - Notion Website Generator</h3>
+<h3 style="margin-top: 9px;">Notion Site Generator</h3>
 
 <br/>
 
@@ -11,9 +11,9 @@
 
 **Build a website from Notion with zero code, zero setup, zero stress & Zero learning curve**
 
-Notion Site Generator is a powerful **Notion-to-Website** engine that turns your Notion workspace into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**, it offers the simplicity of a CMS with the speed of a static site.
+Notion Site Generator is a powerful **Notion-to-Website** engine that turns your Notion notes into a high-performance, static website. Built with **Next.js**, **PandaCSS**, and the **Notion API**.
 
-**Why "Notion Site Generator"?** Because the technical knowledge required to use it is practically zero. Connect it to Netlify (or any static host), provide your Notion API key, and you have a live website — no coding, no frameworks to learn, no servers to manage.
+**Why use "Notion Site Generator"?** Connect it to Netlify (or any static host), provide your Notion API key, and you have a live website — no coding, no frameworks to learn, no servers to manage.
 
 ## Features
 
@@ -395,15 +395,15 @@ The "Main Configuration" database stores your site's identity and branding. It h
 
 The "General Configuration" database stores feature flags and toggles. All boolean fields use checkboxes.
 
-| Column                        | Type      | Description                                  |
-| ----------------------------- | --------- | -------------------------------------------- |
-| `hide_topbar_logo`            | Checkbox  | Hide logo from the top navbar                |
-| `hide_sidebar_logo`           | Checkbox  | Hide logo from the sidebar                   |
-| `enable_newsletter`           | Checkbox  | Enable newsletter functionality site-wide    |
-| `newsletter_form_url`         | URL       | Newsletter signup form URL (e.g., Mailchimp) |
-| `mention_this_tool_in_footer` | Checkbox  | Show "Made With Notion Site Generator" in the footer   |
-| `primary_font`                | Rich Text | Primary font family name                     |
-| `secondary_font`              | Rich Text | Secondary font family name                   |
+| Column                        | Type      | Description                                          |
+| ----------------------------- | --------- | ---------------------------------------------------- |
+| `hide_topbar_logo`            | Checkbox  | Hide logo from the top navbar                        |
+| `hide_sidebar_logo`           | Checkbox  | Hide logo from the sidebar                           |
+| `enable_newsletter`           | Checkbox  | Enable newsletter functionality site-wide            |
+| `newsletter_form_url`         | URL       | Newsletter signup form URL (e.g., Mailchimp)         |
+| `mention_this_tool_in_footer` | Checkbox  | Show "Made With Notion Site Generator" in the footer |
+| `primary_font`                | Rich Text | Primary font family name                             |
+| `secondary_font`              | Rich Text | Secondary font family name                           |
 
 > **Tip:** All fonts available on [Google Fonts](https://fonts.google.com/) are supported. Just type the font name (e.g., `Outfit`, `Roboto`, `Playfair Display`) and it will be automatically imported — no code changes needed.
 
