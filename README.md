@@ -5,7 +5,7 @@
 
 <br/>
 
-![Static Badge](https://img.shields.io/badge/DISCORD-JOIN-blue?style=for-the-badge&logo=discord&labelColor=black&color=%235965f2&link=https://discord.gg/aAsZqZkJKW)
+[![Join Discord](https://img.shields.io/badge/Discord-Join-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/aAsZqZkJKW)
 
 </div>
 
