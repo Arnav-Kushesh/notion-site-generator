@@ -32,6 +32,7 @@ export function IframeSection({ data }: { data: IframeSectionData }) {
                             fontSize: '0.95rem',
                             color: 'text.secondary',
                             mt: '4px',
+                            whiteSpace: 'pre-wrap',
                         })}>
                             {data.description}
                         </p>

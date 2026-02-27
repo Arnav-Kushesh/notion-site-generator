@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { css } from '../../styled-system/css';
 import { Post } from '../../lib/data';
-import { ViewProps, getItemTitle, getItemHref, getItemImage } from './shared';
+import { ViewProps, getItemTitle, getItemHref, getItemThumbnail, isThumbnailVideo } from './shared';
 
 export function GridView({ visibleItems, paginationButton }: ViewProps) {
     return (
@@ -19,6 +19,7 @@ export function GridView({ visibleItems, paginationButton }: ViewProps) {
                     const post = item as Post;
                     const hasVideo = post.video_embed_url;
                     const title = getItemTitle(item);
+                    const thumbnail = getItemThumbnail(item);
 
                     return (
                         <Link
@@ -35,14 +36,25 @@ export function GridView({ visibleItems, paginationButton }: ViewProps) {
                                 _hover: { transform: 'translateY(-2px)', borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)' },
                             })}
                         >
-                            {getItemImage(item) ? (
+                            {thumbnail ? (
                                 <>
-                                    <img
-                                        src={getItemImage(item)}
-                                        alt={title}
-                                        className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
-                                    />
-                                    {hasVideo && (
+                                    {isThumbnailVideo(thumbnail) ? (
+                                        <video
+                                            src={thumbnail}
+                                            autoPlay
+                                            muted
+                                            loop
+                                            playsInline
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                        />
+                                    ) : (
+                                        <img
+                                            src={thumbnail}
+                                            alt={title}
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                        />
+                                    )}
+                                    {hasVideo && !isThumbnailVideo(thumbnail) && (
                                         <div className={css({
                                             position: 'absolute',
                                             top: '50%',

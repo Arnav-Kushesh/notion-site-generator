@@ -64,9 +64,9 @@ export const dummyHeroSection = {
       button_text: 'Explore',
       image: 'https://picsum.photos/id/1025/500/500',
       view_type: 'col_centered_view',
-      media_aspect_ratio: '16/9',
-      media_height: '400px',
-      media_mobile_height: '250px',
+      media_aspect_ratio: '16:9',
+      media_width: '100%',
+      media_width_mobile: '100%',
     }
   ]
 };
@@ -129,7 +129,7 @@ export const dummyHtmlSection = {
     {
       title: 'Custom HTML',
       description: '',
-      aspect_ratio: '16/9',
+      aspect_ratio: '16:9',
       full_width: false,
       top_part_centered: false,
       html_code: `<div style="font-family: system-ui; padding: 16px;">
@@ -162,7 +162,7 @@ export const dummyIframeSection = {
       title: 'Example Website',
       description: '',
       url: 'https://example.com',
-      aspect_ratio: '16/9',
+      aspect_ratio: '16:9',
       full_width: false,
       top_part_centered: false,
     }
@@ -210,7 +210,7 @@ export const dummyMediaSection = {
       title: 'Media',
       description: '',
       media: 'https://picsum.photos/id/1035/1200/600',
-      aspect_ratio: '16/9',
+      aspect_ratio: '16:9',
       full_width: false,
       top_part_centered: false,
     }

@@ -79,12 +79,15 @@ async function syncAllCollections() {
             const itemTitle = props.Title?.title?.[0]?.plain_text || 'Untitled';
             const itemSlug = props.Slug?.rich_text?.[0]?.plain_text || slugify(itemTitle);
 
-            // Image/Cover
-            const rawImage = props.Image?.files?.[0]?.file?.url || props.Image?.files?.[0]?.external?.url;
-            let image = '';
-            if (rawImage) {
-                const ext = path.extname(rawImage.split('?')[0]) || '.jpg';
-                image = await downloadImage(rawImage, `${slug}-${itemSlug}${ext}`);
+            // Thumbnail/Cover
+            const thumbnailFile = props.Thumbnail?.files?.[0];
+            let thumbnail = '';
+            if (thumbnailFile) {
+                const rawThumbnail = thumbnailFile.file?.url || thumbnailFile.external?.url;
+                if (rawThumbnail) {
+                    const ext = path.extname(thumbnailFile.name || '') || path.extname(rawThumbnail.split('?')[0]) || '.jpg';
+                    thumbnail = await downloadImage(rawThumbnail, `${slug}-${itemSlug}${ext}`);
+                }
             }
 
             const tags = props.Tags?.multi_select?.map(o => o.name) || [];
@@ -102,9 +105,8 @@ async function syncAllCollections() {
                 collection: slug,
                 date: page.created_time,
                 description,
-                image,
-                cover: { image: image, alt: itemTitle },
-                thumbnail: image,
+                thumbnail,
+                cover: { image: thumbnail, alt: itemTitle },
                 tags,
                 link,
                 button_text,
@@ -193,7 +195,7 @@ async function syncAuthors() {
         if (picFile) {
             const rawUrl = picFile.file?.url || picFile.external?.url;
             if (rawUrl) {
-                const ext = path.extname(rawUrl.split('?')[0]) || '.jpg';
+                const ext = path.extname(picFile.name || '') || path.extname(rawUrl.split('?')[0]) || '.jpg';
                 picture = await downloadImage(rawUrl, `author-${slugify(username)}${ext}`);
             }
         }

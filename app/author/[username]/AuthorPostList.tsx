@@ -42,7 +42,7 @@ export function AuthorPostList({ posts }: { posts: AuthorPost[] }) {
                             _hover: { bg: 'bg.secondary', borderColor: 'text.tertiary', transform: 'translateY(-1px)' },
                         })}
                     >
-                        {(post.thumbnail || post.image) && (
+                        {post.thumbnail && (
                             <div className={css({
                                 width: { base: '100%', sm: '120px' },
                                 height: { base: '160px', sm: '80px' },
@@ -50,11 +50,22 @@ export function AuthorPostList({ posts }: { posts: AuthorPost[] }) {
                                 borderRadius: '8px',
                                 overflow: 'hidden',
                             })}>
-                                <img
-                                    src={post.thumbnail || post.image}
-                                    alt={post.title}
-                                    className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
-                                />
+                                {/\.(mp4|webm|mov|ogg)$/i.test(post.thumbnail) ? (
+                                    <video
+                                        src={post.thumbnail}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        playsInline
+                                        className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                    />
+                                ) : (
+                                    <img
+                                        src={post.thumbnail}
+                                        alt={post.title}
+                                        className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                    />
+                                )}
                             </div>
                         )}
                         <div className={css({ flex: 1, minWidth: 0 })}>

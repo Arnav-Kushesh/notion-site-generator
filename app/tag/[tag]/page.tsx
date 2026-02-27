@@ -79,7 +79,7 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
                             _hover: { bg: 'bg.secondary' },
                         })}
                     >
-                        {post.image && (
+                        {post.thumbnail && (
                             <div className={css({
                                 width: '40px',
                                 height: '40px',
@@ -88,11 +88,22 @@ export default async function TagPage({ params }: { params: Promise<{ tag: strin
                                 flexShrink: 0,
                                 border: '1px solid token(colors.border.default)',
                             })}>
-                                <img
-                                    src={post.image}
-                                    alt={post.title}
-                                    className={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
-                                />
+                                {/\.(mp4|webm|mov|ogg)$/i.test(post.thumbnail) ? (
+                                    <video
+                                        src={post.thumbnail}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        playsInline
+                                        className={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                                    />
+                                ) : (
+                                    <img
+                                        src={post.thumbnail}
+                                        alt={post.title}
+                                        className={css({ width: '100%', height: '100%', objectFit: 'cover', display: 'block' })}
+                                    />
+                                )}
                             </div>
                         )}
                         <div className={css({ flex: 1, minWidth: 0 })}>

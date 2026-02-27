@@ -137,7 +137,7 @@ async function createCollections(parentId, notion) {
     Title: { title: {} },
     Slug: { rich_text: {} },
     Description: { rich_text: {} },
-    Image: { files: {} },
+    Thumbnail: { files: {} },
     Tags: { multi_select: {} },
     Link: { url: {} },
     button_text: { rich_text: {} },
@@ -192,9 +192,9 @@ async function createCollections(parentId, notion) {
       };
 
       if (item.image) {
-        props.Image = {
+        props.Thumbnail = {
           files: [
-            { type: "external", name: "Image", external: { url: item.image } },
+            { type: "external", name: "Thumbnail", external: { url: item.image } },
           ],
         };
       }

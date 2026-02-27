@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { css } from '../../styled-system/css';
 import { Post } from '../../lib/data';
 import { format } from 'date-fns';
-import { ViewProps, getItemTitle, getItemHref, getItemImage } from './shared';
+import { ViewProps, getItemTitle, getItemHref, getItemThumbnail, isThumbnailVideo } from './shared';
 
 interface ListViewProps extends ViewProps {
     isMinimal: boolean;
@@ -18,7 +18,7 @@ export function ListView({ visibleItems, paginationButton, isMinimal }: ListView
                 {visibleItems.map((item) => {
                     const post = item as Post;
                     const title = getItemTitle(item);
-                    const image = getItemImage(item);
+                    const thumbnail = getItemThumbnail(item);
 
                     return (
                         <Link
@@ -36,7 +36,7 @@ export function ListView({ visibleItems, paginationButton, isMinimal }: ListView
                                 _hover: { bg: 'bg.secondary', borderColor: 'text.tertiary', transform: 'translateY(-1px)' },
                             })}
                         >
-                            {!isMinimal && image && (
+                            {!isMinimal && thumbnail && (
                                 <div className={css({
                                     position: 'relative',
                                     aspectRatio: 1,
@@ -45,12 +45,23 @@ export function ListView({ visibleItems, paginationButton, isMinimal }: ListView
                                     borderRadius: '8px',
                                     overflow: 'hidden',
                                 })}>
-                                    <img
-                                        src={image}
-                                        alt={title}
-                                        className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
-                                    />
-                                    {post.video_embed_url && (
+                                    {isThumbnailVideo(thumbnail) ? (
+                                        <video
+                                            src={thumbnail}
+                                            autoPlay
+                                            muted
+                                            loop
+                                            playsInline
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                        />
+                                    ) : (
+                                        <img
+                                            src={thumbnail}
+                                            alt={title}
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                        />
+                                    )}
+                                    {post.video_embed_url && !isThumbnailVideo(thumbnail) && (
                                         <div className={css({
                                             position: 'absolute',
                                             top: '50%',

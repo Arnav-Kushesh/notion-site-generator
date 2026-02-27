@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { css } from '../../styled-system/css';
 import { Post } from '../../lib/data';
-import { ViewProps, getItemTitle, getItemHref, getItemImage } from './shared';
+import { ViewProps, getItemTitle, getItemHref, getItemThumbnail, isThumbnailVideo } from './shared';
 
 export function TinyCardView({ visibleItems, paginationButton }: ViewProps) {
     return (
@@ -16,7 +16,7 @@ export function TinyCardView({ visibleItems, paginationButton }: ViewProps) {
                 width: '100%',
             })}>
                 {visibleItems.map((item) => {
-                    const image = getItemImage(item);
+                    const thumbnail = getItemThumbnail(item);
                     return (
                         <Link
                             key={item.slug}
@@ -32,14 +32,25 @@ export function TinyCardView({ visibleItems, paginationButton }: ViewProps) {
                                 _hover: { transform: 'scale(1.03)', borderColor: 'color-mix(in srgb, token(colors.primary) 45%, transparent)' },
                             })}
                         >
-                            {image ? (
+                            {thumbnail ? (
                                 <>
-                                    <img
-                                        src={image}
-                                        alt={getItemTitle(item)}
-                                        className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
-                                    />
-                                    {(item as Post).video_embed_url && (
+                                    {isThumbnailVideo(thumbnail) ? (
+                                        <video
+                                            src={thumbnail}
+                                            autoPlay
+                                            muted
+                                            loop
+                                            playsInline
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                        />
+                                    ) : (
+                                        <img
+                                            src={thumbnail}
+                                            alt={getItemTitle(item)}
+                                            className={css({ width: '100%', height: '100%', objectFit: 'cover' })}
+                                        />
+                                    )}
+                                    {(item as Post).video_embed_url && !isThumbnailVideo(thumbnail) && (
                                         <div className={css({
                                             position: 'absolute',
                                             top: '50%',

@@ -26,6 +26,7 @@ export function VideoEmbedSection({ data }: { data: VideoEmbedSectionData }) {
                             fontSize: '0.95rem',
                             color: 'text.secondary',
                             mt: '4px',
+                            whiteSpace: 'pre-wrap',
                         })}>
                             {data.description}
                         </p>

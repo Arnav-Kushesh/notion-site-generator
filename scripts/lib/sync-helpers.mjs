@@ -31,21 +31,30 @@ export async function ensureDir(dir) {
 
 export async function downloadImage(url, filename) {
     if (!url) return '';
+    const localPath = `/images/${filename}`;
     try {
         await ensureDir('public/images');
         const filepath = path.join('public/images', filename);
 
         const response = await fetch(url);
-        if (!response.ok) throw new Error(`Failed to fetch image: ${response.statusText} `);
+        if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
 
         const buffer = Buffer.from(await response.arrayBuffer());
         await fs.writeFile(filepath, buffer);
 
-        console.log(`     -> Downloaded: ${filename} `);
-        return `/images/${filename}`;
+        console.log(`     -> Downloaded: ${filename}`);
+        return localPath;
     } catch (error) {
-        console.error(`     ! Failed to download ${filename}: `, error.message);
-        return url; // Fallback to original URL
+        // If download fails, check if a previously downloaded version exists
+        const filepath = path.join('public/images', filename);
+        try {
+            await fs.access(filepath);
+            console.warn(`     ! Download failed but using existing file: ${filename}`);
+            return localPath;
+        } catch {
+            console.error(`     ! Failed to download ${filename}:`, error.message);
+            return '';
+        }
     }
 }
 

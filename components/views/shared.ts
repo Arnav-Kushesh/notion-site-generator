@@ -18,11 +18,14 @@ export function getItemHref(item: Post | GalleryItem): string {
     return `/${item.slug}`;
 }
 
-export function getItemImage(item: Post | GalleryItem): string | undefined {
-    if (item.image) return item.image;
-    if ('thumbnail' in item && item.thumbnail) return item.thumbnail;
+export function getItemThumbnail(item: Post | GalleryItem): string | undefined {
+    if (item.thumbnail) return item.thumbnail;
     if ('cover' in item && item.cover?.image) return item.cover.image;
     return undefined;
+}
+
+export function isThumbnailVideo(url: string): boolean {
+    return /\.(mp4|webm|mov|ogg)$/i.test(url);
 }
 
 export function getTagName(tag: string | { name: string }): string {

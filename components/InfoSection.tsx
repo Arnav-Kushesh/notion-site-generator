@@ -23,9 +23,9 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
     const isCentered = viewType === 'col_centered_view';
 
     const aspectRatio = data.media_aspect_ratio || '16/9';
-    const desktopHeight = data.media_height ? normalizeUnit(data.media_height) : '';
-    const mobileHeight = data.media_mobile_height ? normalizeUnit(data.media_mobile_height) : desktopHeight;
-    const useFixedHeight = !!desktopHeight;
+    const desktopWidth = data.media_width ? normalizeUnit(data.media_width) : '100%';
+    const mobileWidth = data.media_width_mobile ? normalizeUnit(data.media_width_mobile) : desktopWidth;
+    const mediaId = `info-media-${data.id.replace(/[^a-zA-Z0-9]/g, '')}`;
 
     return (
         <section className={container({ py: '60px', maxWidth: '1200px' })}>
@@ -40,40 +40,33 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
                 justify: 'center',
                 flexWrap: isRow ? 'nowrap' : 'wrap',
             })}>
-                {/* Image Side */}
-                {data.image && (
+                {/* Media Side */}
+                {data.media && (
                     <div
                         className={css({
                             flex: isRow ? '0 0 auto' : 'initial',
-                            width: isRow ? '50%' : (isCentered ? '600px' : '100%'),
                             maxWidth: '100%',
                             mx: isCentered ? 'auto' : '0',
                         })}
-                        style={useFixedHeight ? {
-                            '--info-media-h-mobile': mobileHeight,
-                            '--info-media-h-desktop': desktopHeight,
-                        } as React.CSSProperties : undefined}
                     >
-                        {useFixedHeight && (
-                            <style>{`
-                                .info-media-inner { height: var(--info-media-h-mobile); }
-                                @media (min-width: 768px) {
-                                    .info-media-inner { height: var(--info-media-h-desktop); }
-                                }
-                            `}</style>
-                        )}
+                        <style>{`
+                            #${mediaId} { width: ${mobileWidth}; }
+                            @media (min-width: 768px) {
+                                #${mediaId} { width: ${desktopWidth}; }
+                            }
+                        `}</style>
                         <div
-                            className={`${useFixedHeight ? 'info-media-inner' : ''} ${css({
+                            id={mediaId}
+                            className={css({
                                 position: 'relative',
-                                width: '100%',
                                 borderRadius: '12px',
                                 overflow: 'hidden',
-                            })}`}
-                            style={!useFixedHeight ? { aspectRatio } : undefined}
+                            })}
+                            style={{ aspectRatio }}
                         >
-                            {isVideoUrl(data.image) ? (
+                            {isVideoUrl(data.media) ? (
                                 <video
-                                    src={data.image}
+                                    src={data.media}
                                     autoPlay
                                     muted
                                     loop
@@ -82,7 +75,7 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
                                 />
                             ) : (
                                 <Image
-                                    src={data.image}
+                                    src={data.media}
                                     alt={data.title}
                                     width={800}
                                     height={600}

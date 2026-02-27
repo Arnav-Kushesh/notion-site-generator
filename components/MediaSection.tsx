@@ -15,18 +15,9 @@ export function MediaSection({ data }: { data: MediaSectionData }) {
     const fullWidth = data.full_width ?? false;
     const hasTopPart = !!(data.title || data.description);
 
-    const containerStyles = fullWidth
-        ? css({
-            width: '100vw',
-            marginLeft: 'calc(-50vw + 50%)',
-            overflow: 'hidden',
-            aspectRatio: data.aspect_ratio || '16/9',
-        })
-        : css({
-            borderRadius: '12px',
-            overflow: 'hidden',
-            aspectRatio: data.aspect_ratio || '16/9',
-        });
+    const desktopWidth = data.width ? normalizeUnit(data.width) : '100%';
+    const mobileWidth = data.width_mobile ? normalizeUnit(data.width_mobile) : desktopWidth;
+    const mediaId = `media-section-${data.id.replace(/[^a-zA-Z0-9]/g, '')}`;
 
     return (
         <section className={css({ mb: '40px' })}>
@@ -50,43 +41,59 @@ export function MediaSection({ data }: { data: MediaSectionData }) {
                             fontSize: '0.95rem',
                             color: 'text.secondary',
                             mt: '4px',
+                            whiteSpace: 'pre-wrap',
                         })}>
                             {data.description}
                         </p>
                     )}
                 </div>
             )}
+            <style>{`
+                #${mediaId} { width: ${mobileWidth}; }
+                @media (min-width: 768px) {
+                    #${mediaId} { width: ${desktopWidth}; }
+                }
+            `}</style>
             <div
-                className={containerStyles}
+                id={mediaId}
+                className={fullWidth
+                    ? css({
+                        overflow: 'hidden',
+                        aspectRatio: data.aspect_ratio || '16/9',
+                    })
+                    : css({
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        aspectRatio: data.aspect_ratio || '16/9',
+                    })
+                }
             >
-                <div className="media-section-inner">
-                    {isVideo(data.media) ? (
-                        <video
-                            src={data.media}
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
-                            className={css({
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                display: 'block',
-                            })}
-                        />
-                    ) : (
-                        <img
-                            src={data.media}
-                            alt={data.title || ''}
-                            className={css({
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                display: 'block',
-                            })}
-                        />
-                    )}
-                </div>
+                {isVideo(data.media) ? (
+                    <video
+                        src={data.media}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        className={css({
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block',
+                        })}
+                    />
+                ) : (
+                    <img
+                        src={data.media}
+                        alt={data.title || ''}
+                        className={css({
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover',
+                            display: 'block',
+                        })}
+                    />
+                )}
             </div>
         </section>
     );

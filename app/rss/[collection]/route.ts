@@ -37,7 +37,7 @@ export async function GET(
     const rssItems = posts.map((post) => {
         const link = `${escapeXml(baseUrl)}/${escapeXml(collection)}/${escapeXml(post.slug)}`;
         const pubDate = post.date ? new Date(post.date).toUTCString() : new Date().toUTCString();
-        const image = post.cover?.image || post.image || post.thumbnail;
+        const image = post.cover?.image || post.thumbnail;
         const tags = post.tags || [];
         const tagNames = tags.map(t => typeof t === 'string' ? t : (t as { name: string }).name);
 

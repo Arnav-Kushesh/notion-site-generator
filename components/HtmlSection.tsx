@@ -34,6 +34,7 @@ export function HtmlSection({ data }: { data: HtmlSectionData }) {
                             fontSize: '0.95rem',
                             color: 'text.secondary',
                             mt: '4px',
+                            whiteSpace: 'pre-wrap',
                         })}>
                             {data.description}
                         </p>

@@ -32,7 +32,7 @@ export function InteractiveSection({ sectionId, title, description, items, initi
                     {title}
                 </h2>
                 {description && (
-                    <p className={css({ color: 'text.secondary', fontSize: '0.875rem', mt: '4px', maxWidth: centered ? '600px' : 'none' })}>{description}</p>
+                    <p className={css({ color: 'text.secondary', fontSize: '0.875rem', mt: '4px', maxWidth: centered ? '600px' : 'none', whiteSpace: 'pre-wrap' })}>{description}</p>
                 )}
             </div>
 

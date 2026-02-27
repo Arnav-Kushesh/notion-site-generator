@@ -1,3 +1,5 @@
+// Section interfaces must match the schema in scripts/lib/section-schema.mjs
+
 export interface InfoConfig {
     title: string;
     description: string;
@@ -32,11 +34,11 @@ export interface InfoSectionData {
     description: string;
     button_link?: string;
     button_text?: string;
-    image?: string;
+    media?: string;
     view_type?: 'col_centered_view' | 'col_left_view' | 'row_reverse_view' | 'row_view';
     media_aspect_ratio?: string;
-    media_height?: string;
-    media_mobile_height?: string;
+    media_width?: string;
+    media_width_mobile?: string;
     enabled?: boolean;
 }
 
@@ -93,6 +95,8 @@ export interface MediaSectionData {
     description?: string;
     media?: string;
     aspect_ratio?: string;
+    width?: string;
+    width_mobile?: string;
     full_width?: boolean;
     top_part_centered?: boolean;
     enabled?: boolean;
@@ -134,7 +138,6 @@ export interface Post {
         alt?: string;
     };
     thumbnail?: string;
-    image?: string;
     link?: string;
     button_text?: string;
     tools?: string;
@@ -149,7 +152,7 @@ export interface Post {
 export interface GalleryItem {
     slug: string;
     name: string;
-    image: string;
+    thumbnail: string;
     link?: string;
     content?: string;
 }

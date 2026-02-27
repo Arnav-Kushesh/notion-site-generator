@@ -60,8 +60,11 @@ A static content section with text, image/video, and optional CTA button. If the
 | `description` | Rich Text | Section body text |
 | `button_link` | URL | Optional CTA button link (button hidden if empty) |
 | `button_text` | Rich Text | Custom button label (defaults to "Explore") |
-| `image` | Files | Optional hero/feature image or video |
+| `media` | Files | Optional hero/feature image or video |
 | `view_type` | Select | Layout: `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view` |
+| `media_aspect_ratio` | Rich Text | Aspect ratio for the media (e.g., `16:9` or `16/9`; default: `16:9`) |
+| `media_height` | Rich Text | Fixed desktop height for the media (e.g., `400px`; overrides aspect ratio) |
+| `media_mobile_height` | Rich Text | Fixed mobile height for the media (e.g., `250px`; defaults to `media_height`) |
 | `section_type` | Select | Must be `info_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -98,7 +101,7 @@ Renders custom HTML inside a sandboxed iframe. The HTML code is stored as a code
 |----------|------|-------------|
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
-| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `html_section` |
@@ -116,7 +119,7 @@ Embeds an external webpage in an iframe.
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | The URL to embed |
-| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `iframe_section` |
@@ -146,7 +149,7 @@ Displays an image or a looping video. If the media file is a video (`.mp4`, `.we
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `media` | Files | Image or video file |
-| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16/9`, `4/3`; default: `16/9`) |
+| `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
 | `section_type` | Select | Must be `media_section` |
