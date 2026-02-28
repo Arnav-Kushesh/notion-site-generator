@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { css } from '../../styled-system/css';
 import { Post } from '../../lib/data';
@@ -108,10 +107,8 @@ export function CardView({ visibleItems, paginationButton }: ViewProps) {
                                         {post.tags.slice(0, 3).map(tag => {
                                             const name = getTagName(tag);
                                             return (
-                                                <Link
+                                                <span
                                                     key={name}
-                                                    href={`/tag/${encodeURIComponent(name)}`}
-                                                    onClick={(e) => e.stopPropagation()}
                                                     className={css({
                                                         fontSize: '0.7rem',
                                                         bg: 'bg.tertiary',
@@ -119,14 +116,10 @@ export function CardView({ visibleItems, paginationButton }: ViewProps) {
                                                         px: '8px',
                                                         py: '3px',
                                                         borderRadius: 'full',
-                                                        transition: 'all 0.15s ease',
-                                                        position: 'relative',
-                                                        zIndex: 1,
-                                                        _hover: { bg: 'primary', color: 'white' },
                                                     })}
                                                 >
                                                     {name}
-                                                </Link>
+                                                </span>
                                             );
                                         })}
                                     </div>
