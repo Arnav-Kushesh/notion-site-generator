@@ -100,4 +100,5 @@ export const sectionTypeOptions = [
     { name: "media_section", color: "pink" },
     { name: "mailto_section", color: "green" },
     { name: "newsletter_section", color: "yellow" },
+    { name: "gap_section", color: "default" },
 ];

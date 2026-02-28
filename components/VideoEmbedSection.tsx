@@ -5,7 +5,7 @@ export function VideoEmbedSection({ data }: { data: VideoEmbedSectionData }) {
     const hasTopPart = !!(data.title || data.description);
 
     return (
-        <section className={css({ mb: '40px' })}>
+        <section className={`${css({ mb: '40px' })}${data.class_name ? ` ${data.class_name}` : ''}`}>
             {hasTopPart && (
                 <div className={css({
                     mb: '16px',

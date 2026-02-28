@@ -6,17 +6,18 @@ import { Mail } from 'lucide-react';
 
 interface NewsletterProps {
     newsletterFormUrl?: string;
+    className?: string;
 }
 
-export function Newsletter({ newsletterFormUrl }: NewsletterProps) {
+export function Newsletter({ newsletterFormUrl, className }: NewsletterProps) {
     return (
-        <section className={css({
+        <section className={`${css({
             py: '60px',
             px: '20px',
             maxWidth: '560px',
             margin: '0 auto',
             textAlign: 'center',
-        })}>
+        })}${className ? ` ${className}` : ''}`}>
             <div className={css({
                 bg: 'bg.secondary',
                 border: '1px solid token(colors.border.default)',

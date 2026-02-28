@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { css } from '@/styled-system/css';
-import { MessageCircle, Send, Mail } from 'lucide-react';
+import { Send } from 'lucide-react';
 import type { MailtoSectionData } from '@/lib/data';
 
 export function MailtoSection({ data }: { data: MailtoSectionData }) {
@@ -18,76 +18,24 @@ export function MailtoSection({ data }: { data: MailtoSectionData }) {
     };
 
     return (
-        <section className={css({ mb: '40px' })}>
+        <section className={`${css({ mb: '40px' })}${data.class_name ? ` ${data.class_name}` : ''}`}>
             {data.title && (
-                <div className={css({
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    mb: '20px',
+                <h2 className={css({
+                    fontSize: '1.5rem',
+                    fontWeight: '700',
+                    color: 'text.primary',
+                    letterSpacing: '-0.02em',
+                    mb: '16px',
                 })}>
-                    <div className={css({
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        w: '32px',
-                        h: '32px',
-                        borderRadius: '8px',
-                        bg: 'bg.secondary',
-                        color: 'text.secondary',
-                        flexShrink: 0,
-                    })}>
-                        <MessageCircle size={16} />
-                    </div>
-                    <div>
-                        <h2 className={css({
-                            fontSize: '1.25rem',
-                            fontWeight: '700',
-                            color: 'text.primary',
-                            letterSpacing: '-0.02em',
-                            lineHeight: '1.2',
-                        })}>
-                            {data.title}
-                        </h2>
-                        <p className={css({
-                            fontSize: '0.8rem',
-                            color: 'text.tertiary',
-                            mt: '2px',
-                        })}>
-                            Your message will be sent via email
-                        </p>
-                    </div>
-                </div>
+                    {data.title}
+                </h2>
             )}
 
             <form onSubmit={handleSubmit} className={css({
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px',
-                p: '24px',
-                bg: 'bg.secondary',
-                borderRadius: '16px',
-                border: '1px solid',
-                borderColor: isFocused ? 'primary' : 'token(colors.border.default)',
-                transition: 'border-color 0.2s ease',
+                gap: '12px',
             })}>
-                {/* Subject badge */}
-                <div className={css({
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                })}>
-                    <Mail size={13} className={css({ color: 'text.tertiary', flexShrink: 0 })} />
-                    <span className={css({
-                        fontSize: '0.8rem',
-                        color: 'text.secondary',
-                        fontWeight: '500',
-                    })}>
-                        {data.subject}
-                    </span>
-                </div>
-
-                {/* Textarea */}
                 <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -99,33 +47,25 @@ export function MailtoSection({ data }: { data: MailtoSectionData }) {
                     className={css({
                         w: '100%',
                         p: '14px 16px',
-                        bg: 'bg.primary',
+                        bg: 'transparent',
                         color: 'text.primary',
-                        border: '1px solid token(colors.border.default)',
+                        border: '1px solid',
+                        borderColor: isFocused ? 'primary' : 'token(colors.border.default)',
                         borderRadius: '12px',
                         fontSize: '0.875rem',
                         lineHeight: '1.6',
                         resize: 'vertical',
                         outline: 'none',
                         transition: 'border-color 0.2s ease',
-                        _focus: { borderColor: 'primary' },
                         _placeholder: { color: 'text.tertiary' },
                     })}
                 />
 
-                {/* Footer row */}
                 <div className={css({
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'flex-end',
                 })}>
-                    <p className={css({
-                        fontSize: '0.7rem',
-                        color: 'text.tertiary',
-                        display: { base: 'none', sm: 'block' },
-                    })}>
-                        Opens your email client with the message pre-filled
-                    </p>
                     <button
                         type="submit"
                         className={css({

@@ -28,7 +28,7 @@ export function InfoSection({ data }: { data: InfoSectionData }) {
     const mediaId = `info-media-${data.id.replace(/[^a-zA-Z0-9]/g, '')}`;
 
     return (
-        <section className={css({ mb: '40px' })}>
+        <section className={`${css({ mb: '40px' })}${data.class_name ? ` ${data.class_name}` : ''}`}>
             <div className={flex({
                 direction: {
                     base: 'column',

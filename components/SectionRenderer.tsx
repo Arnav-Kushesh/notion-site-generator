@@ -7,6 +7,7 @@ import { VideoEmbedSection } from './VideoEmbedSection';
 import { MediaSection } from './MediaSection';
 import { MailtoSection } from './MailtoSection';
 import { Newsletter } from './Newsletter';
+import { GapSection } from './GapSection';
 
 interface SectionRendererProps {
     section: SectionData;
@@ -33,7 +34,9 @@ export function SectionRenderer({ section, newsletterFormUrl }: SectionRendererP
         case 'mailto_section':
             return <MailtoSection data={section} />;
         case 'newsletter_section':
-            return <Newsletter newsletterFormUrl={newsletterFormUrl} />;
+            return <Newsletter newsletterFormUrl={newsletterFormUrl} className={section.class_name} />;
+        case 'gap_section':
+            return <GapSection data={section} />;
         default:
             return null;
     }

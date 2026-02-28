@@ -20,7 +20,8 @@ Root Page
 │   ├── [Inline DB] Featured Video (video_embed_section)
 │   ├── [Inline DB] Media (media_section)
 │   ├── [Inline DB] Contact Form (mailto_section)
-│   └── [Inline DB] Newsletter (newsletter_section)
+│   ├── [Inline DB] Newsletter (newsletter_section)
+│   └── [Inline DB] Gap (gap_section)
 ├── Navbar Pages
 │   ├── About (page, can contain inline DB sections)
 │   └── Contact (page, can contain inline DB sections)
@@ -49,6 +50,16 @@ Root Page
 
 Sections are inline databases placed on the Home Page, Navbar Pages, or Collection Extra Sections pages. Each database must have a `section_type` select property to identify its type.
 
+### Common Properties
+
+All section types support these properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `section_type` | Select | Identifies the section type |
+| `class_name` | Rich Text | Custom CSS class name(s) applied to the section container. Use this with CSS injection to style individual sections |
+| `enabled` | Checkbox | Show/hide the section |
+
 ### 1. `info_section`
 
 A static content section with text, image/video, and optional CTA button. If the image is a video file (`.mp4`, `.webm`, `.mov`, `.ogg`), it renders as a looping video with no controls.
@@ -63,10 +74,8 @@ A static content section with text, image/video, and optional CTA button. If the
 | `media` | Files | Optional hero/feature image or video |
 | `view_type` | Select | Layout: `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view` |
 | `media_aspect_ratio` | Rich Text | Aspect ratio for the media (e.g., `16:9` or `16/9`; default: `16:9`) |
-| `media_height` | Rich Text | Fixed desktop height for the media (e.g., `400px`; overrides aspect ratio) |
-| `media_mobile_height` | Rich Text | Fixed mobile height for the media (e.g., `250px`; defaults to `media_height`) |
-| `section_type` | Select | Must be `info_section` |
-| `enabled` | Checkbox | Show/hide the section |
+| `media_width` | Rich Text | Desktop width for the media (e.g., `400px`, `50%`; default: `100%`). Centered when less than 100% |
+| `media_width_mobile` | Rich Text | Mobile width for the media (defaults to `media_width`) |
 
 ### 2. `dynamic_section`
 
@@ -81,8 +90,6 @@ Displays items from a collection (blogs, projects, gallery) in various view type
 | `view_type` | Select | Layout: `list_view`, `card_view`, `grid_view`, `minimal_list_view`, `tiny_card_view`, `big_card_view` |
 | `items_in_view` | Number | Number of items per page (default: 6) |
 | `top_part_centered` | Checkbox | Center the title and description |
-| `section_type` | Select | Must be `dynamic_section` |
-| `enabled` | Checkbox | Show/hide the section |
 
 **View Types:**
 - **`list_view`**: Full-width list with image, title, description, and date
@@ -102,10 +109,10 @@ Renders custom HTML inside a sandboxed iframe. The HTML code is stored as a code
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
+| `width` | Rich Text | Desktop width (e.g., `600px`, `80%`; default: `100%`). Centered when less than 100% |
+| `width_mobile` | Rich Text | Mobile width (defaults to `width`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
-| `section_type` | Select | Must be `html_section` |
-| `enabled` | Checkbox | Show/hide the section |
 
 **How to use:** Open the first row as a page, add a code block with your HTML.
 
@@ -120,10 +127,10 @@ Embeds an external webpage in an iframe.
 | `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | The URL to embed |
 | `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
+| `width` | Rich Text | Desktop width (e.g., `600px`, `80%`; default: `100%`). Centered when less than 100% |
+| `width_mobile` | Rich Text | Mobile width (defaults to `width`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
-| `section_type` | Select | Must be `iframe_section` |
-| `enabled` | Checkbox | Show/hide the section |
 
 ### 5. `video_embed_section`
 
@@ -136,8 +143,6 @@ Embeds a video (YouTube, Vimeo, etc.) using the embed URL.
 | `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | Video embed URL (e.g., `https://www.youtube.com/embed/VIDEO_ID`) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
-| `section_type` | Select | Must be `video_embed_section` |
-| `enabled` | Checkbox | Show/hide the section |
 
 ### 6. `media_section`
 
@@ -150,10 +155,10 @@ Displays an image or a looping video. If the media file is a video (`.mp4`, `.we
 | `description` | Rich Text | Section description (shown below the title) |
 | `media` | Files | Image or video file |
 | `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
+| `width` | Rich Text | Desktop width (e.g., `600px`, `80%`; default: `100%`). Centered when less than 100% |
+| `width_mobile` | Rich Text | Mobile width (defaults to `width`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
-| `section_type` | Select | Must be `media_section` |
-| `enabled` | Checkbox | Show/hide the section |
 
 ### 7. `mailto_section`
 
@@ -163,12 +168,10 @@ An email-based contact form. When a reader submits the form, their email client 
 | Property | Type | Description |
 |----------|------|-------------|
 | `title` | Title | Section heading |
-| `subject` | Rich Text | Email subject line |
+| `subject` | Rich Text | Email subject line (used in the mailto link, not displayed in the UI) |
 | `receiver_email` | Rich Text | Recipient email address |
 | `placeholder_text` | Rich Text | Textarea placeholder (defaults to "Share your thoughts...") |
 | `button_text` | Rich Text | Submit button label (defaults to "Send") |
-| `section_type` | Select | Must be `mailto_section` |
-| `enabled` | Checkbox | Show/hide the section |
 
 ### 8. `newsletter_section`
 
@@ -186,8 +189,18 @@ Renders a newsletter signup button that links visitors to your signup form. Read
 **Database Properties:**
 | Property | Type | Description |
 |----------|------|-------------|
-| `section_type` | Select | Must be `newsletter_section` |
-| `enabled` | Checkbox | Show/hide the section |
+| `title` | Title | Section title |
+
+### 9. `gap_section`
+
+Adds vertical spacing between sections. Use this to control the gap between specific sections without affecting the global spacing.
+
+**Database Properties:**
+| Property | Type | Description |
+|----------|------|-------------|
+| `title` | Title | Section label (not displayed, for organization only) |
+| `height` | Rich Text | Desktop height (e.g., `60`, `60px`, `4rem`; bare numbers treated as pixels) |
+| `mobile_height` | Rich Text | Mobile height (defaults to `height`) |
 
 ---
 
@@ -313,7 +326,7 @@ Set the default via `sidebar_navigation` in Main Configuration.
 ## Code & CSS Injection
 
 - **HTML Head Code** page (under Settings): Add code blocks containing `<script>` tags or other HTML to inject into `<head>`.
-- **CSS Styling** page (under Settings): Add code blocks containing CSS to inject as `<style>` tags in `<head>`.
+- **CSS Styling** page (under Settings): Add code blocks containing CSS to inject as `<style>` tags in `<head>`. Use this with the `class_name` property on sections to target individual sections with custom styles.
 
 ---
 
@@ -342,7 +355,7 @@ Extra sections can be added to collection entry pages (blog posts, projects, etc
 
 Each collection name page contains inline databases representing sections. These sections are rendered on every entry page of that collection.
 
-All 9 section types are supported (info, dynamic, html, iframe, video_embed, media, mailto, newsletter).
+All 10 section types are supported (info, dynamic, html, iframe, video_embed, media, mailto, newsletter, gap).
 
 ---
 

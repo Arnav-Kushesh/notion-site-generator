@@ -228,6 +228,19 @@ export const dummyNewsletterSection = {
   ]
 };
 
+export const dummyGapSection = {
+  type: 'gap_section',
+  enabled: 'false',
+  title: 'Gap',
+  data: [
+    {
+      title: 'Gap',
+      height: '60',
+      mobile_height: '40',
+    }
+  ]
+};
+
 // The order here determines the order of creation on the Home Page, and thus the default order on the site.
 export const dummyHomePageSections = [
   dummyHeroSection,
@@ -240,6 +253,7 @@ export const dummyHomePageSections = [
   dummyMediaSection,
   dummyMailtoSection,
   dummyNewsletterSection,
+  dummyGapSection,
 ];
 
 /**

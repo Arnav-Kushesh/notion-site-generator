@@ -13,6 +13,7 @@ export type {
     MediaSectionData,
     MailtoSectionData,
     NewsletterSectionData,
+    GapSectionData,
     SectionData,
     HomeData,
     Post,

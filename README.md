@@ -23,10 +23,10 @@ Notion Site Generator is a powerful **Notion-to-Website** engine that turns your
 - **Global Search**: Built-in `Cmd+K` command palette to search all content with fuzzy matching.
 - **Multi-Author**: Support for multiple authors with dedicated profile pages.
 - **Rich Content**: Supports video embeds, code blocks, callouts, and more.
-- **9 Section Types**: Info, Dynamic, HTML, Iframe, Video Embed, Media, Mailto, Newsletter sections.
+- **10 Section Types**: Info, Dynamic, HTML, Iframe, Video Embed, Media, Mailto, Newsletter, and Gap sections.
 - **6 View Types for Dynamic Sections**: List, Card, Grid, Minimal List, Tiny Card, and Big Card views.
 - **Newsletter Ready**: Native Mailchimp integration form with per-collection and per-page control.
-- **Code & CSS Injection**: Add Analytics, Ads, or custom styles directly from Notion.
+- **Code & CSS Injection**: Add Analytics, Ads, or custom styles directly from Notion. Use `class_name` on any section to target it with custom CSS.
 - **8 Color Themes**: Light, Dark, Blue, Purple, Pink, Red, Green, and Cream — with optional theme restriction via Advanced Configuration.
 - **Two Navigation Modes**: Top navbar or left sidebar — configurable from Notion.
 - **RSS Feeds**: Auto-generated feeds for every content collection.
@@ -133,7 +133,8 @@ Root Page
 │   ├── [Inline DB] Featured Video (video_embed_section)
 │   ├── [Inline DB] Media (media_section)
 │   ├── [Inline DB] Contact Form (mailto_section)
-│   └── [Inline DB] Newsletter (newsletter_section)
+│   ├── [Inline DB] Newsletter (newsletter_section)
+│   └── [Inline DB] Gap (gap_section)
 ├── Navbar Pages
 │   ├── About (page, can contain inline DB sections)
 │   └── Contact (page, can contain inline DB sections)
@@ -220,8 +221,9 @@ A static content section with text, image/video, and optional CTA button. Use it
 | `media` | Files | Optional hero/feature image or video |
 | `view_type` | Select | Layout: `col_centered_view`, `col_left_view`, `row_view`, `row_reverse_view` |
 | `media_aspect_ratio` | Rich Text | Aspect ratio for the media (e.g., `16:9` or `16/9`; default: `16:9`) |
-| `media_height` | Rich Text | Fixed desktop height for the media (e.g., `400px`; overrides aspect ratio) |
-| `media_mobile_height` | Rich Text | Fixed mobile height for the media (e.g., `250px`; defaults to `media_height`) |
+| `media_width` | Rich Text | Desktop width for the media (e.g., `400px`, `50%`; default: `100%`). Centered when less than 100% |
+| `media_width_mobile` | Rich Text | Mobile width for the media (defaults to `media_width`) |
+| `class_name` | Rich Text | Custom CSS class name(s) for the section container |
 | `section_type` | Select | Must be `info_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -238,6 +240,7 @@ Displays items from a collection (blogs, projects, gallery) in various view type
 | `view_type` | Select | Layout: `list_view`, `card_view`, `grid_view`, `minimal_list_view`, `tiny_card_view`, `big_card_view` |
 | `items_in_view` | Number | Number of items per page (default: 6) |
 | `top_part_centered` | Checkbox | Center the title and description |
+| `class_name` | Rich Text | Custom CSS class name(s) for the section container |
 | `section_type` | Select | Must be `dynamic_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -267,8 +270,11 @@ Renders custom HTML inside a sandboxed iframe. This is one of Notion Site Genera
 | `title` | Title | Section heading |
 | `description` | Rich Text | Section description (shown below the title) |
 | `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
+| `width` | Rich Text | Desktop width (e.g., `600px`, `80%`; default: `100%`). Centered when less than 100% |
+| `width_mobile` | Rich Text | Mobile width (defaults to `width`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
+| `class_name` | Rich Text | Custom CSS class name(s) for the section container |
 | `section_type` | Select | Must be `html_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -291,8 +297,11 @@ Embeds an external webpage in an iframe. Use this to embed any website, tool, or
 | `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | The URL to embed |
 | `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
+| `width` | Rich Text | Desktop width (e.g., `600px`, `80%`; default: `100%`). Centered when less than 100% |
+| `width_mobile` | Rich Text | Mobile width (defaults to `width`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
+| `class_name` | Rich Text | Custom CSS class name(s) for the section container |
 | `section_type` | Select | Must be `iframe_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -313,6 +322,7 @@ Embeds a video (YouTube, Vimeo, etc.) using the embed URL. Videos play inline on
 | `description` | Rich Text | Section description (shown below the title) |
 | `url` | URL | Video embed URL (e.g., `https://www.youtube.com/embed/VIDEO_ID`) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
+| `class_name` | Rich Text | Custom CSS class name(s) for the section container |
 | `section_type` | Select | Must be `video_embed_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
@@ -333,8 +343,11 @@ Displays an image or a looping video. If the media file is a video (`.mp4`, `.we
 | `description` | Rich Text | Section description (shown below the title) |
 | `media` | Files | Image or video file |
 | `aspect_ratio` | Rich Text | Aspect ratio for the section (e.g., `16:9` or `16/9`; default: `16:9`) |
+| `width` | Rich Text | Desktop width (e.g., `600px`, `80%`; default: `100%`). Centered when less than 100% |
+| `width_mobile` | Rich Text | Mobile width (defaults to `width`) |
 | `full_width` | Checkbox | Edge-to-edge display (removes border radius and border) |
 | `top_part_centered` | Checkbox | Center-align the title and description |
+| `class_name` | Rich Text | Custom CSS class name(s) for the section container |
 | `section_type` | Select | Must be `media_section` |
 | `enabled` | Checkbox | Show/hide the section |
 
